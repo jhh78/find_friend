@@ -8,8 +8,10 @@ class Layout extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        body: child,
+      child: SafeArea(
+        child: Scaffold(
+          body: child,
+        ),
       ),
     );
   }
