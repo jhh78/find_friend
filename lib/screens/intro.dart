@@ -1,4 +1,4 @@
-import 'package:find_friend/screens/register.dart';
+import 'package:find_friend/screens/register/register.dart';
 import 'package:flutter/material.dart';
 
 class IntroScreen extends StatelessWidget {
