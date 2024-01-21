@@ -1,10 +1,20 @@
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AppDataController extends GetxController {
-  int navibarCurrentIndex = 0;
+  RxInt navibarCurrentIndex = 0.obs;
+  final GlobalKey<NavigatorState> noticeNavigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> threadNavigatorKey = GlobalKey<NavigatorState>();
 
-  void setNaviBarCurrentIndex(int index) {
-    navibarCurrentIndex = index;
-    update();
+  static AppDataController get to => Get.find();
+
+  void changeNaviBarCurrentIndex(int index) {
+    navibarCurrentIndex(index);
+    debugPrint('navibarCurrentIndex: $navibarCurrentIndex');
+  }
+
+  void initNavigatorPops() {
+    noticeNavigatorKey.currentState?.popUntil((route) => route.isFirst);
+    threadNavigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 }

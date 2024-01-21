@@ -28,7 +28,7 @@ const String REGISTER_BUTTON_TEXT = '登録';
 const String REGISTER_ERROR = '登録に失敗しました。';
 
 // 설정 버튼텍스트
-const String HOME_BUTTON_TEXT = '設定';
+const String HOME_SETTING_BUTTON_TEXT = '設定';
 
 // 스레드 리스트 버튼텍스트
 const String THREAD_LIST_BUTTON_TEXT = 'スレッド';
