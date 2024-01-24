@@ -9,7 +9,6 @@ class SupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GoogleAdManager _googleAdManager = GoogleAdManager();
     return SingleChildScrollView(
       child: Center(
         child: Padding(
@@ -43,7 +42,7 @@ class SupportScreen extends StatelessWidget {
                       SupportButton(
                         callBack: () {
                           debugPrint('広告を見る click');
-                          _googleAdManager.loadInterstitialAd();
+                          GoogleAdManager().loadInterstitialAd();
                         },
                         text: '広告を見る',
                       ),

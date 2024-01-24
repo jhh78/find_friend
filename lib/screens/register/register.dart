@@ -23,7 +23,6 @@ class RegisterScreen extends StatelessWidget {
             ),
             Scaffold(
               backgroundColor: Colors.transparent,
-              resizeToAvoidBottomInset: false,
               body: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,

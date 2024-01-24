@@ -1,4 +1,5 @@
 import 'package:find_friend/screens/notice/notice_detail.dart';
+import 'package:find_friend/widgets/common/text_title.dart';
 import 'package:flutter/material.dart';
 
 class NoticeScreen extends StatelessWidget {
@@ -8,27 +9,33 @@ class NoticeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        children: List.generate(
-          20,
-          (index) => GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NoticeDetailScreen(),
+        children: [
+          TextTitle(text: 'お知らせ'),
+          Column(
+            children: List.generate(
+              20,
+              (index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NoticeDetailScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 200,
+                  margin: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey),
+                  child: Text('$index'),
                 ),
-              );
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 200,
-              margin: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10), color: Colors.grey),
-              child: Text('$index'),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

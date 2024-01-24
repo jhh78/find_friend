@@ -3,8 +3,12 @@ import 'package:get/get.dart';
 
 class AppDataController extends GetxController {
   RxInt navibarCurrentIndex = 0.obs;
-  final GlobalKey<NavigatorState> noticeNavigatorKey = GlobalKey<NavigatorState>();
-  final GlobalKey<NavigatorState> threadNavigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> noticeNavigatorKey =
+      GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> threadNavigatorKey =
+      GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> userInfoNavigatorKey =
+      GlobalKey<NavigatorState>();
 
   static AppDataController get to => Get.find();
 
