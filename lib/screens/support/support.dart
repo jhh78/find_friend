@@ -1,3 +1,4 @@
+import 'package:find_friend/utils/google_ad.dart';
 import 'package:find_friend/widgets/common/text_body.dart';
 import 'package:find_friend/widgets/common/text_title.dart';
 import 'package:find_friend/widgets/support/support_button.dart';
@@ -8,6 +9,7 @@ class SupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GoogleAdManager _googleAdManager = GoogleAdManager();
     return SingleChildScrollView(
       child: Center(
         child: Padding(
@@ -41,6 +43,7 @@ class SupportScreen extends StatelessWidget {
                       SupportButton(
                         callBack: () {
                           debugPrint('広告を見る click');
+                          _googleAdManager.loadInterstitialAd();
                         },
                         text: '広告を見る',
                       ),
