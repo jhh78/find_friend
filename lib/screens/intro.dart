@@ -15,13 +15,15 @@ class IntroScreen extends StatelessWidget {
           ),
         );
       },
-      child: Scaffold(
-        body: Center(
-          child: Text(
-            'Intro Screen',
-            style: Theme.of(context).textTheme.headlineLarge,
+      child: Stack(
+        children: [
+          Image.asset(
+            'assets/images/intro.png',
+            fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
           ),
-        ),
+        ],
       ),
     );
   }

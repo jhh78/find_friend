@@ -23,20 +23,23 @@ class RegisterScreen extends StatelessWidget {
             ),
             Scaffold(
               backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                automaticallyImplyLeading: false,
+                centerTitle: true,
+                toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+                title: Text(
+                  REGISTER_TITLE,
+                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                        color: COLOR_MAP['text'],
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
               body: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20, bottom: 10),
-                      child: Text(REGISTER_TITLE,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineLarge!
-                              .copyWith(
-                                  color: COLOR_MAP['text'],
-                                  fontWeight: FontWeight.bold)),
-                    ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),
                       child: Column(
@@ -63,15 +66,17 @@ class RegisterScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const RootScreen()),
+                                  builder: (context) => const RootScreen(),
+                                ),
                               );
                             },
                             child: Text(
                               REGISTER_BUTTON_TEXT,
                               style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: COLOR_MAP['text']),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: COLOR_MAP['text'],
+                              ),
                             ),
                           ),
                         ],

@@ -20,32 +20,40 @@ class RegisterFormText extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: COLOR_MAP['text'])),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: COLOR_MAP['text'],
+            ),
+          ),
           const SizedBox(height: 5),
           TextField(
             decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: TextStyle(fontSize: 20, color: COLOR_MAP['hint']),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                )),
+              hintText: hintText,
+              hintStyle: TextStyle(
+                fontSize: 20,
+                color: COLOR_MAP['hint'],
+              ),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10.0),
+                ),
+              ),
+            ),
           ),
           errorText != null
               ? Padding(
                   padding: const EdgeInsets.only(top: 5.0),
                   child: Text(
                     errorText!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(color: COLOR_MAP['error']),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: COLOR_MAP['error'],
+                        ),
                   ),
                 )
-              : const SizedBox(),
+              : Container(),
         ],
       ),
     );

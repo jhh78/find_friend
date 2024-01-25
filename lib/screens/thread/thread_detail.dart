@@ -6,12 +6,22 @@ class ThreadDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Thread Detail Screen',
-        style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-              color: COLOR_MAP['text'],
-            ),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+          color: Colors.black54,
+        ),
+      ),
+      body: Center(
+        child: Text(
+          'Thread Detail Screen',
+          style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                color: COLOR_MAP['text'],
+              ),
+        ),
       ),
     );
   }
