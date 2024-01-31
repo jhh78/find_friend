@@ -1,4 +1,5 @@
 import 'package:find_friend/utils/colors.dart';
+import 'package:find_friend/widgets/common/error.dart';
 import 'package:flutter/material.dart';
 
 class RegisterFormText extends StatelessWidget {
@@ -7,11 +8,11 @@ class RegisterFormText extends StatelessWidget {
   final String? errorText;
 
   const RegisterFormText({
-    Key? key,
+    super.key,
     required this.title,
     required this.hintText,
     this.errorText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +45,7 @@ class RegisterFormText extends StatelessWidget {
             ),
           ),
           errorText != null
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(
-                    errorText!,
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: COLOR_MAP['error'],
-                        ),
-                  ),
-                )
+              ? CustomErrorWidget(errorText: errorText.toString())
               : Container(),
         ],
       ),

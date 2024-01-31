@@ -29,7 +29,7 @@ class SchoolsTable {
     };
   }
 
-  SchoolsTable.fromjson(Map<String, dynamic> json) {
+  SchoolsTable.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
     sKind = json['sKind'];
     prefectures = json['prefectures'];

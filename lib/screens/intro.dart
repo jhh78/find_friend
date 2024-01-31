@@ -1,4 +1,5 @@
 import 'package:find_friend/screens/register/register.dart';
+import 'package:find_friend/widgets/common/backgroud_image.dart';
 import 'package:flutter/material.dart';
 
 class IntroScreen extends StatelessWidget {
@@ -15,13 +16,10 @@ class IntroScreen extends StatelessWidget {
           ),
         );
       },
-      child: Stack(
+      child: const Stack(
         children: [
-          Image.asset(
-            'assets/images/intro.png',
-            fit: BoxFit.cover,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+          CustomBackGroundImageWidget(
+            type: 'intro',
           ),
         ],
       ),

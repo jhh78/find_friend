@@ -10,6 +10,9 @@ class AppDataController extends GetxController {
   final GlobalKey<NavigatorState> userInfoNavigatorKey =
       GlobalKey<NavigatorState>();
 
+  RxString facilityClassification = ''.obs;
+  RxString regionalClassification = ''.obs;
+
   static AppDataController get to => Get.find();
 
   void changeNaviBarCurrentIndex(int index) {
@@ -20,5 +23,13 @@ class AppDataController extends GetxController {
   void initNavigatorPops() {
     noticeNavigatorKey.currentState?.popUntil((route) => route.isFirst);
     threadNavigatorKey.currentState?.popUntil((route) => route.isFirst);
+  }
+
+  void setFacilityClassification(String value) {
+    facilityClassification(value);
+  }
+
+  void setRegionalClassification(String value) {
+    regionalClassification(value);
   }
 }

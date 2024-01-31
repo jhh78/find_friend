@@ -2,7 +2,9 @@ import 'package:find_friend/screens/root.dart';
 import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/utils/message/common.dart';
 import 'package:find_friend/utils/message/register.dart';
+import 'package:find_friend/widgets/common/backgroud_image.dart';
 import 'package:find_friend/widgets/register/form_text_field.dart';
+import 'package:find_friend/widgets/register/school_search_field.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -15,12 +17,7 @@ class RegisterScreen extends StatelessWidget {
       child: SafeArea(
         child: Stack(
           children: [
-            Image.asset(
-              'assets/images/bg1.jpg',
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
-            ),
+            const CustomBackGroundImageWidget(type: 'bg1'),
             Scaffold(
               backgroundColor: Colors.transparent,
               appBar: AppBar(
@@ -46,11 +43,6 @@ class RegisterScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           const RegisterFormText(
-                            title: REGISTER_GRADUATED_SCHOOL_TITLE,
-                            hintText: REGISTER_GRADUATED_SCHOOL_HINT,
-                            errorText: REGISTER_GRADUATED_SCHOOL_ERROR,
-                          ),
-                          const RegisterFormText(
                             title: REGISTER_NICKNAME_TITLE,
                             hintText: REGISTER_NICKNAME_HINT,
                             errorText: REGISTER_NICKNAME_ERROR,
@@ -60,6 +52,7 @@ class RegisterScreen extends StatelessWidget {
                             hintText: REGISTER_EMAIL_HINT,
                             errorText: REGISTER_EMAIL_ERROR,
                           ),
+                          const SchoolSearchField(),
                           OutlinedButton(
                             onPressed: () {
                               debugPrint('登録ボタンが押されました');

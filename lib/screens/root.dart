@@ -5,6 +5,7 @@ import 'package:find_friend/screens/thread/thread.dart';
 import 'package:find_friend/screens/userInfo/user_info.dart';
 import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/utils/message/common.dart';
+import 'package:find_friend/widgets/common/backgroud_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,11 +24,8 @@ class RootScreen extends GetView<AppDataController> {
           () => Scaffold(
             body: Stack(
               children: [
-                Image.asset(
-                  'assets/images/bg2.png',
-                  fit: BoxFit.cover,
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
+                const CustomBackGroundImageWidget(
+                  type: 'bg2',
                 ),
                 IndexedStack(
                   index: controller.navibarCurrentIndex.value,

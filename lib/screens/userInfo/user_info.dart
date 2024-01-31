@@ -15,7 +15,7 @@ class UserInfo extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-        title: const TextTitle(
+        title: const CustomTextTitleWidget(
           text: '基本情報',
         ),
         centerTitle: true,

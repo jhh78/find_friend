@@ -15,7 +15,7 @@ class SupportScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
         automaticallyImplyLeading: false,
-        title: const TextTitle(text: '支援ページ'),
+        title: const CustomTextTitleWidget(text: '支援ページ'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -27,16 +27,18 @@ class SupportScreen extends StatelessWidget {
               children: [
                 const Column(
                   children: [
-                    TextBody(text: 'このアプリで広告を提供しない理由は、皆さんの利用経験を最優先に考えているからです。'),
-                    TextBody(
+                    CustomTextBodyWidget(
+                        text: 'このアプリで広告を提供しない理由は、皆さんの利用経験を最優先に考えているからです。'),
+                    CustomTextBodyWidget(
                         text:
                             '広告なしで快適にアプリを利用していただけるように、皆さんが楽しく利用できる環境を作りたいと考えています。'),
-                    TextBody(
+                    CustomTextBodyWidget(
                         text:
                             'ただし、アプリの運営、向上した機能の提供、より安定したサービスのためには、皆さんのサポートが不可欠です。'),
-                    TextBody(text: 'アプリの運営、アップデート、新機能追加には皆さんの協力とサポートが必要です'),
-                    TextBody(text: '一緒により良いアプリを作るために、支援お願いいたします。'),
-                    TextBody(text: 'このアプリの企画者はあなたです。'),
+                    CustomTextBodyWidget(
+                        text: 'アプリの運営、アップデート、新機能追加には皆さんの協力とサポートが必要です'),
+                    CustomTextBodyWidget(text: '一緒により良いアプリを作るために、支援お願いいたします。'),
+                    CustomTextBodyWidget(text: 'このアプリの企画者はあなたです。'),
                   ],
                 ),
                 const SizedBox(

@@ -1,9 +1,9 @@
 import 'package:find_friend/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-class TextTitle extends StatelessWidget {
+class CustomTextTitleWidget extends StatelessWidget {
   final String text;
-  const TextTitle({super.key, required this.text});
+  const CustomTextTitleWidget({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {

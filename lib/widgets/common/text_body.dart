@@ -1,9 +1,9 @@
 import 'package:find_friend/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-class TextBody extends StatelessWidget {
+class CustomTextBodyWidget extends StatelessWidget {
   final String text;
-  const TextBody({super.key, required this.text});
+  const CustomTextBodyWidget({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
