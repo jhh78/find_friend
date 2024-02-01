@@ -10,14 +10,11 @@ class CustomErrorWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.all(5),
-          child: Text(
-            errorText,
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Colors.red,
-                ),
-          ),
+        Text(
+          errorText,
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: Colors.red,
+              ),
         ),
       ],
     );

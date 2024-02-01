@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 const DATABASE_NAME = 'phone.db';
+const REMOTE_DB_URL = 'http://153.121.65.233:10000';
 
 const List<Map<String, String>> FACILITY_CLASSIFICATION = [
   {'label': '国立', 'value': '1'},

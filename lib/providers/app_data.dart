@@ -10,8 +10,7 @@ class AppDataController extends GetxController {
   final GlobalKey<NavigatorState> userInfoNavigatorKey =
       GlobalKey<NavigatorState>();
 
-  RxString facilityClassification = ''.obs;
-  RxString regionalClassification = ''.obs;
+  RxList<Map<String, dynamic>> schoolInfo = <Map<String, dynamic>>[].obs;
 
   static AppDataController get to => Get.find();
 
@@ -25,11 +24,7 @@ class AppDataController extends GetxController {
     threadNavigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 
-  void setFacilityClassification(String value) {
-    facilityClassification(value);
-  }
-
-  void setRegionalClassification(String value) {
-    regionalClassification(value);
+  void setSchoolInfo(Map<String, dynamic> info) {
+    schoolInfo.add(info);
   }
 }

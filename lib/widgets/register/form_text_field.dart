@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 class RegisterFormText extends StatelessWidget {
   final String title;
   final String hintText;
-  final String? errorText;
+  final String errorText;
+  final Function(String) callBack;
 
   const RegisterFormText({
     super.key,
     required this.title,
     required this.hintText,
-    this.errorText,
+    required this.callBack,
+    required this.errorText,
   });
 
   @override
@@ -23,28 +25,32 @@ class RegisterFormText extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: COLOR_MAP['text'],
-            ),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: COLOR_MAP['text'],
+                ),
           ),
           const SizedBox(height: 5),
           TextField(
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: COLOR_MAP['text'],
+                ),
             decoration: InputDecoration(
               hintText: hintText,
-              hintStyle: TextStyle(
-                fontSize: 20,
-                color: COLOR_MAP['hint'],
-              ),
+              hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: COLOR_MAP['hint'],
+                  ),
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(10.0),
                 ),
               ),
             ),
+            onChanged: (value) {
+              debugPrint('value : $value');
+              callBack(value);
+            },
           ),
-          errorText != null
+          errorText.isNotEmpty
               ? CustomErrorWidget(errorText: errorText.toString())
               : Container(),
         ],

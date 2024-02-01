@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseModel {
+class DatabaseService {
   static Future<Database> initDb() async {
     try {
       var databaseRootPath = await getDatabasesPath();

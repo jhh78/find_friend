@@ -6,6 +6,9 @@ const String REGISTER_TITLE = '基本情報登録';
 // 졸업한 학교명 타이틀
 const String REGISTER_GRADUATED_SCHOOL_ADD_TITLE = '卒業した学校の追加';
 
+// 선택한 학교 데이터가 존재하지 않음
+const String SCHOOL_SEARCH_ERROR = '学校データがありません';
+
 // 닉네임 타이틀
 const String REGISTER_NICKNAME_TITLE = 'ニックネーム';
 // 닉네임 힌트
