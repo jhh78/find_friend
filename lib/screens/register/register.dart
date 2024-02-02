@@ -1,6 +1,7 @@
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/providers/register.dart';
 import 'package:find_friend/screens/root.dart';
+import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/utils/message/common.dart';
@@ -33,7 +34,11 @@ class RegisterScreen extends GetView<RegisterController> {
                 ),
           ),
           trailing: IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
+            icon: const Icon(
+              Icons.delete_forever_outlined,
+              color: Colors.redAccent,
+              size: 30,
+            ),
             onPressed: () {
               controller.seletedSchoolList.remove(school);
             },
@@ -66,17 +71,17 @@ class RegisterScreen extends GetView<RegisterController> {
                       ),
                 ),
               ),
-              body: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Obx(
-                            () => RegisterFormText(
+              body: Obx(
+                () => SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            RegisterFormText(
                               title: REGISTER_NICKNAME_TITLE,
                               hintText: REGISTER_NICKNAME_HINT,
                               errorText: controller.nicknameError.value,
@@ -84,9 +89,7 @@ class RegisterScreen extends GetView<RegisterController> {
                                 controller.setNickname(value);
                               },
                             ),
-                          ),
-                          Obx(
-                            () => RegisterFormText(
+                            RegisterFormText(
                               title: REGISTER_EMAIL_TITLE,
                               hintText: REGISTER_EMAIL_HINT,
                               errorText: controller.emailError.value,
@@ -94,54 +97,61 @@ class RegisterScreen extends GetView<RegisterController> {
                                 controller.setEmail(value);
                               },
                             ),
-                          ),
-                          const SchoolSearchField(),
-                          if (controller.seletedSchoolList.isEmpty)
-                            const Padding(
-                              padding: EdgeInsets.only(left: 15.0),
-                              child: CustomErrorWidget(
-                                  errorText: SCHOOL_SEARCH_ERROR),
-                            ),
-                          Obx(() => _renderSelectedSchoolList(context)),
-                          OutlinedButton(
-                            onPressed: () {
-                              debugPrint('登録ボタンが押されました');
+                            const SchoolSearchField(),
+                            if (!controller.isRegisterFormSchoolValidate.value)
+                              const Padding(
+                                padding: EdgeInsets.only(left: 15.0),
+                                child: CustomErrorWidget(
+                                  errorText: SCHOOL_SEARCH_ERROR,
+                                ),
+                              ),
+                            _renderSelectedSchoolList(context),
+                            OutlinedButton(
+                              onPressed: () {
+                                debugPrint('登録ボタンが押されました');
 
-                              UsersService().createItem().then((value) {
-                                debugPrint('==> $value');
-                                // TODO ::: 분기 처리 하기
-                                if (value['status'] == 200) {
-                                  debugPrint('登録完了 ${value['id']}');
-                                } else {
-                                  debugPrint('登録失敗 $value ${value['data']}');
+                                if (!controller.isValidateSuccess()) {
+                                  return;
                                 }
-                              });
 
-                              // if (!controller.isValidateSuccess()) {
-                              //   return;
-                              // }
+                                UsersService()
+                                    .createItem(controller.nickname.value,
+                                        controller.email.value)
+                                    .then(
+                                  (value) {
+                                    debugPrint('==> $value');
+                                    if (value != null) {
+                                      debugPrint('登録完了');
+                                      SystemService()
+                                          .createItem('auth', value.toString());
+                                    } else {
+                                      debugPrint('登録失敗');
+                                    }
+                                  },
+                                );
 
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => const RootScreen(),
-                              //   ),
-                              // );
-                            },
-                            child: Text(
-                              REGISTER_BUTTON_TEXT,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(
-                                    color: COLOR_MAP['text'],
-                                  ),
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => const RootScreen(),
+                                //   ),
+                                // );
+                              },
+                              child: Text(
+                                REGISTER_BUTTON_TEXT,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .copyWith(
+                                      color: COLOR_MAP['text'],
+                                    ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

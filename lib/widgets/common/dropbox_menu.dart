@@ -15,42 +15,44 @@ class CustomDropBoxMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: COLOR_MAP['text'],
-                ),
-          ),
-          DropdownMenu(
-            width: MediaQuery.of(context).size.width * 0.96,
-            menuHeight: MediaQuery.of(context).size.height / 3,
-            textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: COLOR_MAP['text'],
-                ),
-            menuStyle: const MenuStyle(
-              backgroundColor: MaterialStatePropertyAll<Color>(
-                Colors.black87,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: COLOR_MAP['text'],
               ),
-            ),
-            dropdownMenuEntries: items
-                .map<DropdownMenuEntry<String>>((Map<String, dynamic> json) {
-              return DropdownMenuEntry<String>(
-                value: json['value'],
-                label: json['label'],
-              );
-            }).toList(),
-            onSelected: (value) {
-              callBack(value.toString());
-            },
+        ),
+        DropdownMenu(
+          width: MediaQuery.of(context).size.width * 0.45,
+          menuHeight: MediaQuery.of(context).size.height / 3,
+          trailingIcon: const Icon(
+            Icons.arrow_drop_down,
+            color: Colors.black87,
           ),
-        ],
-      ),
+          textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: COLOR_MAP['text'],
+              ),
+          menuStyle: const MenuStyle(
+            backgroundColor: MaterialStatePropertyAll<Color>(
+              Colors.black87,
+            ),
+          ),
+          dropdownMenuEntries:
+              items.map<DropdownMenuEntry<String>>((Map<String, dynamic> json) {
+            return DropdownMenuEntry<String>(
+              value: json['value'],
+              label: json['label'],
+            );
+          }).toList(),
+          onSelected: (value) {
+            callBack(value.toString());
+          },
+        ),
+      ],
     );
   }
 }

@@ -16,17 +16,14 @@ class SchoolSearchScreen extends GetView<RegisterController> {
 
   Widget _renderSearchResult(BuildContext context) {
     if (controller.searchedSchoolList.isEmpty) {
-      return Center(
-        child: Text(
-          SCHOOL_SEARCH_NO_RESULT_TEXT,
-          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                color: COLOR_MAP['text'],
-              ),
-        ),
-      );
+      return Container();
     }
 
+    debugPrint('検索結果が表示されました ${controller.searchedSchoolList}');
+
     return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: controller.searchedSchoolList.length,
       itemBuilder: (context, index) {
         SchoolsTable school = controller.searchedSchoolList[index];
@@ -51,6 +48,7 @@ class SchoolSearchScreen extends GetView<RegisterController> {
             onTap: () {
               debugPrint('学校が選択されました $school');
               controller.setSeletedSchoolList(school);
+              controller.initSchoolSearchForm();
               Get.back();
             },
           ),
@@ -67,7 +65,7 @@ class SchoolSearchScreen extends GetView<RegisterController> {
         controller.prefectures.toString(),
         controller.keyword.toString());
 
-    controller.setsearchedSchoolList(result);
+    controller.setSearchedSchoolList(result);
   }
 
   @override
@@ -75,123 +73,128 @@ class SchoolSearchScreen extends GetView<RegisterController> {
     return Stack(
       children: [
         const CustomBackGroundImageWidget(type: 'bg1'),
-        Padding(
-          padding: const EdgeInsets.only(top: 15),
-          child: Scaffold(
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-              centerTitle: true,
-              title:
-                  const CustomTextTitleWidget(text: SCHOOL_SEARCH_APPBAR_TITLE),
-              iconTheme: const IconThemeData(
-                color: Colors.black54,
-              ),
+            toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+            centerTitle: true,
+            title:
+                const CustomTextTitleWidget(text: SCHOOL_SEARCH_APPBAR_TITLE),
+            iconTheme: const IconThemeData(
+              color: Colors.black54,
             ),
-            body: Obx(
-              () => Padding(
-                padding: const EdgeInsets.all(8.0),
+          ),
+          body: Obx(
+            () => SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
                 child: Column(
                   children: [
-                    CustomDropBoxMenu(
-                      label: SCHOOL_SEARCH_PREFECTURE_TEXT,
-                      items: REGIONAL_CLASSIFICATION,
-                      callBack: (value) {
-                        debugPrint('都道府県 : $value');
-                        controller.setPrefectures(value);
-                      },
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        CustomDropBoxMenu(
+                          label: SCHOOL_SEARCH_PREFECTURE_TEXT,
+                          items: REGIONAL_CLASSIFICATION,
+                          callBack: (value) {
+                            debugPrint('都道府県 : $value');
+                            controller.setPrefectures(value);
+                          },
+                        ),
+                        CustomDropBoxMenu(
+                          label: SCHOOL_SEARCH_FACILITY_TYPE_TEXT,
+                          items: FACILITY_CLASSIFICATION,
+                          callBack: (value) {
+                            debugPrint('学校区分 : $value');
+                            controller.setFkind(value);
+                          },
+                        ),
+                      ],
                     ),
-                    CustomDropBoxMenu(
-                      label: SCHOOL_SEARCH_FACILITY_TYPE_TEXT,
-                      items: FACILITY_CLASSIFICATION,
-                      callBack: (value) {
-                        debugPrint('学校区分 : $value');
-                        controller.setFkind(value);
-                      },
-                    ),
-                    SizedBox(
-                      height: 100,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            SCHOOL_SEARCH_SCHOOL_NAME_TEXT,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                  color: COLOR_MAP['text'],
-                                ),
-                          ),
-                          TextField(
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                  color: COLOR_MAP['text'],
-                                ),
-                            decoration: InputDecoration(
-                              hintText: SCHOOL_SEARCH_SCHOOL_NAME_HINT_TEXT,
-                              hintStyle: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    color: COLOR_MAP['hint'],
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          SCHOOL_SEARCH_SCHOOL_NAME_TEXT,
+                          style:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    color: COLOR_MAP['text'],
                                   ),
-                              border: const OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(4.0),
-                                ),
+                        ),
+                        TextField(
+                          style:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    color: COLOR_MAP['text'],
+                                  ),
+                          decoration: InputDecoration(
+                            hintText: SCHOOL_SEARCH_SCHOOL_NAME_HINT_TEXT,
+                            hintStyle:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      color: COLOR_MAP['hint'],
+                                    ),
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(4.0),
                               ),
                             ),
-                            onChanged: (value) {
-                              debugPrint('value : $value');
-                              controller.setKeyword(value);
-                            },
                           ),
-                        ],
-                      ),
-                    ),
-                    if (!controller.isSchoolValidateError.value)
-                      const CustomErrorWidget(
-                          errorText: SCHOOL_SEARCH_ERROR_TEXT),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                        backgroundColor: Colors.blue[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          onChanged: (value) {
+                            debugPrint('value : $value');
+                            controller.setKeyword(value);
+                          },
                         ),
-                      ),
-                      onPressed: () {
-                        debugPrint('検索ボタンが押されました');
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        if (!controller.isSchoolSearchFormValidate.value)
+                          const CustomErrorWidget(
+                            errorText: SCHOOL_SEARCH_ERROR_TEXT,
+                          ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            backgroundColor: Colors.blue[400],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            debugPrint('検索ボタンが押されました');
 
-                        if (!controller.checkSchoolSearchValidateSuccess()) {
-                          return;
-                        }
+                            if (!controller
+                                .checkSchoolSearchValidateSuccess()) {
+                              return;
+                            }
 
-                        _searchButtonClick();
-                      },
-                      child: Text(
-                        SCHOOL_SEARCH_SEARCH_BUTTON_TEXT,
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                            _searchButtonClick();
+                          },
+                          child: Text(
+                            SCHOOL_SEARCH_SEARCH_BUTTON_TEXT,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
                                   color: Colors.white,
                                 ),
-                      ),
+                          ),
+                        ),
+                        Obx(
+                          () => _renderSearchResult(context),
+                        ),
+                      ],
                     ),
-                    Expanded(child: _renderSearchResult(context)),
                   ],
                 ),
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }

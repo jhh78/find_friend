@@ -18,19 +18,29 @@ class RegisterController extends GetxController {
   RxString keyword = ''.obs;
   RxList<SchoolsTable> searchedSchoolList = <SchoolsTable>[].obs;
   RxList<SchoolsTable> seletedSchoolList = <SchoolsTable>[].obs;
-  RxBool isSchoolValidateError = true.obs;
+  RxBool isSchoolSearchFormValidate = true.obs;
+  RxBool isRegisterFormSchoolValidate = true.obs;
 
-  void setIsSchoolValidateError(bool value) {
-    isSchoolValidateError.value = value;
+  void setIsisSchoolSearchFormValidate(bool value) {
+    isSchoolSearchFormValidate.value = value;
+  }
+
+  void initSchoolSearchForm() {
+    fKind.value = '';
+    prefectures.value = '';
+    keyword.value = '';
+    searchedSchoolList.clear();
   }
 
   bool checkSchoolSearchValidateSuccess() {
+    debugPrint(
+        'fKind: ${fKind.isEmpty || prefectures.isEmpty || keyword.isEmpty}');
     if (fKind.isEmpty || prefectures.isEmpty || keyword.isEmpty) {
-      setIsSchoolValidateError(false);
+      setIsisSchoolSearchFormValidate(false);
       return false;
     }
 
-    setIsSchoolValidateError(true);
+    setIsisSchoolSearchFormValidate(true);
     return true;
   }
 
@@ -46,8 +56,12 @@ class RegisterController extends GetxController {
     keyword.value = value;
   }
 
-  void setsearchedSchoolList(List<SchoolsTable> value) {
+  void setSearchedSchoolList(List<SchoolsTable>? value) {
     searchedSchoolList(value);
+  }
+
+  void initSearchedSchoolList() {
+    searchedSchoolList.clear();
   }
 
   void setSeletedSchoolList(SchoolsTable value) {
@@ -69,14 +83,17 @@ class RegisterController extends GetxController {
   bool isValidateSuccess() {
     debugPrint('nickname: ${nickname.value}');
     debugPrint('email: ${email.value}');
-    if (nickname.value.isEmpty) {
-      nicknameError(REGISTER_NICKNAME_ERROR);
-    }
 
-    if (email.value.isEmpty) {
-      emailError(REGISTER_EMAIL_ERROR);
-    }
+    nickname.value.isEmpty
+        ? nicknameError(REGISTER_NICKNAME_ERROR)
+        : nicknameError('');
+    email.value.isEmpty ? emailError(REGISTER_EMAIL_ERROR) : emailError('');
+    seletedSchoolList.isEmpty
+        ? isRegisterFormSchoolValidate(false)
+        : isRegisterFormSchoolValidate(true);
 
-    return nickname.value.isNotEmpty && email.value.isNotEmpty;
+    return nickname.value.isNotEmpty &&
+        email.value.isNotEmpty &&
+        seletedSchoolList.isNotEmpty;
   }
 }

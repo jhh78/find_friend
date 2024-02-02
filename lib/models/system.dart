@@ -14,7 +14,7 @@ class SystemTable {
     };
   }
 
-  SystemTable.fromjson(Map<String, dynamic> json) {
+  SystemTable.fromJson(Map<String, dynamic> json) {
     kind = json['kind'];
     data = json['data'];
   }
