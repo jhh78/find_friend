@@ -8,6 +8,7 @@ class UsersTable {
   late String? email;
   late String? created;
   late String? updated;
+  late String? depiction;
 
   UsersTable({
     this.id,
@@ -19,6 +20,7 @@ class UsersTable {
     this.email,
     this.created,
     this.updated,
+    this.depiction,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,6 +34,7 @@ class UsersTable {
       'email': email,
       'created': created,
       'updated': updated,
+      'depiction': depiction,
     };
   }
 
@@ -45,5 +48,6 @@ class UsersTable {
     email = json['email'];
     created = json['created'];
     updated = json['updated'];
+    depiction = json['depiction'];
   }
 }

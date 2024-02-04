@@ -1,4 +1,4 @@
-import 'package:find_friend/utils/colors.dart';
+import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 
 class UserInfoTextArea extends StatelessWidget {
@@ -19,22 +19,18 @@ class UserInfoTextArea extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: COLOR_MAP['text'],
-                    ),
+              CustomTextWidget(
+                text: title,
+                kind: 'inputFieldTitle',
               ),
               const SizedBox(
                 height: 10,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  body,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: COLOR_MAP['text'],
-                      ),
+                child: CustomTextWidget(
+                  text: body,
+                  kind: 'body',
                 ),
               ),
             ],

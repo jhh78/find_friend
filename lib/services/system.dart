@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:find_friend/models/system.dart';
 import 'package:find_friend/services/database.dart';
 import 'package:flutter/foundation.dart';
@@ -32,13 +34,13 @@ class SystemService {
         'system',
         {
           'kind': kind,
-          'data': data.toString(),
+          'data': jsonEncode(data),
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
       debugPrint('createItem: $res');
     } catch (error) {
-      debugPrint(error.toString());
+      debugPrint('>>>>> $error');
       rethrow;
     }
   }

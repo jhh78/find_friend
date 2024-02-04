@@ -6,12 +6,16 @@ import 'package:get/get.dart';
 class RegisterController extends GetxController {
   static RegisterController get to => Get.find();
 
+  RxBool isProcessing = false.obs;
+
   RxString nickname = ''.obs;
   RxString email = ''.obs;
+  RxString aboutMe = ''.obs;
   RxList<Map<String, dynamic>> schoolInfo = <Map<String, dynamic>>[].obs;
 
   RxString nicknameError = ''.obs;
   RxString emailError = ''.obs;
+  RxString aboutMeError = ''.obs;
 
   RxString fKind = ''.obs;
   RxString prefectures = ''.obs;
@@ -20,6 +24,14 @@ class RegisterController extends GetxController {
   RxList<SchoolsTable> seletedSchoolList = <SchoolsTable>[].obs;
   RxBool isSchoolSearchFormValidate = true.obs;
   RxBool isRegisterFormSchoolValidate = true.obs;
+
+  void setAboutMe(String value) {
+    aboutMe.value = value;
+  }
+
+  void setIsProcessing(bool value) {
+    isProcessing.value = value;
+  }
 
   void setIsisSchoolSearchFormValidate(bool value) {
     isSchoolSearchFormValidate.value = value;
@@ -88,6 +100,11 @@ class RegisterController extends GetxController {
         ? nicknameError(REGISTER_NICKNAME_ERROR)
         : nicknameError('');
     email.value.isEmpty ? emailError(REGISTER_EMAIL_ERROR) : emailError('');
+
+    aboutMe.value.isEmpty
+        ? aboutMeError(REGISTER_ABOUT_ME_ERROR)
+        : aboutMeError('');
+
     seletedSchoolList.isEmpty
         ? isRegisterFormSchoolValidate(false)
         : isRegisterFormSchoolValidate(true);

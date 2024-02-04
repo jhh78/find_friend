@@ -1,32 +1,34 @@
 import 'dart:convert';
 
-import 'package:find_friend/models/system.dart';
-import 'package:find_friend/services/system.dart';
+import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/utils/constants.dart';
-import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 class UsersService {
-  Future<RecordModel?> createItem(String nickname, String email) async {
+  Future createItem(String nickname, String email, List<SchoolsTable> obj,
+      String depiction) async {
     try {
       var pb = PocketBase(REMOTE_DB_URL);
 
-      // example create body
+      List<Map<String, dynamic>> jsonString = [];
+
+      for (var item in obj) {
+        jsonString.add(item.toMap());
+      }
+
       final body = <String, dynamic>{
-        "username": nickname,
+        "nickname": nickname,
         "email": email,
-        "exp": 999,
-        "password": "jskfjfiwojfiwjfojeojfwe",
-        "passwordConfirm": "jskfjfiwojfiwjfojeojfwe"
+        "exp": 0,
+        "point": 10,
+        "depiction": depiction,
+        "schools": jsonEncode(jsonString),
       };
 
       final record = await pb.collection('users').create(body: body);
-      debugPrint(record.id);
-
-      return record;
+      return record.id;
     } catch (error) {
-      debugPrint(error.toString());
-      return null;
+      rethrow;
     }
   }
 }

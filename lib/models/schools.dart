@@ -31,9 +31,9 @@ class SchoolsTable {
 
   SchoolsTable.fromJson(Map<String, dynamic> json) {
     uuid = json['uuid'];
-    sKind = json['sKind'];
+    sKind = json['s_kind'];
     prefectures = json['prefectures'];
-    fKind = json['fKind'];
+    fKind = json['f_kind'];
     zipcode = json['zipcode'];
     address = json['address'];
     name = json['name'];

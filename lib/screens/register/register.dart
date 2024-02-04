@@ -3,12 +3,14 @@ import 'package:find_friend/providers/register.dart';
 import 'package:find_friend/screens/root.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
-import 'package:find_friend/utils/colors.dart';
+import 'package:find_friend/utils/exceptions/client_exception.dart';
 import 'package:find_friend/utils/message/common.dart';
 import 'package:find_friend/utils/message/register.dart';
 import 'package:find_friend/widgets/common/backgroud_image.dart';
 import 'package:find_friend/widgets/common/error.dart';
-import 'package:find_friend/widgets/register/form_text_field.dart';
+import 'package:find_friend/widgets/common/text.dart';
+import 'package:find_friend/widgets/common/textarea.dart';
+import 'package:find_friend/widgets/common/textfield.dart';
 import 'package:find_friend/widgets/register/school_search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,11 +29,9 @@ class RegisterScreen extends GetView<RegisterController> {
       children: controller.seletedSchoolList.map((SchoolsTable school) {
         debugPrint('学校名: ${school.name}');
         return ListTile(
-          title: Text(
-            school.name.toString(),
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: COLOR_MAP['text'],
-                ),
+          title: CustomTextWidget(
+            text: school.name.toString(),
+            kind: 'titleMedium',
           ),
           trailing: IconButton(
             icon: const Icon(
@@ -45,6 +45,47 @@ class RegisterScreen extends GetView<RegisterController> {
           ),
         );
       }).toList(),
+    );
+  }
+
+  Widget _renderRegisterButton(BuildContext context) {
+    if (controller.isProcessing.value) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    return OutlinedButton(
+      onPressed: () async {
+        debugPrint('登録ボタンが押されました');
+
+        if (!controller.isValidateSuccess()) {
+          return;
+        }
+
+        try {
+          String result = await UsersService().createItem(
+            controller.nickname.value,
+            controller.email.value,
+            controller.seletedSchoolList,
+            controller.aboutMe.value,
+          );
+          await SystemService().createItem('key', result);
+          Get.to(const RootScreen());
+        } catch (error) {
+          Get.snackbar(
+            '登録失敗',
+            ClientExceptionController.getErrorMessage(error),
+            colorText: Colors.white,
+            backgroundColor: Colors.black,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      },
+      child: const CustomTextWidget(
+        text: REGISTER_BUTTON_TEXT,
+        kind: 'inputFieldTitle',
+      ),
     );
   }
 
@@ -64,11 +105,9 @@ class RegisterScreen extends GetView<RegisterController> {
                 automaticallyImplyLeading: false,
                 centerTitle: true,
                 toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-                title: Text(
-                  REGISTER_TITLE,
-                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: COLOR_MAP['text'],
-                      ),
+                title: const CustomTextWidget(
+                  text: REGISTER_TITLE,
+                  kind: 'headTitle',
                 ),
               ),
               body: Obx(
@@ -81,21 +120,22 @@ class RegisterScreen extends GetView<RegisterController> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            RegisterFormText(
+                            CustomTextFieldWidget(
                               title: REGISTER_NICKNAME_TITLE,
                               hintText: REGISTER_NICKNAME_HINT,
                               errorText: controller.nicknameError.value,
-                              callBack: (value) {
-                                controller.setNickname(value);
-                              },
+                              callBack: controller.setNickname,
                             ),
-                            RegisterFormText(
+                            CustomTextFieldWidget(
                               title: REGISTER_EMAIL_TITLE,
                               hintText: REGISTER_EMAIL_HINT,
                               errorText: controller.emailError.value,
-                              callBack: (value) {
-                                controller.setEmail(value);
-                              },
+                              callBack: controller.setEmail,
+                            ),
+                            CustomTextAreaWidget(
+                              title: REGISTER_ABOUT_ME_TITLE,
+                              errorText: controller.aboutMeError.value,
+                              onChanged: controller.setAboutMe,
                             ),
                             const SchoolSearchField(),
                             if (!controller.isRegisterFormSchoolValidate.value)
@@ -106,47 +146,7 @@ class RegisterScreen extends GetView<RegisterController> {
                                 ),
                               ),
                             _renderSelectedSchoolList(context),
-                            OutlinedButton(
-                              onPressed: () {
-                                debugPrint('登録ボタンが押されました');
-
-                                if (!controller.isValidateSuccess()) {
-                                  return;
-                                }
-
-                                UsersService()
-                                    .createItem(controller.nickname.value,
-                                        controller.email.value)
-                                    .then(
-                                  (value) {
-                                    debugPrint('==> $value');
-                                    if (value != null) {
-                                      debugPrint('登録完了');
-                                      SystemService()
-                                          .createItem('auth', value.toString());
-                                    } else {
-                                      debugPrint('登録失敗');
-                                    }
-                                  },
-                                );
-
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => const RootScreen(),
-                                //   ),
-                                // );
-                              },
-                              child: Text(
-                                REGISTER_BUTTON_TEXT,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
-                                    .copyWith(
-                                      color: COLOR_MAP['text'],
-                                    ),
-                              ),
-                            ),
+                            _renderRegisterButton(context),
                           ],
                         ),
                       ),

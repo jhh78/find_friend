@@ -22,3 +22,10 @@ const String REGISTER_EMAIL_TITLE = 'メールアドレス';
 const String REGISTER_EMAIL_HINT = 'メールアドレスを入力してください';
 // 이메일 에러 메세지
 const String REGISTER_EMAIL_ERROR = 'メールアドレスは必須です';
+
+// 자기소개 타이틀
+const String REGISTER_ABOUT_ME_TITLE = '自己紹介';
+// 자기소개 힌트
+const String REGISTER_ABOUT_ME_HINT = '自己紹介を入力してください';
+// 자기소개 에러 메세지
+const String REGISTER_ABOUT_ME_ERROR = '自己紹介は必須です';

@@ -1,4 +1,5 @@
 import 'package:find_friend/utils/colors.dart';
+import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 
 class CustomDropBoxMenu extends StatelessWidget {
@@ -20,11 +21,9 @@ class CustomDropBoxMenu extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: COLOR_MAP['text'],
-              ),
+        CustomTextWidget(
+          text: label,
+          kind: 'inputFieldTitle',
         ),
         DropdownMenu(
           width: MediaQuery.of(context).size.width * 0.45,

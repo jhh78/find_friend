@@ -1,3 +1,4 @@
+import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 
 class CustomErrorWidget extends StatelessWidget {
@@ -10,11 +11,9 @@ class CustomErrorWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(
-          errorText,
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Colors.red,
-              ),
+        CustomTextWidget(
+          text: errorText,
+          kind: 'error',
         ),
       ],
     );

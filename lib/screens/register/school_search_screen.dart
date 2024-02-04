@@ -7,7 +7,7 @@ import 'package:find_friend/utils/message/school_search.dart';
 import 'package:find_friend/widgets/common/backgroud_image.dart';
 import 'package:find_friend/widgets/common/dropbox_menu.dart';
 import 'package:find_friend/widgets/common/error.dart';
-import 'package:find_friend/widgets/common/text_title.dart';
+import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,47 +19,48 @@ class SchoolSearchScreen extends GetView<RegisterController> {
       return Container();
     }
 
-    debugPrint('検索結果が表示されました ${controller.searchedSchoolList}');
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: ListView.builder(
+        // shrinkWrap: true,
+        // physics: const NeverScrollableScrollPhysics(),
+        itemCount: controller.searchedSchoolList.length,
+        itemBuilder: (context, index) {
+          SchoolsTable school = controller.searchedSchoolList[index];
+          debugPrint(school.name);
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: controller.searchedSchoolList.length,
-      itemBuilder: (context, index) {
-        SchoolsTable school = controller.searchedSchoolList[index];
-        debugPrint(school.name);
-
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(2),
-            border: Border.all(color: Colors.grey),
-          ),
-          margin: const EdgeInsets.symmetric(
-            vertical: 5,
-          ),
-          child: ListTile(
-            leading: const Icon(Icons.school_outlined, color: Colors.black87),
-            title: Text(school.name ?? '',
-                style: const TextStyle(fontSize: 16, color: Colors.black87)),
-            splashColor: Colors.indigo[200],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              border: Border.all(color: Colors.grey),
             ),
-            onTap: () {
-              debugPrint('学校が選択されました $school');
-              controller.setSeletedSchoolList(school);
-              controller.initSchoolSearchForm();
-              Get.back();
-            },
-          ),
-        );
-      },
+            margin: const EdgeInsets.symmetric(
+              vertical: 5,
+            ),
+            child: ListTile(
+              leading: const Icon(Icons.school_outlined, color: Colors.black87),
+              title: CustomTextWidget(
+                text: school.name ?? '',
+                kind: 'inputFieldTitle',
+              ),
+              splashColor: Colors.indigo[200],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              onTap: () {
+                debugPrint('学校が選択されました $school');
+                controller.setSeletedSchoolList(school);
+                controller.initSchoolSearchForm();
+                Get.back();
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 
   void _searchButtonClick() async {
-    debugPrint('検索ボタンが押されました');
-
     List<SchoolsTable> result = await SchoolsService().getSchoolList(
         controller.fKind.toString(),
         controller.prefectures.toString(),
@@ -79,8 +80,10 @@ class SchoolSearchScreen extends GetView<RegisterController> {
             backgroundColor: Colors.transparent,
             toolbarHeight: MediaQuery.of(context).size.height * 0.1,
             centerTitle: true,
-            title:
-                const CustomTextTitleWidget(text: SCHOOL_SEARCH_APPBAR_TITLE),
+            title: const CustomTextWidget(
+              text: SCHOOL_SEARCH_APPBAR_TITLE,
+              kind: 'headTitle',
+            ),
             iconTheme: const IconThemeData(
               color: Colors.black54,
             ),
@@ -116,12 +119,9 @@ class SchoolSearchScreen extends GetView<RegisterController> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          SCHOOL_SEARCH_SCHOOL_NAME_TEXT,
-                          style:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(
-                                    color: COLOR_MAP['text'],
-                                  ),
+                        const CustomTextWidget(
+                          text: SCHOOL_SEARCH_SCHOOL_NAME_TEXT,
+                          kind: 'inputFieldTitle',
                         ),
                         TextField(
                           style:
@@ -174,14 +174,9 @@ class SchoolSearchScreen extends GetView<RegisterController> {
 
                             _searchButtonClick();
                           },
-                          child: Text(
-                            SCHOOL_SEARCH_SEARCH_BUTTON_TEXT,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                  color: Colors.white,
-                                ),
+                          child: const CustomTextWidget(
+                            text: SCHOOL_SEARCH_SEARCH_BUTTON_TEXT,
+                            kind: 'inputFieldTitle',
                           ),
                         ),
                         Obx(

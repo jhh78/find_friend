@@ -1,3 +1,4 @@
+import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 
 class SupportButton extends StatelessWidget {
@@ -20,11 +21,8 @@ class SupportButton extends StatelessWidget {
           ),
         ),
       ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.black,
-        ),
+      child: CustomTextWidget(
+        text: text,
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:find_friend/screens/thread/thread_detail.dart';
-import 'package:find_friend/widgets/common/text_title.dart';
+import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 
 class ThreadScreen extends StatelessWidget {
@@ -12,8 +12,9 @@ class ThreadScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-        title: const CustomTextTitleWidget(
+        title: const CustomTextWidget(
           text: 'スレット一覧',
+          kind: 'headTitle',
         ),
         centerTitle: true,
         actions: [
