@@ -1,4 +1,4 @@
-import 'package:find_friend/screens/thread/thread_detail.dart';
+import 'package:find_friend/screens/thread/threadDetail.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 

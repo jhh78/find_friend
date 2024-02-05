@@ -6,12 +6,14 @@ class CustomTextAreaWidget extends StatelessWidget {
   final String title;
   final Function(String) onChanged;
   final String errorText;
+  final TextEditingController? controller;
 
   const CustomTextAreaWidget({
     super.key,
     required this.title,
     required this.onChanged,
     required this.errorText,
+    this.controller,
   });
 
   InputDecoration _getInputDecoration(BuildContext context) {
@@ -68,6 +70,7 @@ class CustomTextAreaWidget extends StatelessWidget {
             kind: 'inputFieldTitle',
           ),
           TextField(
+            controller: controller,
             onChanged: onChanged,
             maxLines: null,
             minLines: 5,

@@ -1,18 +1,18 @@
-import 'package:find_friend/providers/register.dart';
+import 'package:find_friend/providers/userDefualtInfo.dart';
 import 'package:find_friend/utils/message/register.dart';
-import 'package:find_friend/screens/register/school_search_screen.dart';
+import 'package:find_friend/screens/register/schoolSearch.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SchoolSearchField extends GetView<RegisterController> {
-  const SchoolSearchField({
-    super.key,
-  });
+class SchoolSearchField extends StatelessWidget {
+  final UserDefaultInfoController controller =
+      Get.put(UserDefaultInfoController());
+
+  SchoolSearchField({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(RegisterController());
     return Obx(
       () => controller.isProcessing.value
           ? Container()
@@ -37,7 +37,7 @@ class SchoolSearchField extends GetView<RegisterController> {
                         : () {
                             debugPrint('検索ボタンが押されました');
                             Get.dialog(
-                              const SchoolSearchScreen(),
+                              SchoolSearchScreen(),
                               barrierDismissible: false,
                             );
                           },

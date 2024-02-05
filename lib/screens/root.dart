@@ -1,16 +1,18 @@
-import 'package:find_friend/providers/app_data.dart';
+import 'package:find_friend/providers/appData.dart';
 import 'package:find_friend/screens/notice/notice.dart';
 import 'package:find_friend/screens/support/support.dart';
 import 'package:find_friend/screens/thread/thread.dart';
-import 'package:find_friend/screens/userInfo/user_info.dart';
+import 'package:find_friend/screens/userInfo/userInfo.dart';
 import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/utils/message/common.dart';
-import 'package:find_friend/widgets/common/backgroud_image.dart';
+import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class RootScreen extends GetView<AppDataController> {
-  const RootScreen({super.key});
+class RootScreen extends StatelessWidget {
+  RootScreen({super.key});
+
+  final AppDataController controller = Get.put(AppDataController());
 
   @override
   Widget build(BuildContext context) {

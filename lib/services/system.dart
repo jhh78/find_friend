@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:find_friend/models/system.dart';
 import 'package:find_friend/services/database.dart';
 import 'package:flutter/foundation.dart';
@@ -27,14 +25,14 @@ class SystemService {
     }
   }
 
-  Future createItem(String kind, Object data) async {
+  Future createItem(String kind, String uuid) async {
     try {
       var db = await DatabaseService.initDb();
       var res = await db.insert(
         'system',
         {
           'kind': kind,
-          'data': jsonEncode(data),
+          'data': uuid,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );

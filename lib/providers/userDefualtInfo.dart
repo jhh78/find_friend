@@ -1,10 +1,14 @@
 import 'package:find_friend/models/schools.dart';
+import 'package:find_friend/models/system.dart';
+import 'package:find_friend/services/system.dart';
+import 'package:find_friend/utils/constants.dart';
 import 'package:find_friend/utils/message/register.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pocketbase/pocketbase.dart';
 
-class RegisterController extends GetxController {
-  static RegisterController get to => Get.find();
+class UserDefaultInfoController extends GetxController {
+  static UserDefaultInfoController get to => Get.find();
 
   RxBool isProcessing = false.obs;
 
@@ -12,6 +16,8 @@ class RegisterController extends GetxController {
   RxString email = ''.obs;
   RxString aboutMe = ''.obs;
   RxList<Map<String, dynamic>> schoolInfo = <Map<String, dynamic>>[].obs;
+  RxInt exp = 0.obs;
+  RxInt point = 0.obs;
 
   RxString nicknameError = ''.obs;
   RxString emailError = ''.obs;
@@ -99,6 +105,7 @@ class RegisterController extends GetxController {
     nickname.value.isEmpty
         ? nicknameError(REGISTER_NICKNAME_ERROR)
         : nicknameError('');
+
     email.value.isEmpty ? emailError(REGISTER_EMAIL_ERROR) : emailError('');
 
     aboutMe.value.isEmpty
@@ -111,6 +118,32 @@ class RegisterController extends GetxController {
 
     return nickname.value.isNotEmpty &&
         email.value.isNotEmpty &&
+        aboutMe.value.isNotEmpty &&
         seletedSchoolList.isNotEmpty;
+  }
+
+  void getUserInfoData() async {
+    try {
+      final List<SystemTable> system = await SystemService().getItem('key');
+
+      final pb = PocketBase(REMOTE_DB_URL);
+      final RecordModel record = await pb.collection('users').getOne(
+            system[0].data.toString(),
+          );
+
+      debugPrint('record: ${record.data['schools']}');
+
+      email.value = record.data['email'];
+      aboutMe.value = record.data['depiction'];
+      nickname.value = record.data['nickname'];
+      exp.value = record.data['exp'];
+      point.value = record.data['point'];
+
+      for (final Map<String, dynamic> school in record.data['schools']) {
+        seletedSchoolList.add(SchoolsTable.fromJson(school));
+      }
+    } catch (error) {
+      debugPrint('getUserInfoData: $error');
+    }
   }
 }

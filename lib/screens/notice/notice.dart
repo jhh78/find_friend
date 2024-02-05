@@ -1,4 +1,4 @@
-import 'package:find_friend/screens/notice/notice_detail.dart';
+import 'package:find_friend/screens/notice/noticeDetail.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 

@@ -1,14 +1,13 @@
-import 'package:find_friend/providers/register.dart';
 import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class CustomTextFieldWidget extends GetView<RegisterController> {
+class CustomTextFieldWidget extends StatelessWidget {
   final String title;
   final String hintText;
   final String errorText;
   final Function(String) callBack;
+  final bool readOnly;
 
   const CustomTextFieldWidget({
     super.key,
@@ -16,6 +15,7 @@ class CustomTextFieldWidget extends GetView<RegisterController> {
     required this.hintText,
     required this.callBack,
     required this.errorText,
+    this.readOnly = false,
   });
 
   InputDecoration _getInputDecoration(BuildContext context) {
@@ -55,7 +55,6 @@ class CustomTextFieldWidget extends GetView<RegisterController> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(RegisterController());
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -66,7 +65,7 @@ class CustomTextFieldWidget extends GetView<RegisterController> {
             kind: 'inputFieldTitle',
           ),
           TextField(
-            readOnly: controller.isProcessing.value,
+            readOnly: readOnly,
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   color: COLOR_MAP['text'],
                 ),

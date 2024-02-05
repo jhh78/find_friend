@@ -1,18 +1,21 @@
 import 'package:find_friend/models/schools.dart';
-import 'package:find_friend/providers/register.dart';
+import 'package:find_friend/providers/userDefualtInfo.dart';
 import 'package:find_friend/services/schools.dart';
 import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/utils/constants.dart';
-import 'package:find_friend/utils/message/school_search.dart';
-import 'package:find_friend/widgets/common/backgroud_image.dart';
-import 'package:find_friend/widgets/common/dropbox_menu.dart';
+import 'package:find_friend/utils/message/schoolSearch.dart';
+import 'package:find_friend/widgets/common/backgroudImage.dart';
+import 'package:find_friend/widgets/common/dropboxMenu.dart';
 import 'package:find_friend/widgets/common/error.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SchoolSearchScreen extends GetView<RegisterController> {
-  const SchoolSearchScreen({super.key});
+class SchoolSearchScreen extends StatelessWidget {
+  SchoolSearchScreen({super.key});
+
+  final UserDefaultInfoController controller =
+      Get.put(UserDefaultInfoController());
 
   Widget _renderSearchResult(BuildContext context) {
     if (controller.searchedSchoolList.isEmpty) {
@@ -100,18 +103,12 @@ class SchoolSearchScreen extends GetView<RegisterController> {
                         CustomDropBoxMenu(
                           label: SCHOOL_SEARCH_PREFECTURE_TEXT,
                           items: REGIONAL_CLASSIFICATION,
-                          callBack: (value) {
-                            debugPrint('都道府県 : $value');
-                            controller.setPrefectures(value);
-                          },
+                          callBack: controller.setPrefectures,
                         ),
                         CustomDropBoxMenu(
                           label: SCHOOL_SEARCH_FACILITY_TYPE_TEXT,
                           items: FACILITY_CLASSIFICATION,
-                          callBack: (value) {
-                            debugPrint('学校区分 : $value');
-                            controller.setFkind(value);
-                          },
+                          callBack: controller.setFkind,
                         ),
                       ],
                     ),
@@ -140,10 +137,7 @@ class SchoolSearchScreen extends GetView<RegisterController> {
                               ),
                             ),
                           ),
-                          onChanged: (value) {
-                            debugPrint('value : $value');
-                            controller.setKeyword(value);
-                          },
+                          onChanged: controller.setKeyword,
                         ),
                       ],
                     ),

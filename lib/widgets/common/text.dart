@@ -15,7 +15,7 @@ class CustomTextWidget extends StatelessWidget {
               color: COLOR_MAP['text'],
             ),
       );
-    } else if (kind == 'inputFieldTitle') {
+    } else if (kind == 'inputFieldTitle' || kind == 'label') {
       return Text(
         text,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(

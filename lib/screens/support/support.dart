@@ -1,6 +1,6 @@
-import 'package:find_friend/utils/google_ad.dart';
+import 'package:find_friend/utils/googleAd.dart';
 import 'package:find_friend/widgets/common/text.dart';
-import 'package:find_friend/widgets/support/support_button.dart';
+import 'package:find_friend/widgets/support/supportButton.dart';
 import 'package:flutter/material.dart';
 
 class SupportScreen extends StatelessWidget {
