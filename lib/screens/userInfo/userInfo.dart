@@ -1,10 +1,10 @@
-import 'package:find_friend/providers/userDefualtInfo.dart';
-import 'package:find_friend/screens/register/schoolSearch.dart';
+import 'package:find_friend/models/schools.dart';
+import 'package:find_friend/screens/schoolSearch/schoolSearch.dart';
 import 'package:find_friend/utils/message/register.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/common/textArea.dart';
-import 'package:find_friend/widgets/register/selectedSchoolList.dart';
-import 'package:find_friend/widgets/userinfo/textArea.dart';
+import 'package:find_friend/widgets/schools/selectedSchoolList.dart';
+import 'package:find_friend/widgets/userinfo/textItemDisplayArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -17,18 +17,23 @@ class UserInfo extends StatefulWidget {
 }
 
 class UserInfoScreen extends State<UserInfo> {
-  final UserDefaultInfoController defaultUserController =
-      Get.put(UserDefaultInfoController());
-
   @override
   void initState() {
     super.initState();
-    defaultUserController.getUserInfoData();
   }
+
+  final String _nickName = '';
+  final String _email = '';
+  final int _exp = 0;
+  final int _point = 0;
+
+  final List<SchoolsTable> _selectedSchoolList = [];
+  final TextEditingController _aboutMeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     var f = NumberFormat("###,###", "en_US");
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -44,13 +49,13 @@ class UserInfoScreen extends State<UserInfo> {
         child: Obx(
           () => Column(
             children: [
-              UserInfoTextArea(
+              UserInfoTextItemDisplayArea(
                 title: 'ニックネーム',
-                body: defaultUserController.nickname.value,
+                body: _nickName,
               ),
-              UserInfoTextArea(
+              UserInfoTextItemDisplayArea(
                 title: 'Email',
-                body: defaultUserController.email.value,
+                body: _email,
               ),
               Padding(
                 padding: const EdgeInsets.all(15.0),
@@ -73,34 +78,31 @@ class UserInfoScreen extends State<UserInfo> {
                             color: Colors.blueAccent,
                           ),
                           onPressed: () {
-                            Get.to(() => SchoolSearchScreen());
+                            // Get.to(() => SchoolSearch());
                           },
                         )
                       ],
                     ),
                     SelectedSchoolListWidget(
-                      list: defaultUserController.seletedSchoolList,
+                      list: _selectedSchoolList,
                     ),
                   ],
                 ),
               ),
-              UserInfoTextArea(
+              UserInfoTextItemDisplayArea(
                 title: 'exp',
-                body: f.format(defaultUserController.exp.value),
+                body: f.format(_exp),
               ),
-              UserInfoTextArea(
+              UserInfoTextItemDisplayArea(
                 title: 'ポイント',
-                body: f.format(defaultUserController.point.value),
+                body: f.format(_point),
               ),
               CustomTextAreaWidget(
+                controller: _aboutMeController,
                 title: REGISTER_ABOUT_ME_TITLE,
-                errorText: defaultUserController.aboutMe.value.isEmpty
+                errorText: _aboutMeController.text.isEmpty
                     ? REGISTER_ABOUT_ME_ERROR
                     : '',
-                controller: TextEditingController(
-                  text: defaultUserController.aboutMe.value,
-                ),
-                onChanged: defaultUserController.setAboutMe,
               )
             ],
           ),

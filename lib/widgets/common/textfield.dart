@@ -1,29 +1,29 @@
-import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextFieldWidget extends StatelessWidget {
   final String title;
   final String hintText;
-  final String errorText;
-  final Function(String) callBack;
+  final String? errorText;
   final bool readOnly;
+  final TextEditingController? controller;
 
   const CustomTextFieldWidget({
     super.key,
     required this.title,
     required this.hintText,
-    required this.callBack,
-    required this.errorText,
+    this.errorText,
     this.readOnly = false,
+    this.controller,
   });
 
   InputDecoration _getInputDecoration(BuildContext context) {
-    if (errorText.isNotEmpty) {
+    debugPrint('Error text $errorText');
+    if (errorText != null) {
       return InputDecoration(
         hintText: hintText,
         hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: COLOR_MAP['hint'],
+              color: Colors.grey,
             ),
         errorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.red),
@@ -43,7 +43,7 @@ class CustomTextFieldWidget extends StatelessWidget {
     return InputDecoration(
       hintText: hintText,
       hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: COLOR_MAP['hint'],
+            color: Colors.grey,
           ),
       border: const OutlineInputBorder(
         borderRadius: BorderRadius.all(
@@ -56,7 +56,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -65,15 +65,12 @@ class CustomTextFieldWidget extends StatelessWidget {
             kind: 'inputFieldTitle',
           ),
           TextField(
+            controller: controller,
             readOnly: readOnly,
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: COLOR_MAP['text'],
+                  color: Colors.black,
                 ),
             decoration: _getInputDecoration(context),
-            onChanged: (value) {
-              debugPrint('value : $value');
-              callBack(value);
-            },
           ),
         ],
       ),

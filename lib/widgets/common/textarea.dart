@@ -1,27 +1,24 @@
-import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextAreaWidget extends StatelessWidget {
   final String title;
-  final Function(String) onChanged;
-  final String errorText;
+  final String? errorText;
   final TextEditingController? controller;
 
   const CustomTextAreaWidget({
     super.key,
     required this.title,
-    required this.onChanged,
     required this.errorText,
     this.controller,
   });
 
   InputDecoration _getInputDecoration(BuildContext context) {
-    if (errorText.isNotEmpty) {
+    if (errorText != null) {
       return InputDecoration(
         hintText: title,
         hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: COLOR_MAP['hint'],
+              color: Colors.grey,
             ),
         errorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.red),
@@ -69,13 +66,12 @@ class CustomTextAreaWidget extends StatelessWidget {
             text: title,
             kind: 'inputFieldTitle',
           ),
-          TextField(
+          TextFormField(
             controller: controller,
-            onChanged: onChanged,
             maxLines: null,
             minLines: 5,
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: COLOR_MAP['text'],
+                  color: Colors.black,
                 ),
             decoration: _getInputDecoration(context),
           ),

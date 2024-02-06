@@ -15,11 +15,16 @@ class IntroScreen extends StatelessWidget {
       onTap: () async {
         List<SystemTable> record = await SystemService().getItem('key');
 
-        debugPrint('record: $record');
         if (record.isNotEmpty) {
-          Get.to(() => RootScreen());
+          Get.offAll(
+            () => RootScreen(),
+            transition: Transition.fadeIn,
+          );
         } else {
-          Get.to(() => RegisterScreen());
+          Get.offAll(
+            () => RegisterScreen(),
+            transition: Transition.rightToLeft,
+          );
         }
       },
       child: const Stack(

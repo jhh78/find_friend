@@ -1,4 +1,3 @@
-import 'package:find_friend/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class ThreadDetailScreen extends StatelessWidget {
@@ -18,9 +17,7 @@ class ThreadDetailScreen extends StatelessWidget {
       body: Center(
         child: Text(
           'Thread Detail Screen',
-          style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                color: COLOR_MAP['text'],
-              ),
+          style: Theme.of(context).textTheme.headlineLarge,
         ),
       ),
     );

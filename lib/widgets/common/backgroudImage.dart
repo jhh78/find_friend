@@ -6,14 +6,7 @@ class CustomBackGroundImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (type == 'bg1') {
-      return Image.asset(
-        'assets/images/bg1.jpg',
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        fit: BoxFit.cover,
-      );
-    } else if (type == 'bg2') {
+    if (type == 'bg') {
       return Image.asset(
         'assets/images/bg2.png',
         fit: BoxFit.cover,

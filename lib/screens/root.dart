@@ -3,7 +3,6 @@ import 'package:find_friend/screens/notice/notice.dart';
 import 'package:find_friend/screens/support/support.dart';
 import 'package:find_friend/screens/thread/thread.dart';
 import 'package:find_friend/screens/userInfo/userInfo.dart';
-import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/utils/message/common.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +11,14 @@ import 'package:get/get.dart';
 class RootScreen extends StatelessWidget {
   RootScreen({super.key});
 
-  final AppDataController controller = Get.put(AppDataController());
+  final AppDataProvider controller = Get.put(AppDataProvider());
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
-        AppDataController.to.initNavigatorPops();
+        AppDataProvider.to.initNavigatorPops();
       },
       child: SafeArea(
         child: Obx(
@@ -33,19 +32,19 @@ class RootScreen extends StatelessWidget {
                   index: controller.navibarCurrentIndex.value,
                   children: [
                     Navigator(
-                      key: AppDataController.to.userInfoNavigatorKey,
+                      key: AppDataProvider.to.userInfoNavigatorKey,
                       onGenerateRoute: (settings) => MaterialPageRoute(
                         builder: (context) => const UserInfo(),
                       ),
                     ),
                     Navigator(
-                      key: AppDataController.to.threadNavigatorKey,
+                      key: AppDataProvider.to.threadNavigatorKey,
                       onGenerateRoute: (settings) => MaterialPageRoute(
                         builder: (context) => const ThreadScreen(),
                       ),
                     ),
                     Navigator(
-                      key: AppDataController.to.noticeNavigatorKey,
+                      key: AppDataProvider.to.noticeNavigatorKey,
                       onGenerateRoute: (settings) => MaterialPageRoute(
                         builder: (context) => const NoticeScreen(),
                       ),
@@ -57,10 +56,9 @@ class RootScreen extends StatelessWidget {
             ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: controller.navibarCurrentIndex.value,
-              selectedItemColor: COLOR_MAP['naviSelected'],
               type: BottomNavigationBarType.fixed,
               onTap: (int index) {
-                AppDataController.to.initNavigatorPops();
+                AppDataProvider.to.initNavigatorPops();
                 controller.changeNaviBarCurrentIndex(index);
               },
               items: const [

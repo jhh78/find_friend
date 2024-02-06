@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AppDataController extends GetxController {
+class AppDataProvider extends GetxController {
   RxInt navibarCurrentIndex = 0.obs;
   final GlobalKey<NavigatorState> noticeNavigatorKey =
       GlobalKey<NavigatorState>();
@@ -10,9 +10,13 @@ class AppDataController extends GetxController {
   final GlobalKey<NavigatorState> userInfoNavigatorKey =
       GlobalKey<NavigatorState>();
 
-  RxList<Map<String, dynamic>> schoolInfo = <Map<String, dynamic>>[].obs;
+  static AppDataProvider get to => Get.find();
 
-  static AppDataController get to => Get.find();
+  RxBool isProcessing = false.obs;
+
+  void setIsProcessing(bool value) {
+    isProcessing(value);
+  }
 
   void changeNaviBarCurrentIndex(int index) {
     navibarCurrentIndex(index);
@@ -22,9 +26,5 @@ class AppDataController extends GetxController {
   void initNavigatorPops() {
     noticeNavigatorKey.currentState?.popUntil((route) => route.isFirst);
     threadNavigatorKey.currentState?.popUntil((route) => route.isFirst);
-  }
-
-  void setSchoolInfo(Map<String, dynamic> info) {
-    schoolInfo.add(info);
   }
 }

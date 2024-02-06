@@ -1,10 +1,10 @@
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 
-class UserInfoTextArea extends StatelessWidget {
+class UserInfoTextItemDisplayArea extends StatelessWidget {
   final String title;
   final String body;
-  const UserInfoTextArea({
+  const UserInfoTextItemDisplayArea({
     super.key,
     required this.title,
     required this.body,

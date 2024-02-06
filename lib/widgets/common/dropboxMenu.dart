@@ -1,17 +1,16 @@
-import 'package:find_friend/utils/colors.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 
 class CustomDropBoxMenu extends StatelessWidget {
   final String label;
   final List<Map<String, dynamic>> items;
-  final Function(String) callBack;
+  final Function(String) onSelected;
 
   const CustomDropBoxMenu({
     super.key,
     required this.label,
     required this.items,
-    required this.callBack,
+    required this.onSelected,
   });
 
   @override
@@ -33,7 +32,7 @@ class CustomDropBoxMenu extends StatelessWidget {
             color: Colors.black87,
           ),
           textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: COLOR_MAP['text'],
+                color: Colors.black87,
               ),
           menuStyle: const MenuStyle(
             backgroundColor: MaterialStatePropertyAll<Color>(
@@ -48,7 +47,7 @@ class CustomDropBoxMenu extends StatelessWidget {
             );
           }).toList(),
           onSelected: (value) {
-            callBack(value.toString());
+            onSelected(value.toString());
           },
         ),
       ],
