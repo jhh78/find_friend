@@ -26,6 +26,7 @@ class UserInfoProvider extends GetxController {
     aboutMe.value = value;
   }
 
+  // TODO: 중복처리하하기
   void setSelectedSchoolList(SchoolsTable value) {
     selectedSchoolList.add(value);
   }

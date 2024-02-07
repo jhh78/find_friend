@@ -1,6 +1,4 @@
-import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/providers/userInfo.dart';
-import 'package:find_friend/screens/schoolSearch/schoolSearch.dart';
 import 'package:find_friend/screens/root.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
@@ -8,14 +6,13 @@ import 'package:find_friend/utils/exceptions/clientException.dart';
 import 'package:find_friend/utils/message/common.dart';
 import 'package:find_friend/utils/message/register.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
-import 'package:find_friend/widgets/common/error.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/common/textArea.dart';
 import 'package:find_friend/widgets/common/textField.dart';
 import 'package:find_friend/widgets/schools/schoolSearchedItems.dart';
-import 'package:find_friend/widgets/schools/selectedSchoolList.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pocketbase/pocketbase.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -58,8 +55,14 @@ class RegisterScreen extends StatelessWidget {
           );
 
           if (provider.validate.isNotEmpty) {
-            return;
+            throw Exception('入力内容に不備があります');
           }
+
+          if (provider.selectedSchoolList.isEmpty) {
+            throw Exception('学校情報がありません');
+          }
+
+          provider.setIsProcessing(true);
 
           String uuid = await _userService.createItem(
             _nickNameController.text,
@@ -68,8 +71,8 @@ class RegisterScreen extends StatelessWidget {
             _aboutMeController.text,
           );
           await _systemService.createItem('key', uuid);
-          Get.to(RootScreen());
-        } catch (error) {
+          Get.to(() => RootScreen());
+        } on ClientException catch (error) {
           Get.snackbar(
             '登録失敗',
             ClientExceptionController.getErrorMessage(error),
@@ -78,6 +81,17 @@ class RegisterScreen extends StatelessWidget {
             snackPosition: SnackPosition.BOTTOM,
             margin: const EdgeInsets.all(10),
           );
+        } catch (error) {
+          Get.snackbar(
+            '登録失敗',
+            error.toString(),
+            colorText: Colors.white,
+            backgroundColor: Colors.black,
+            snackPosition: SnackPosition.BOTTOM,
+            margin: const EdgeInsets.all(10),
+          );
+        } finally {
+          provider.setIsProcessing(false);
         }
       },
       child: const CustomTextWidget(
@@ -107,34 +121,32 @@ class RegisterScreen extends StatelessWidget {
               ),
             ),
             body: SingleChildScrollView(
-              child: Obx(() => Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      CustomTextFieldWidget(
-                        controller: _nickNameController,
-                        title: REGISTER_NICKNAME_TITLE,
-                        hintText: REGISTER_NICKNAME_HINT,
-                        errorText: provider.validate['nickName'],
-                      ),
-                      CustomTextFieldWidget(
-                        controller: _emailController,
-                        title: REGISTER_EMAIL_TITLE,
-                        hintText: REGISTER_EMAIL_HINT,
-                        errorText: provider.validate['email'],
-                      ),
-                      CustomTextAreaWidget(
-                        controller: _aboutMeController,
-                        title: REGISTER_ABOUT_ME_TITLE,
-                        errorText: provider.validate['aboutMe'],
-                      ),
-                      SchoolSearchedItemsWidget(
-                        isProcessing: provider.isProcessing.value,
-                        validate: provider.validate['schools'],
-                        schools: provider.selectedSchoolList,
-                      ),
-                      _renderRegisterButton(context),
-                    ],
-                  )),
+              child: Obx(
+                () => Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    CustomTextFieldWidget(
+                      controller: _nickNameController,
+                      title: REGISTER_NICKNAME_TITLE,
+                      hintText: REGISTER_NICKNAME_HINT,
+                      errorText: provider.validate['nickName'],
+                    ),
+                    CustomTextFieldWidget(
+                      controller: _emailController,
+                      title: REGISTER_EMAIL_TITLE,
+                      hintText: REGISTER_EMAIL_HINT,
+                      errorText: provider.validate['email'],
+                    ),
+                    CustomTextAreaWidget(
+                      controller: _aboutMeController,
+                      title: REGISTER_ABOUT_ME_TITLE,
+                      errorText: provider.validate['aboutMe'],
+                    ),
+                    SchoolSearchedItemsWidget(),
+                    _renderRegisterButton(context),
+                  ],
+                ),
+              ),
             ),
           ),
         ],

@@ -18,7 +18,6 @@ class CustomTextFieldWidget extends StatelessWidget {
   });
 
   InputDecoration _getInputDecoration(BuildContext context) {
-    debugPrint('Error text $errorText');
     if (errorText != null) {
       return InputDecoration(
         hintText: hintText,

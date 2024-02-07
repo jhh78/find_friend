@@ -1,23 +1,12 @@
-import 'package:flutter/foundation.dart';
+import 'package:find_friend/models/schools.dart';
 import 'package:get/get.dart';
 
 class SchoolSearchProvider extends GetxController {
-  RxString prefecture = ''.obs;
-  RxString facility = ''.obs;
-  RxBool isProcessing = false.obs;
+  RxList<SchoolsTable> searchedSchoolList = <SchoolsTable>[].obs;
 
   static SchoolSearchProvider get to => Get.find();
 
-  void setIsProcessing(bool value) {
-    isProcessing(value);
-  }
-
-  void setPrefecture(String value) {
-    debugPrint('setPrefecture: $value');
-    prefecture(value);
-  }
-
-  void setFacility(String value) {
-    facility(value);
+  void setSearchedSchoolList(List<SchoolsTable> value) {
+    searchedSchoolList.value = value;
   }
 }

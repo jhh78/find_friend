@@ -39,7 +39,7 @@ class SchoolSearchScreen extends StatelessWidget {
   }
 
   Widget _renderSearchResult(BuildContext context) {
-    if ([].isEmpty) {
+    if (_schoolSearchProvider.searchedSchoolList.isEmpty) {
       return Container();
     }
 
@@ -48,10 +48,9 @@ class SchoolSearchScreen extends StatelessWidget {
       child: ListView.builder(
         // shrinkWrap: true,
         // physics: const NeverScrollableScrollPhysics(),
-        itemCount: [].length,
+        itemCount: _schoolSearchProvider.searchedSchoolList.length,
         itemBuilder: (context, index) {
-          SchoolsTable school = [][index];
-          debugPrint(school.name);
+          SchoolsTable school = _schoolSearchProvider.searchedSchoolList[index];
 
           return Container(
             decoration: BoxDecoration(
@@ -73,7 +72,8 @@ class SchoolSearchScreen extends StatelessWidget {
               ),
               onTap: () {
                 debugPrint('学校が選択されました $school');
-                // Get.back();
+                _userInfoProvider.setSelectedSchoolList(school);
+                Get.back();
               },
             ),
           );
@@ -87,8 +87,7 @@ class SchoolSearchScreen extends StatelessWidget {
         _region, _facility, _keywordController.text);
 
     debugPrint('検索結果: $result');
-
-    //////
+    _schoolSearchProvider.setSearchedSchoolList(result);
   }
 
   @override
@@ -195,7 +194,7 @@ class SchoolSearchScreen extends StatelessWidget {
                           kind: 'inputFieldTitle',
                         ),
                       ),
-                      _renderSearchResult(context),
+                      Obx(() => _renderSearchResult(context)),
                     ],
                   ),
                 ],
