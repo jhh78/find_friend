@@ -1,9 +1,14 @@
+import 'dart:developer';
+
+import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/screens/thread/threadDetail.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ThreadScreen extends StatelessWidget {
-  const ThreadScreen({super.key});
+  ThreadScreen({super.key});
+  final ThreadProvider threadProvider = Get.put(ThreadProvider());
 
   @override
   Widget build(BuildContext context) {
@@ -19,36 +24,45 @@ class ThreadScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.add),
-            color: Colors.blueAccent,
-          )
+              onPressed: () {
+                log('add thread');
+              },
+              icon: const Icon(Icons.add_circle_outline_rounded),
+              color: Colors.black54,
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.all(Colors.blue[200]),
+                iconSize: MaterialStateProperty.all(40),
+              ))
         ],
       ),
-      body: ListView(
-          children: List.generate(
-        20,
-        (index) => GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ThreadDetailScreen(),
-              ),
-            );
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: 100,
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.grey,
-            ),
-            child: Text('$index'),
-          ),
+      body: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return _renderThreadList(context, index);
+        },
+      ),
+    );
+  }
+
+  GestureDetector _renderThreadList(BuildContext context, int index) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(
+          () => ThreadDetailScreen(),
+          transition: Transition.circularReveal,
+          arguments: {'key': index},
+        );
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 100,
+        margin: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.grey,
         ),
-      )),
+        child: Text('$index'),
+      ),
     );
   }
 }

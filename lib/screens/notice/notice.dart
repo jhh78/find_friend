@@ -1,9 +1,13 @@
+import 'package:find_friend/providers/notice.dart';
 import 'package:find_friend/screens/notice/noticeDetail.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class NoticeScreen extends StatelessWidget {
-  const NoticeScreen({super.key});
+  NoticeScreen({super.key});
+
+  final NoticeProvider noticeProvider = Get.put(NoticeProvider());
 
   @override
   Widget build(BuildContext context) {
@@ -18,31 +22,49 @@ class NoticeScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: ListView(
-        children: List.generate(
-          20,
-          (index) => GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NoticeDetailScreen(),
-                ),
-              );
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 100,
-              margin: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey,
-              ),
-              child: Text('$index'),
-            ),
-          ),
-        ),
+      body: Obx(
+        () => noticeProvider.notices.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : _renderContents(),
       ),
+    );
+  }
+
+  ListView _renderContents() {
+    return ListView.builder(
+      itemCount: noticeProvider.notices.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4.0),
+              side: const BorderSide(
+                color: Colors.black54,
+              ),
+            ),
+            title: CustomTextWidget(
+              text: noticeProvider.notices[index].data['title'],
+              kind: 'listTitle',
+            ),
+            leading: const Icon(
+              Icons.notifications_none,
+              color: Colors.black54,
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.black54,
+            ),
+            onTap: () {
+              Get.to(() => const NoticeDetailScreen(),
+                  transition: Transition.rightToLeft,
+                  arguments: noticeProvider.notices[index]);
+            },
+          ),
+        );
+      },
     );
   }
 }

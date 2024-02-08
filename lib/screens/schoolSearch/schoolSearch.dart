@@ -6,11 +6,11 @@ import 'package:find_friend/utils/constants.dart';
 import 'package:find_friend/utils/message/schoolSearch.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:find_friend/widgets/common/dropboxMenu.dart';
-import 'package:find_friend/widgets/common/error.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class SchoolSearchScreen extends StatelessWidget {
   SchoolSearchScreen({super.key});
 
@@ -24,11 +24,6 @@ class SchoolSearchScreen extends StatelessWidget {
   String _facility = '';
 
   bool _isSchoolSearchFormValidateCheck() {
-    debugPrint('検索フォームのバリデーションチェック');
-    debugPrint('キーワード: ${_keywordController.text}');
-    debugPrint('地域: ${_region}');
-    debugPrint('施設: ${_facility}');
-
     if (_keywordController.text.isEmpty ||
         _region.isEmpty ||
         _facility.isEmpty) {
@@ -71,7 +66,6 @@ class SchoolSearchScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               onTap: () {
-                debugPrint('学校が選択されました $school');
                 _userInfoProvider.setSelectedSchoolList(school);
                 Get.back();
               },
@@ -86,7 +80,6 @@ class SchoolSearchScreen extends StatelessWidget {
     List<SchoolsTable> result = await _schoolService.getSchoolList(
         _region, _facility, _keywordController.text);
 
-    debugPrint('検索結果: $result');
     _schoolSearchProvider.setSearchedSchoolList(result);
   }
 
@@ -166,15 +159,14 @@ class SchoolSearchScreen extends StatelessWidget {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Colors.blue[400],
+                          shadowColor: Colors.transparent,
+                          backgroundColor: Colors.transparent,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(4),
+                            side: const BorderSide(color: Colors.black87),
                           ),
                         ),
                         onPressed: () {
-                          debugPrint('検索ボタンが押されました');
-
                           if (!_isSchoolSearchFormValidateCheck()) {
                             Get.snackbar(
                               'エラー',

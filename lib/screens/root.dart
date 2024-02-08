@@ -1,4 +1,5 @@
 import 'package:find_friend/providers/appData.dart';
+import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/screens/notice/notice.dart';
 import 'package:find_friend/screens/support/support.dart';
 import 'package:find_friend/screens/thread/thread.dart';
@@ -13,69 +14,86 @@ class RootScreen extends StatelessWidget {
 
   final AppDataProvider controller = Get.put(AppDataProvider());
 
+  Widget _renderContentWidget() {
+    if (controller.navibarCurrentIndex.value == 0) {
+      return UserInfoScreen();
+    } else if (controller.navibarCurrentIndex.value == 1) {
+      // 스레드의 경우 항상 최신의 데이터를 가져와야 되므로 리셋을 한다
+      Get.delete<ThreadProvider>();
+      return ThreadScreen();
+    } else if (controller.navibarCurrentIndex.value == 2) {
+      return NoticeScreen();
+    } else if (controller.navibarCurrentIndex.value == 3) {
+      return const SupportScreen();
+    }
+    return const Placeholder();
+  }
+
+  Widget _renderBottomNavigaterIcons(IconData icon, bool isNotice) {
+    if (!isNotice) {
+      return Icon(icon);
+    }
+
+    return Stack(
+      children: <Widget>[
+        Icon(icon),
+        Positioned(
+          right: 0,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            constraints: const BoxConstraints(
+              minWidth: 10,
+              minHeight: 10,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
-        AppDataProvider.to.initNavigatorPops();
-      },
       child: SafeArea(
         child: Obx(
           () => Scaffold(
             body: Stack(
               children: [
                 const CustomBackGroundImageWidget(
-                  type: 'bg2',
+                  type: 'bg',
                 ),
-                IndexedStack(
-                  index: controller.navibarCurrentIndex.value,
-                  children: [
-                    Navigator(
-                      key: AppDataProvider.to.userInfoNavigatorKey,
-                      onGenerateRoute: (settings) => MaterialPageRoute(
-                        builder: (context) => const UserInfo(),
-                      ),
-                    ),
-                    Navigator(
-                      key: AppDataProvider.to.threadNavigatorKey,
-                      onGenerateRoute: (settings) => MaterialPageRoute(
-                        builder: (context) => const ThreadScreen(),
-                      ),
-                    ),
-                    Navigator(
-                      key: AppDataProvider.to.noticeNavigatorKey,
-                      onGenerateRoute: (settings) => MaterialPageRoute(
-                        builder: (context) => const NoticeScreen(),
-                      ),
-                    ),
-                    const SupportScreen(),
-                  ],
-                ),
+                _renderContentWidget(),
               ],
             ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: controller.navibarCurrentIndex.value,
               type: BottomNavigationBarType.fixed,
+              selectedItemColor: Colors.amberAccent,
               onTap: (int index) {
-                AppDataProvider.to.initNavigatorPops();
                 controller.changeNaviBarCurrentIndex(index);
               },
-              items: const [
+              items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.person_outline),
+                  icon:
+                      _renderBottomNavigaterIcons(Icons.person_outline, false),
                   label: HOME_BASIC_INFO_BUTTON_TEXT,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.format_list_bulleted),
+                  icon: _renderBottomNavigaterIcons(
+                      Icons.format_list_bulleted, true),
                   label: THREAD_LIST_BUTTON_TEXT,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.info_outline),
+                  icon: _renderBottomNavigaterIcons(Icons.info_outline, true),
                   label: NOTICE_BUTTON_TEXT,
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.favorite_border),
+                  icon:
+                      _renderBottomNavigaterIcons(Icons.favorite_border, false),
                   label: DEVELOPER_DONATION_BUTTON_TEXT,
                 ),
               ],

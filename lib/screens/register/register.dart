@@ -1,5 +1,5 @@
 import 'package:find_friend/providers/userInfo.dart';
-import 'package:find_friend/screens/root.dart';
+import 'package:find_friend/screens/userInfo/userInfo.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/exceptions/clientException.dart';
@@ -43,10 +43,6 @@ class RegisterScreen extends StatelessWidget {
       ),
       onPressed: () async {
         try {
-          debugPrint('Register button pressed ${_nickNameController.text}');
-          debugPrint('Register button pressed ${_emailController.text}');
-          debugPrint('Register button pressed ${_aboutMeController.text}');
-
           provider.doFormDataValidate(
             _nickNameController.text,
             _emailController.text,
@@ -64,14 +60,18 @@ class RegisterScreen extends StatelessWidget {
 
           provider.setIsProcessing(true);
 
-          String uuid = await _userService.createItem(
+          RecordModel response = await _userService.createItem(
             _nickNameController.text,
             _emailController.text,
             provider.selectedSchoolList,
             _aboutMeController.text,
           );
-          await _systemService.createItem('key', uuid);
-          Get.to(() => RootScreen());
+
+          // 등록된 값으로 초기화
+          provider.initValue(response);
+          await _systemService.createItem('key', response.id);
+
+          Get.to(() => UserInfoScreen());
         } on ClientException catch (error) {
           Get.snackbar(
             '登録失敗',
@@ -136,6 +136,7 @@ class RegisterScreen extends StatelessWidget {
                       title: REGISTER_EMAIL_TITLE,
                       hintText: REGISTER_EMAIL_HINT,
                       errorText: provider.validate['email'],
+                      keyboardType: TextInputType.emailAddress,
                     ),
                     CustomTextAreaWidget(
                       controller: _aboutMeController,

@@ -10,7 +10,6 @@ class SelectedSchoolListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: list.map((SchoolsTable school) {
-        debugPrint('学校名: ${school.name}');
         return ListTile(
           title: CustomTextWidget(
             text: school.name.toString(),

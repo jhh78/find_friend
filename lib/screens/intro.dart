@@ -1,4 +1,3 @@
-import 'package:find_friend/models/system.dart';
 import 'package:find_friend/screens/register/register.dart';
 import 'package:find_friend/screens/root.dart';
 import 'package:find_friend/services/system.dart';
@@ -13,9 +12,9 @@ class IntroScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        List<SystemTable> record = await SystemService().getItem('key');
+        var uuid = await SystemService().getItem('key');
 
-        if (record.isNotEmpty) {
+        if (uuid != null) {
           Get.offAll(
             () => RootScreen(),
             transition: Transition.fadeIn,

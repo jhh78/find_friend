@@ -20,9 +20,9 @@ class SchoolsTable {
   Map<String, dynamic> toMap() {
     return {
       'uuid': uuid,
-      'sKind': sKind,
+      's_kind': sKind,
       'prefectures': prefectures,
-      'fKind': fKind,
+      'f_kind': fKind,
       'zipcode': zipcode,
       'address': address,
       'name': name,

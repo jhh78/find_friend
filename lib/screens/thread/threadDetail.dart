@@ -1,25 +1,37 @@
+import 'package:find_friend/providers/thread.dart';
+import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ThreadDetailScreen extends StatelessWidget {
-  const ThreadDetailScreen({super.key});
+  ThreadDetailScreen({super.key});
+
+  final ThreadProvider threadProvider = Get.put(ThreadProvider());
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
+    return Stack(children: [
+      const CustomBackGroundImageWidget(
+        type: 'bg',
+      ),
+      Scaffold(
         backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: true,
-        iconTheme: const IconThemeData(
-          color: Colors.black54,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: true,
+          iconTheme: const IconThemeData(
+            color: Colors.black54,
+          ),
         ),
-      ),
-      body: Center(
-        child: Text(
-          'Thread Detail Screen',
-          style: Theme.of(context).textTheme.headlineLarge,
+        body: Center(
+          child: Text(
+            'Thread Detail Screen\n ${Get.arguments} \n ${Get.arguments['key']}',
+            style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                  color: Colors.black,
+                ),
+          ),
         ),
-      ),
-    );
+      )
+    ]);
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:find_friend/utils/constants.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -22,11 +21,8 @@ class DatabaseService {
         await File(databasePath).writeAsBytes(bytes);
       }
 
-      debugPrint('databasePath: $databasePath');
-
       return await openDatabase(databasePath);
     } catch (error) {
-      debugPrint(error.toString());
       rethrow;
     }
   }

@@ -1,10 +1,9 @@
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/services/database.dart';
-import 'package:flutter/foundation.dart';
 
 class SchoolsService {
   Future<List<SchoolsTable>> getSchoolList(
-      String fkind, String prefectures, String keyword) async {
+      String prefectures, String fkind, String keyword) async {
     try {
       var db = await DatabaseService.initDb();
       List<SchoolsTable> list = [];
@@ -21,7 +20,6 @@ class SchoolsService {
 
       return list;
     } catch (error) {
-      debugPrint(error.toString());
       return [];
     }
   }

@@ -14,6 +14,13 @@ class CustomTextWidget extends StatelessWidget {
               color: Colors.black,
             ),
       );
+    } else if (kind == 'headTitle2') {
+      return Text(
+        text,
+        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+              color: Colors.black,
+            ),
+      );
     } else if (kind == 'inputFieldTitle' || kind == 'label') {
       return Text(
         text,

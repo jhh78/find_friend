@@ -26,8 +26,11 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
                 kind: 'inputFieldTitle',
               ),
               IconButton(
-                icon: const Icon(Icons.add_box_outlined),
-                color: Colors.blueAccent,
+                icon: const Icon(Icons.add_circle_outline_rounded),
+                color: Colors.black54,
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.blue[200]),
+                ),
                 onPressed: () {
                   Get.to(
                     () => SchoolSearchScreen(),
@@ -41,7 +44,6 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
             () => Column(
               children: userInfoProvider.selectedSchoolList
                   .map((SchoolsTable school) {
-                debugPrint('学校名: ${school.name}');
                 return ListTile(
                   title: CustomTextWidget(
                     text: school.name.toString(),

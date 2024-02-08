@@ -7,6 +7,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final String? errorText;
   final bool readOnly;
   final TextEditingController? controller;
+  final TextInputType? keyboardType;
 
   const CustomTextFieldWidget({
     super.key,
@@ -15,6 +16,7 @@ class CustomTextFieldWidget extends StatelessWidget {
     this.errorText,
     this.readOnly = false,
     this.controller,
+    this.keyboardType,
   });
 
   InputDecoration _getInputDecoration(BuildContext context) {
@@ -64,6 +66,7 @@ class CustomTextFieldWidget extends StatelessWidget {
             kind: 'inputFieldTitle',
           ),
           TextField(
+            keyboardType: keyboardType ?? TextInputType.text,
             controller: controller,
             readOnly: readOnly,
             style: Theme.of(context).textTheme.bodyLarge!.copyWith(

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -30,10 +31,9 @@ class GoogleAdManager {
           ad.show();
         },
         onAdFailedToLoad: (LoadAdError error) {
-          debugPrint('InterstitialAd failed to load: $error');
+          log('InterstitialAd failed to load: $error');
         },
       ),
-    ).catchError(
-        (error) => debugPrint('InterstitialAd failed to load: $error'));
+    ).catchError((error) => log('InterstitialAd failed to load: $error'));
   }
 }

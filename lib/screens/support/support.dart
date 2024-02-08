@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:find_friend/utils/googleAd.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/support/supportButton.dart';
@@ -64,15 +66,12 @@ class SupportScreen extends StatelessWidget {
                       children: [
                         SupportButton(
                           callBack: () {
-                            debugPrint('広告を見る click');
                             GoogleAdManager().loadInterstitialAd();
                           },
                           text: '広告を見る',
                         ),
                         SupportButton(
-                          callBack: () {
-                            debugPrint('100円支援 click');
-                          },
+                          callBack: () {},
                           text: 'ご苦労さま\n 100円支援',
                         ),
                       ],
@@ -85,15 +84,15 @@ class SupportScreen extends StatelessWidget {
                       children: [
                         SupportButton(
                           callBack: () {
-                            debugPrint('500円支援 click');
+                            log('500円支援 click');
                           },
                           text: 'がんばれ！！\n 500円支援',
                         ),
                         SupportButton(
                           callBack: () {
-                            debugPrint('1000円支援 click');
+                            log('1000円支援 click');
                           },
-                          text: '気前がいい\n 1万円支援',
+                          text: '気に入った\n 1万円支援',
                         ),
                       ],
                     )

@@ -20,11 +20,5 @@ class AppDataProvider extends GetxController {
 
   void changeNaviBarCurrentIndex(int index) {
     navibarCurrentIndex(index);
-    debugPrint('navibarCurrentIndex: $navibarCurrentIndex');
-  }
-
-  void initNavigatorPops() {
-    noticeNavigatorKey.currentState?.popUntil((route) => route.isFirst);
-    threadNavigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 }
