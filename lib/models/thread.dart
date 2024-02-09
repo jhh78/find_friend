@@ -1,41 +1,39 @@
 class ThreadTable {
   late String? id;
-  late String? collectionId;
-  late String? collectionName;
   late String? created;
-  late String? updated;
-  late String? title;
+  late String? schoolCode;
   late String? userId;
+  late String? title;
+  late String? depiction;
 
   ThreadTable({
     this.id,
-    this.collectionId,
-    this.collectionName,
     this.created,
-    this.updated,
-    this.title,
+    this.schoolCode,
     this.userId,
+    this.title,
+    this.depiction,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'collectionId': collectionId,
-      'collectionName': collectionName,
       'created': created,
-      'updated': updated,
+      'school_code': schoolCode,
+      'user_id': userId,
       'title': title,
-      'userId': userId,
+      'depiction': depiction,
     };
   }
 
-  ThreadTable.fromjson(Map<String, dynamic> json) {
-    id = json['id'];
-    collectionId = json['collectionId'];
-    collectionName = json['collectionName'];
-    created = json['created'];
-    updated = json['updated'];
-    title = json['title'];
-    userId = json['user_id'];
+  factory ThreadTable.fromJson(Map<String, dynamic> json) {
+    return ThreadTable(
+      id: json['id'],
+      created: json['created'],
+      schoolCode: json['school_code'],
+      userId: json['user_id'],
+      title: json['title'],
+      depiction: json['depiction'],
+    );
   }
 }

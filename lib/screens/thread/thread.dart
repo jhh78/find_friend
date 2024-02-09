@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/screens/thread/threadDetail.dart';
+import 'package:find_friend/screens/thread/threadRegister.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,6 +28,10 @@ class ThreadScreen extends StatelessWidget {
           IconButton(
               onPressed: () {
                 log('add thread');
+                Get.to(
+                  () => ThreadCreateForm(),
+                  transition: Transition.cupertino,
+                );
               },
               icon: const Icon(Icons.add_circle_outline_rounded),
               color: Colors.black54,
@@ -35,33 +41,44 @@ class ThreadScreen extends StatelessWidget {
               ))
         ],
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return _renderThreadList(context, index);
-        },
+      body: Obx(
+        () => ListView.builder(
+          itemCount: threadProvider.threadList.length,
+          itemBuilder: (context, index) {
+            return _renderThreadList(threadProvider.threadList[index]);
+          },
+        ),
       ),
     );
   }
 
-  GestureDetector _renderThreadList(BuildContext context, int index) {
+  GestureDetector _renderThreadList(ThreadTable thread) {
     return GestureDetector(
       onTap: () {
         Get.to(
           () => ThreadDetailScreen(),
           transition: Transition.circularReveal,
-          arguments: {'key': index},
+          arguments: thread,
         );
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 100,
-        margin: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.grey,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+        child: ListTile(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+            side: const BorderSide(
+              color: Colors.black54,
+            ),
+          ),
+          title: CustomTextWidget(
+            text: thread.title.toString(),
+            kind: 'listTitle',
+          ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.black54,
+          ),
         ),
-        child: Text('$index'),
       ),
     );
   }

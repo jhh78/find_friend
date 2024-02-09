@@ -2,10 +2,10 @@ import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/screens/userInfo/userInfo.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
-import 'package:find_friend/utils/exceptions/clientException.dart';
 import 'package:find_friend/utils/message/common.dart';
 import 'package:find_friend/utils/message/register.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
+import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/common/textArea.dart';
 import 'package:find_friend/widgets/common/textField.dart';
@@ -73,23 +73,9 @@ class RegisterScreen extends StatelessWidget {
 
           Get.to(() => UserInfoScreen());
         } on ClientException catch (error) {
-          Get.snackbar(
-            '登録失敗',
-            ClientExceptionController.getErrorMessage(error),
-            colorText: Colors.white,
-            backgroundColor: Colors.black,
-            snackPosition: SnackPosition.BOTTOM,
-            margin: const EdgeInsets.all(10),
-          );
+          CustomSnackbar.showClientErrorSnackbar(title: '登録失敗', error: error);
         } catch (error) {
-          Get.snackbar(
-            '登録失敗',
-            error.toString(),
-            colorText: Colors.white,
-            backgroundColor: Colors.black,
-            snackPosition: SnackPosition.BOTTOM,
-            margin: const EdgeInsets.all(10),
-          );
+          CustomSnackbar.showDefaultErrorSnackbar(title: '登録失敗', error: error);
         } finally {
           provider.setIsProcessing(false);
         }

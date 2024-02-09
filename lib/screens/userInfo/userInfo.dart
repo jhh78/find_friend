@@ -1,8 +1,8 @@
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/users.dart';
-import 'package:find_friend/utils/exceptions/clientException.dart';
 import 'package:find_friend/utils/message/register.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
+import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/common/textArea.dart';
 import 'package:find_friend/widgets/schools/schoolSearchedItems.dart';
@@ -112,32 +112,13 @@ class UserInfoScreen extends StatelessWidget {
               _aboutMeController.text,
             );
 
-            Get.snackbar(
-              '更新完了',
-              '情報が更新されました',
-              colorText: Colors.white,
-              backgroundColor: Colors.black,
-              snackPosition: SnackPosition.BOTTOM,
-              margin: const EdgeInsets.all(10),
-            );
+            CustomSnackbar.showSuccessSnackbar(
+                title: '更新完了', message: '情報が更新されました');
           } on ClientException catch (error) {
-            Get.snackbar(
-              '更新失敗しました',
-              ClientExceptionController.getErrorMessage(error),
-              colorText: Colors.white,
-              backgroundColor: Colors.black,
-              snackPosition: SnackPosition.BOTTOM,
-              margin: const EdgeInsets.all(10),
-            );
+            CustomSnackbar.showClientErrorSnackbar(title: '更新失敗', error: error);
           } catch (error) {
-            Get.snackbar(
-              '更新失敗しました',
-              error.toString(),
-              colorText: Colors.white,
-              backgroundColor: Colors.black,
-              snackPosition: SnackPosition.BOTTOM,
-              margin: const EdgeInsets.all(10),
-            );
+            CustomSnackbar.showDefaultErrorSnackbar(
+                title: '更新失敗', error: error);
           } finally {
             userInfoProvider.setIsProcessing(false);
           }

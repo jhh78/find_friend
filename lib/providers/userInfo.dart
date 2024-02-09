@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/message/register.dart';
@@ -25,7 +23,6 @@ class UserInfoProvider extends GetxController {
   void onInit() {
     super.onInit();
 
-    log('>>>>>>>>>>>>>>> UserInfoProvider onInit');
     UsersService().getUserInfoData().then((value) {
       if (value != null) {
         setNickName(value['nickname']);

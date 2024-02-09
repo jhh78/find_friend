@@ -6,6 +6,7 @@ import 'package:find_friend/utils/constants.dart';
 import 'package:find_friend/utils/message/schoolSearch.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:find_friend/widgets/common/dropboxMenu.dart';
+import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -76,7 +77,7 @@ class SchoolSearchScreen extends StatelessWidget {
     );
   }
 
-  void _searchButtonClick() async {
+  void _searchSchoolList() async {
     List<SchoolsTable> result = await _schoolService.getSchoolList(
         _region, _facility, _keywordController.text);
 
@@ -167,19 +168,18 @@ class SchoolSearchScreen extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          if (!_isSchoolSearchFormValidateCheck()) {
-                            Get.snackbar(
-                              'エラー',
-                              SCHOOL_SEARCH_ERROR_TEXT,
-                              colorText: Colors.white,
-                              backgroundColor: Colors.black,
-                              snackPosition: SnackPosition.BOTTOM,
-                              margin: const EdgeInsets.all(10),
-                            );
-                            return;
-                          }
+                          try {
+                            if (!_isSchoolSearchFormValidateCheck()) {
+                              throw Exception(SCHOOL_SEARCH_ERROR_TEXT);
+                            }
 
-                          _searchButtonClick();
+                            _searchSchoolList();
+                          } catch (e) {
+                            CustomSnackbar.showDefaultErrorSnackbar(
+                              title: 'エラー',
+                              error: e,
+                            );
+                          }
                         },
                         child: const CustomTextWidget(
                           text: SCHOOL_SEARCH_SEARCH_BUTTON_TEXT,

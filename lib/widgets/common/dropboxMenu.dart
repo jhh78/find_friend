@@ -5,16 +5,22 @@ class CustomDropBoxMenu extends StatelessWidget {
   final String label;
   final List<Map<String, dynamic>> items;
   final Function(String) onSelected;
+  final bool? isExpanded;
 
   const CustomDropBoxMenu({
     super.key,
     required this.label,
     required this.items,
     required this.onSelected,
+    this.isExpanded,
   });
 
   @override
   Widget build(BuildContext context) {
+    double width = isExpanded == null
+        ? MediaQuery.of(context).size.width * 0.45
+        : MediaQuery.of(context).size.width * 0.95;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +31,7 @@ class CustomDropBoxMenu extends StatelessWidget {
           kind: 'inputFieldTitle',
         ),
         DropdownMenu(
-          width: MediaQuery.of(context).size.width * 0.45,
+          width: width,
           menuHeight: MediaQuery.of(context).size.height / 3,
           trailingIcon: const Icon(
             Icons.arrow_drop_down,

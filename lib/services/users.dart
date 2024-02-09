@@ -9,7 +9,7 @@ class UsersService {
   Future<RecordModel> createItem(String nickname, String email,
       List<SchoolsTable> obj, String depiction) async {
     try {
-      var pb = PocketBase(REMOTE_DB_URL);
+      var pb = PocketBase(API_URL);
 
       List<Map<String, dynamic>> jsonString = [];
 
@@ -37,7 +37,7 @@ class UsersService {
       String depiction) async {
     try {
       final String? uuid = await SystemService().getItem('key');
-      var pb = PocketBase(REMOTE_DB_URL);
+      var pb = PocketBase(API_URL);
 
       List<Map<String, dynamic>> jsonString = [];
 
@@ -70,7 +70,7 @@ class UsersService {
         return null;
       }
 
-      final pb = PocketBase(REMOTE_DB_URL);
+      final pb = PocketBase(API_URL);
       final RecordModel record = await pb.collection('users').getOne(uuid);
 
       return record.data;

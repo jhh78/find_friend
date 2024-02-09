@@ -9,7 +9,7 @@ class CustomTextAreaWidget extends StatelessWidget {
   const CustomTextAreaWidget({
     super.key,
     required this.title,
-    required this.errorText,
+    this.errorText,
     this.controller,
   });
 
