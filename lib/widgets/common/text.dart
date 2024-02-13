@@ -10,6 +10,7 @@ class CustomTextWidget extends StatelessWidget {
     if (kind == 'headTitle') {
       return Text(
         text,
+        softWrap: true,
         style: Theme.of(context).textTheme.headlineMedium!.copyWith(
               color: Colors.black,
             ),
@@ -17,6 +18,7 @@ class CustomTextWidget extends StatelessWidget {
     } else if (kind == 'headTitle2') {
       return Text(
         text,
+        softWrap: true,
         style: Theme.of(context).textTheme.headlineSmall!.copyWith(
               color: Colors.black,
             ),
@@ -24,6 +26,7 @@ class CustomTextWidget extends StatelessWidget {
     } else if (kind == 'inputFieldTitle' || kind == 'label') {
       return Text(
         text,
+        softWrap: true,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.black,
             ),
@@ -31,6 +34,7 @@ class CustomTextWidget extends StatelessWidget {
     } else if (kind == 'body') {
       return Text(
         text,
+        softWrap: true,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               color: Colors.black,
             ),
@@ -38,6 +42,7 @@ class CustomTextWidget extends StatelessWidget {
     } else if (kind == 'error') {
       return Text(
         text,
+        softWrap: true,
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
               color: Colors.red,
             ),
@@ -45,6 +50,7 @@ class CustomTextWidget extends StatelessWidget {
     } else if (kind == 'button') {
       return Text(
         text,
+        softWrap: true,
         style: Theme.of(context).textTheme.titleLarge!.copyWith(
               color: Colors.black,
             ),
@@ -53,6 +59,7 @@ class CustomTextWidget extends StatelessWidget {
 
     return Text(
       text,
+      softWrap: true,
       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: Colors.black,
           ),

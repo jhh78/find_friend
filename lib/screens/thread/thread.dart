@@ -62,21 +62,32 @@ class ThreadScreen extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-        child: ListTile(
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
+        child: Card(
+          elevation: 5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4.0),
             side: const BorderSide(
-              color: Colors.black54,
+              color: Colors.grey,
+              width: 1.0,
             ),
           ),
-          title: CustomTextWidget(
-            text: thread.title.toString(),
-            kind: 'listTitle',
-          ),
-          trailing: const Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.black54,
+          color: Colors.white,
+          child: ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4.0),
+              side: const BorderSide(
+                color: Colors.black54,
+              ),
+            ),
+            title: CustomTextWidget(
+              text: thread.title.toString(),
+              kind: 'listTitle',
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.black54,
+            ),
           ),
         ),
       ),

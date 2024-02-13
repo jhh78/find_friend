@@ -62,20 +62,17 @@ class UsersService {
     }
   }
 
-  Future<Map<String, dynamic>?> getUserInfoData() async {
+  Future<RecordModel?> getUserInfoData() async {
     try {
       final String? uuid = await SystemService().getItem('key');
 
-      if (uuid == null) {
-        return null;
-      }
-
       final pb = PocketBase(API_URL);
-      final RecordModel record = await pb.collection('users').getOne(uuid);
+      final RecordModel response =
+          await pb.collection('users').getOne(uuid.toString());
 
-      return record.data;
+      return response;
     } catch (error) {
-      return null;
+      rethrow;
     }
   }
 }

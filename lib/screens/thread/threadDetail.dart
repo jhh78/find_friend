@@ -1,9 +1,12 @@
-import 'dart:developer' as dev;
-import 'dart:math';
+import 'dart:developer';
 
+import 'package:find_friend/models/threadContents.dart';
 import 'package:find_friend/providers/thread.dart';
+import 'package:find_friend/providers/threadContents.dart';
 import 'package:find_friend/providers/userInfo.dart';
+import 'package:find_friend/services/threadContents.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
+import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,8 +14,11 @@ import 'package:get/get.dart';
 class ThreadDetailScreen extends StatelessWidget {
   ThreadDetailScreen({super.key});
 
+  final ThreadContentsService threadContentsService = ThreadContentsService();
   final ThreadProvider threadProvider = Get.put(ThreadProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
+  final ThreadContentsProvider threadContentsProvider =
+      Get.put(ThreadContentsProvider());
 
   final List<String> messages = [];
   final TextEditingController _textController = TextEditingController();
@@ -20,94 +26,169 @@ class ThreadDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dev.log('ThreadDetailScreen build ${Get.arguments.title}');
+    log('ThreadDetailScreen build ${Get.arguments.id}');
     return Stack(
       children: [
         const CustomBackGroundImageWidget(type: 'bg'),
         Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            iconTheme: const IconThemeData(color: Colors.black),
             backgroundColor: Colors.transparent,
-            title: CustomTextWidget(
-              text: Get.arguments.title,
-              kind: 'label',
-            ),
-          ),
-          body: Column(
-            children: <Widget>[
-              Flexible(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.all(10.0),
-                  reverse: true,
-                  itemCount: 40,
-                  itemBuilder: (_, int index) =>
-                      _renderMessageItem(context, 'messages[index] $index'),
-                ),
+            appBar: AppBar(
+              iconTheme: const IconThemeData(color: Colors.black),
+              backgroundColor: Colors.transparent,
+              title: CustomTextWidget(
+                text: Get.arguments.title,
+                kind: 'label',
               ),
-              const Divider(height: 1.0),
-              _buildTextComposer(context),
-            ],
-          ),
-        )
+            ),
+            body: _renderThreadContents(context))
       ],
     );
   }
 
-  Widget _renderMessageItem(BuildContext context, String message) {
-    var intValue = Random().nextInt(10);
+  Widget _renderThreadContents(BuildContext context) {
+    Widget renderMessageList(BuildContext context) => ListView.builder(
+          itemCount: threadContentsProvider.threadContentsList.length,
+          controller: _scrollController,
+          itemBuilder: (context, index) {
+            ThreadContentsTable item =
+                threadContentsProvider.threadContentsList[index];
 
-    if (intValue.isEven) {
-      return Container(
-        margin: const EdgeInsets.symmetric(vertical: 10.0),
-        child: Row(
-          mainAxisAlignment:
-              intValue.isEven ? MainAxisAlignment.start : MainAxisAlignment.end,
-          children: <Widget>[
-            const CircleAvatar(
-              child: Text('A'),
-            ),
-            const SizedBox(
-              width: 3,
-            ),
-            Card(
-              color: Colors.blue,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(message),
-              ),
-            ),
-          ],
+            return Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0),
+                  side: const BorderSide(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
+                ),
+                color: Colors.white,
+                child: newMethod22(item, context));
+          },
+        );
+
+    Widget renderNoMessage() => const Center(
+          child: CustomTextWidget(
+            text: 'スレットがありません。',
+            kind: 'label',
+          ),
+        );
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+          child: Obx(
+            () => threadContentsProvider.threadContentsList.isEmpty
+                ? renderNoMessage()
+                : renderMessageList(context),
+          ),
         ),
-      );
-    }
+        const Divider(height: 1.0),
+        _renderInputForm(context),
+      ],
+    );
+  }
 
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
+  Widget newMethod22(ThreadContentsTable item, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Row(
-        mainAxisAlignment:
-            intValue.isEven ? MainAxisAlignment.start : MainAxisAlignment.end,
-        children: <Widget>[
-          Card(
-            color: Colors.blue,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(message),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '@${item.nickname.toString()}',
+                  softWrap: true,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomTextWidget(
+                    text: item.contents.toString(),
+                  ),
+                )
+              ],
             ),
           ),
-          const SizedBox(
-            width: 3,
-          ),
-          const CircleAvatar(
-            child: Text('B'),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              if (item.userId == userInfoProvider.userId.value)
+                IconButton(
+                  color: Colors.red,
+                  onPressed: () {
+                    Get.dialog(Center(
+                      child: Container(
+                        margin: const EdgeInsets.all(16.0),
+                        color: Colors.white,
+                        child: Card(
+                          color: Colors.white,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              const ListTile(
+                                title: CustomTextWidget(
+                                  text: 'Delete this message?',
+                                  kind: 'label',
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                    child: const CustomTextWidget(
+                                      text: 'Cancel',
+                                      kind: 'label',
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      try {
+                                        await threadContentsService
+                                            .deleteItem(item.id.toString());
+                                        Get.back();
+                                      } catch (error) {
+                                        CustomSnackbar.showDefaultErrorSnackbar(
+                                            title: 'Error', error: error);
+                                        log('error: $error');
+                                      }
+                                    },
+                                    child: const CustomTextWidget(
+                                      text: 'Delete',
+                                      kind: 'label',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ));
+                  },
+                  icon: const Icon(
+                    Icons.delete_forever_outlined,
+                  ),
+                ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTextComposer(BuildContext context) {
+  Widget _renderInputForm(BuildContext context) {
     return Container(
       color: Colors.transparent,
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -115,6 +196,7 @@ class ThreadDetailScreen extends StatelessWidget {
         children: <Widget>[
           Flexible(
             child: TextField(
+              cursorColor: Colors.black,
               maxLines: 3,
               minLines: 1,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -123,7 +205,7 @@ class ThreadDetailScreen extends StatelessWidget {
               keyboardType: TextInputType.multiline,
               controller: _textController,
               onSubmitted: (value) {
-                dev.log('onSubmitted: $value');
+                log('onSubmitted: $value');
               },
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -137,14 +219,25 @@ class ThreadDetailScreen extends StatelessWidget {
             child: IconButton(
               icon: const Icon(Icons.send),
               color: Colors.blue,
-              onPressed: () {
-                dev.log(_textController.text);
-                _textController.clear();
-                _scrollController.animateTo(
-                  _scrollController.position.maxScrollExtent,
-                  duration: const Duration(seconds: 1),
-                  curve: Curves.fastLinearToSlowEaseIn,
-                );
+              onPressed: () async {
+                try {
+                  log(_textController.text);
+                  await threadContentsService.createItem(
+                    threadId: Get.arguments.id,
+                    nickname: userInfoProvider.nickName.toString(),
+                    contents: _textController.text,
+                  );
+                  _textController.clear();
+                  _scrollController.animateTo(
+                    _scrollController.position.minScrollExtent,
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.fastLinearToSlowEaseIn,
+                  );
+                } catch (error) {
+                  CustomSnackbar.showDefaultErrorSnackbar(
+                      title: 'Error', error: error);
+                  log('error: $error');
+                }
               },
             ),
           ),

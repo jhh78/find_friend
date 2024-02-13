@@ -27,43 +27,53 @@ class NoticeScreen extends StatelessWidget {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : _renderContents(),
+            : ListView.builder(
+                itemCount: noticeProvider.notices.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(top: 5.0, left: 10.0, right: 10),
+                    child: Card(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        side: const BorderSide(
+                          color: Colors.black54,
+                        ),
+                      ),
+                      child: newMethod(index),
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }
 
-  ListView _renderContents() {
-    return ListView.builder(
-      itemCount: noticeProvider.notices.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4.0),
-              side: const BorderSide(
-                color: Colors.black54,
-              ),
-            ),
-            title: CustomTextWidget(
-              text: noticeProvider.notices[index].data['title'],
-              kind: 'listTitle',
-            ),
-            leading: const Icon(
-              Icons.notifications_none,
-              color: Colors.black54,
-            ),
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.black54,
-            ),
-            onTap: () {
-              Get.to(() => const NoticeDetailScreen(),
-                  transition: Transition.rightToLeft,
-                  arguments: noticeProvider.notices[index]);
-            },
-          ),
-        );
+  ListTile newMethod(int index) {
+    return ListTile(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4.0),
+        side: const BorderSide(
+          color: Colors.black54,
+        ),
+      ),
+      title: CustomTextWidget(
+        text: noticeProvider.notices[index].data['title'],
+        kind: 'listTitle',
+      ),
+      leading: const Icon(
+        Icons.notifications_none,
+        color: Colors.black54,
+      ),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        color: Colors.black54,
+      ),
+      onTap: () {
+        Get.to(() => const NoticeDetailScreen(),
+            transition: Transition.rightToLeft,
+            arguments: noticeProvider.notices[index]);
       },
     );
   }

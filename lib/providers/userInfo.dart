@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/message/register.dart';
@@ -7,6 +9,7 @@ import 'package:pocketbase/pocketbase.dart';
 class UserInfoProvider extends GetxController {
   RxMap<String, String> validate = <String, String>{}.obs;
 
+  RxString userId = ''.obs;
   RxString nickName = ''.obs;
   RxString email = ''.obs;
   RxString aboutMe = ''.obs;
@@ -25,24 +28,13 @@ class UserInfoProvider extends GetxController {
 
     UsersService().getUserInfoData().then((value) {
       if (value != null) {
-        setNickName(value['nickname']);
-        setEmail(value['email']);
-        setAboutMe(value['depiction']);
-        setExp(value['exp']);
-        setPoint(value['point']);
-        setAboutMe(value['depiction']);
-
-        List<SchoolsTable> schools = [];
-        for (var item in value['schools']) {
-          schools.add(SchoolsTable.fromJson(item));
-        }
-
-        selectedSchoolList(schools);
+        initValue(value);
       }
     });
   }
 
   void initValue(RecordModel model) {
+    setUserId(model.id);
     setNickName(model.data['nickname']);
     setEmail(model.data['email']);
     setAboutMe(model.data['depiction']);
@@ -56,6 +48,10 @@ class UserInfoProvider extends GetxController {
     }
 
     selectedSchoolList(schools);
+  }
+
+  void setUserId(String value) {
+    userId.value = value;
   }
 
   void setNickName(String value) {
