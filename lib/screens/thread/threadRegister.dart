@@ -65,24 +65,29 @@ class ThreadCreateForm extends StatelessWidget {
               ),
               centerTitle: true,
             ),
-            body: Column(
-              children: [
-                CustomTextFieldWidget(
-                  controller: _titleController,
-                  hintText: 'スレット名を入力してください',
-                  title: 'スレット名',
-                ),
-                CustomDropBoxMenu(
-                  isExpanded: true,
-                  label: '学校選択',
-                  items: schoolList,
-                  onSelected: threadProvider.setFormSchoolField,
-                ),
-                CustomTextAreaWidget(
-                  controller: _contentController,
-                  title: 'スレット説明',
-                ),
-              ],
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CustomTextFieldWidget(
+                    isRequired: true,
+                    controller: _titleController,
+                    hintText: 'スレット名を入力してください',
+                    title: 'スレット名',
+                  ),
+                  CustomDropBoxMenu(
+                    isRequired: true,
+                    isExpanded: true,
+                    label: '学校選択',
+                    items: schoolList,
+                    onSelected: threadProvider.setFormSchoolField,
+                  ),
+                  CustomTextAreaWidget(
+                    isRequired: true,
+                    controller: _contentController,
+                    title: 'スレット説明',
+                  ),
+                ],
+              ),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {

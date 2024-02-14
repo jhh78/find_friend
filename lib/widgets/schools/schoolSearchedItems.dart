@@ -7,9 +7,11 @@ import 'package:get/get.dart';
 
 class SchoolSearchedItemsWidget extends StatelessWidget {
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
+  final bool isRequired;
 
   SchoolSearchedItemsWidget({
     super.key,
+    this.isRequired = false,
   });
 
   @override
@@ -21,23 +23,33 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const CustomTextWidget(
-                text: '学校選択',
-                kind: 'inputFieldTitle',
+              Row(
+                children: [
+                  const CustomTextWidget(
+                    text: '学校選択',
+                    kind: 'inputFieldTitle',
+                  ),
+                  if (isRequired)
+                    const CustomTextWidget(
+                      text: ' *必須',
+                      kind: 'error',
+                    ),
+                ],
               ),
-              IconButton(
-                icon: const Icon(Icons.add_circle_outline_rounded),
-                color: Colors.black54,
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.blue[200]),
+              if (userInfoProvider.selectedSchoolList.length <= 5)
+                IconButton(
+                  icon: const Icon(Icons.add_circle_outline_rounded),
+                  color: Colors.black54,
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(Colors.blue[200]),
+                  ),
+                  onPressed: () {
+                    Get.to(
+                      () => SchoolSearchScreen(),
+                      transition: Transition.rightToLeft,
+                    );
+                  },
                 ),
-                onPressed: () {
-                  Get.to(
-                    () => SchoolSearchScreen(),
-                    transition: Transition.rightToLeft,
-                  );
-                },
-              ),
             ],
           ),
           Obx(

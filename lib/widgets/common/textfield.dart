@@ -8,6 +8,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final bool readOnly;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
+  final isRequired;
 
   const CustomTextFieldWidget({
     super.key,
@@ -17,6 +18,7 @@ class CustomTextFieldWidget extends StatelessWidget {
     this.readOnly = false,
     this.controller,
     this.keyboardType,
+    this.isRequired = false,
   });
 
   InputDecoration _getInputDecoration(BuildContext context) {
@@ -54,6 +56,28 @@ class CustomTextFieldWidget extends StatelessWidget {
     );
   }
 
+  Widget _renderTitleArea(BuildContext context) {
+    if (isRequired) {
+      return Row(
+        children: [
+          CustomTextWidget(
+            text: title,
+            kind: 'inputFieldTitle',
+          ),
+          const CustomTextWidget(
+            text: ' *必須',
+            kind: 'error',
+          ),
+        ],
+      );
+    }
+
+    return CustomTextWidget(
+      text: title,
+      kind: 'inputFieldTitle',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -61,10 +85,7 @@ class CustomTextFieldWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextWidget(
-            text: title,
-            kind: 'inputFieldTitle',
-          ),
+          _renderTitleArea(context),
           TextField(
             keyboardType: keyboardType ?? TextInputType.text,
             controller: controller,

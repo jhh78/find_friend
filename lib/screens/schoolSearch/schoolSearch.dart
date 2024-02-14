@@ -21,18 +21,8 @@ class SchoolSearchScreen extends StatelessWidget {
   final SchoolsService _schoolService = SchoolsService();
 
   final TextEditingController _keywordController = TextEditingController();
-  String _region = '';
+  String _prefecture = '';
   String _facility = '';
-
-  bool _isSchoolSearchFormValidateCheck() {
-    if (_keywordController.text.isEmpty ||
-        _region.isEmpty ||
-        _facility.isEmpty) {
-      return false;
-    }
-
-    return true;
-  }
 
   Widget _renderSearchResult(BuildContext context) {
     if (_schoolSearchProvider.searchedSchoolList.isEmpty) {
@@ -79,7 +69,7 @@ class SchoolSearchScreen extends StatelessWidget {
 
   void _searchSchoolList() async {
     List<SchoolsTable> result = await _schoolService.getSchoolList(
-        _region, _facility, _keywordController.text);
+        _prefecture, _facility, _keywordController.text);
 
     _schoolSearchProvider.setSearchedSchoolList(result);
   }
@@ -115,7 +105,7 @@ class SchoolSearchScreen extends StatelessWidget {
                         label: SCHOOL_SEARCH_PREFECTURE_TEXT,
                         items: REGIONAL_CLASSIFICATION,
                         onSelected: (v) {
-                          _region = v;
+                          _prefecture = v;
                         },
                       ),
                       CustomDropBoxMenu(
@@ -153,47 +143,59 @@ class SchoolSearchScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shadowColor: Colors.transparent,
-                          backgroundColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            side: const BorderSide(color: Colors.black87),
-                          ),
-                        ),
-                        onPressed: () {
-                          try {
-                            if (!_isSchoolSearchFormValidateCheck()) {
-                              throw Exception(SCHOOL_SEARCH_ERROR_TEXT);
-                            }
-
-                            _searchSchoolList();
-                          } catch (e) {
-                            CustomSnackbar.showDefaultErrorSnackbar(
-                              title: 'エラー',
-                              error: e,
-                            );
-                          }
-                        },
-                        child: const CustomTextWidget(
-                          text: SCHOOL_SEARCH_SEARCH_BUTTON_TEXT,
-                          kind: 'inputFieldTitle',
-                        ),
-                      ),
-                      Obx(() => _renderSearchResult(context)),
-                    ],
-                  ),
+                  _renderSchoolAddButton(context),
                 ],
               ),
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  Column _renderSchoolAddButton(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 20,
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shadowColor: Colors.transparent,
+            backgroundColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+              side: const BorderSide(color: Colors.black87),
+            ),
+          ),
+          onPressed: () {
+            try {
+              if (_prefecture.isEmpty) {
+                throw Exception(SCHOOL_SEARCH_PREFECTURE_ERROR);
+              }
+
+              if (_facility.isEmpty) {
+                throw Exception(SCHOOL_SEARCH_FACILITY_TYPE_ERROR);
+              }
+
+              if (_keywordController.text.isEmpty) {
+                throw Exception(SCHOOL_SEARCH_KEYWORD_ERROR);
+              }
+              Get.focusScope?.unfocus();
+              _searchSchoolList();
+            } catch (e) {
+              CustomSnackbar.showDefaultErrorSnackbar(
+                title: 'エラー',
+                error: e,
+              );
+            }
+          },
+          child: const CustomTextWidget(
+            text: SCHOOL_SEARCH_SEARCH_BUTTON_TEXT,
+            kind: 'inputFieldTitle',
+          ),
+        ),
+        Obx(() => _renderSearchResult(context)),
       ],
     );
   }

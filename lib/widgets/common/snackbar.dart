@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pocketbase/pocketbase.dart';
 
-const Color _backgroundColor = Color.fromARGB(150, 0, 0, 0);
-
 class CustomSnackbar {
   static void showSuccessSnackbar(
       {required String title, required String message}) {
@@ -12,7 +10,7 @@ class CustomSnackbar {
       title,
       message,
       colorText: Colors.white,
-      backgroundColor: _backgroundColor,
+      backgroundColor: Colors.blueAccent,
       snackPosition: SnackPosition.BOTTOM,
       margin: const EdgeInsets.all(10),
     );
@@ -24,19 +22,19 @@ class CustomSnackbar {
       title,
       ClientExceptionController.getErrorMessage(error),
       colorText: Colors.white,
-      backgroundColor: _backgroundColor,
+      backgroundColor: Colors.red[500],
       snackPosition: SnackPosition.BOTTOM,
       margin: const EdgeInsets.all(10),
     );
   }
 
   static void showDefaultErrorSnackbar(
-      {required String title, required Object error}) {
+      {required String title, required error}) {
     Get.snackbar(
       title,
-      error.toString(),
+      error.message.toString(),
       colorText: Colors.white,
-      backgroundColor: _backgroundColor,
+      backgroundColor: Colors.red[500],
       snackPosition: SnackPosition.BOTTOM,
       margin: const EdgeInsets.all(10),
     );

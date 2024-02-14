@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/message/register.dart';
@@ -11,7 +9,6 @@ class UserInfoProvider extends GetxController {
 
   RxString userId = ''.obs;
   RxString nickName = ''.obs;
-  RxString email = ''.obs;
   RxString aboutMe = ''.obs;
   RxList<SchoolsTable> selectedSchoolList = <SchoolsTable>[].obs;
 
@@ -34,9 +31,8 @@ class UserInfoProvider extends GetxController {
   }
 
   void initValue(RecordModel model) {
-    setUserId(model.id);
+    setUserId(model.id.toString());
     setNickName(model.data['nickname']);
-    setEmail(model.data['email']);
     setAboutMe(model.data['depiction']);
     setExp(model.data['exp']);
     setPoint(model.data['point']);
@@ -56,10 +52,6 @@ class UserInfoProvider extends GetxController {
 
   void setNickName(String value) {
     nickName.value = value;
-  }
-
-  void setEmail(String value) {
-    email.value = value;
   }
 
   void setAboutMe(String value) {
@@ -83,21 +75,19 @@ class UserInfoProvider extends GetxController {
     isProcessing.value = value;
   }
 
-  void doFormDataValidate(String nickname, String email, String aboutMe,
-      List<SchoolsTable> seletedSchoolList) {
+  void doFormDataValidate(
+      String nickname, String aboutMe, List<SchoolsTable> seletedSchoolList) {
     validate.clear();
 
     if (nickname.isEmpty) {
-      validate['nickName'] = REGISTER_NICKNAME_ERROR;
+      throw Exception(REGISTER_NICKNAME_ERROR);
     }
-    if (email.isEmpty) {
-      validate['email'] = REGISTER_EMAIL_ERROR;
-    }
+
     if (aboutMe.isEmpty) {
-      validate['aboutMe'] = REGISTER_ABOUT_ME_ERROR;
+      throw Exception(REGISTER_ABOUT_ME_ERROR);
     }
     if (seletedSchoolList.isEmpty) {
-      validate['schools'] = SCHOOL_SEARCH_ERROR;
+      throw Exception(SCHOOL_SEARCH_ERROR);
     }
   }
 }

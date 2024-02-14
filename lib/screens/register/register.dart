@@ -1,5 +1,7 @@
+import 'dart:developer';
+
 import 'package:find_friend/providers/userInfo.dart';
-import 'package:find_friend/screens/userInfo/userInfo.dart';
+import 'package:find_friend/screens/root.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/message/common.dart';
@@ -20,7 +22,6 @@ class RegisterScreen extends StatelessWidget {
   final UserInfoProvider provider = Get.put(UserInfoProvider());
 
   final TextEditingController _nickNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _aboutMeController = TextEditingController();
 
   final UsersService _userService = UsersService();
@@ -45,36 +46,30 @@ class RegisterScreen extends StatelessWidget {
         try {
           provider.doFormDataValidate(
             _nickNameController.text,
-            _emailController.text,
             _aboutMeController.text,
             provider.selectedSchoolList,
           );
-
-          if (provider.validate.isNotEmpty) {
-            throw Exception('入力内容に不備があります');
-          }
-
-          if (provider.selectedSchoolList.isEmpty) {
-            throw Exception('学校情報がありません');
-          }
 
           provider.setIsProcessing(true);
 
           RecordModel response = await _userService.createItem(
             _nickNameController.text,
-            _emailController.text,
             provider.selectedSchoolList,
             _aboutMeController.text,
           );
+
+          log('response: $response');
 
           // 등록된 값으로 초기화
           provider.initValue(response);
           await _systemService.createItem('key', response.id);
 
-          Get.to(() => UserInfoScreen());
+          Get.to(() => RootScreen());
         } on ClientException catch (error) {
+          log('ClientException : $error');
           CustomSnackbar.showClientErrorSnackbar(title: '登録失敗', error: error);
         } catch (error) {
+          log('error : $error, ${error.toString()}');
           CustomSnackbar.showDefaultErrorSnackbar(title: '登録失敗', error: error);
         } finally {
           provider.setIsProcessing(false);
@@ -112,24 +107,21 @@ class RegisterScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     CustomTextFieldWidget(
+                      isRequired: true,
                       controller: _nickNameController,
                       title: REGISTER_NICKNAME_TITLE,
                       hintText: REGISTER_NICKNAME_HINT,
                       errorText: provider.validate['nickName'],
                     ),
-                    CustomTextFieldWidget(
-                      controller: _emailController,
-                      title: REGISTER_EMAIL_TITLE,
-                      hintText: REGISTER_EMAIL_HINT,
-                      errorText: provider.validate['email'],
-                      keyboardType: TextInputType.emailAddress,
-                    ),
                     CustomTextAreaWidget(
+                      isRequired: true,
                       controller: _aboutMeController,
                       title: REGISTER_ABOUT_ME_TITLE,
                       errorText: provider.validate['aboutMe'],
                     ),
-                    SchoolSearchedItemsWidget(),
+                    SchoolSearchedItemsWidget(
+                      isRequired: true,
+                    ),
                     _renderRegisterButton(context),
                   ],
                 ),

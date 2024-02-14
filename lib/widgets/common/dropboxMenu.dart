@@ -6,6 +6,7 @@ class CustomDropBoxMenu extends StatelessWidget {
   final List<Map<String, dynamic>> items;
   final Function(String) onSelected;
   final bool? isExpanded;
+  final bool isRequired;
 
   const CustomDropBoxMenu({
     super.key,
@@ -13,7 +14,33 @@ class CustomDropBoxMenu extends StatelessWidget {
     required this.items,
     required this.onSelected,
     this.isExpanded,
+    this.isRequired = false,
   });
+
+  Widget _renderTextTitle(BuildContext context) {
+    if (isRequired) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomTextWidget(
+            text: label,
+            kind: 'inputFieldTitle',
+          ),
+          const CustomTextWidget(
+            text: ' *必須',
+            kind: 'error',
+          ),
+        ],
+      );
+    }
+
+    return CustomTextWidget(
+      text: label,
+      kind: 'inputFieldTitle',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +53,7 @@ class CustomDropBoxMenu extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        CustomTextWidget(
-          text: label,
-          kind: 'inputFieldTitle',
-        ),
+        _renderTextTitle(context),
         DropdownMenu(
           width: width,
           menuHeight: MediaQuery.of(context).size.height / 3,

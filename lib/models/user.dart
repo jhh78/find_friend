@@ -3,9 +3,6 @@ class UsersTable {
   late String? collectionId;
   late String? collectionName;
   late String? username;
-  late bool? verified;
-  late bool? emailVisibility;
-  late String? email;
   late String? created;
   late String? updated;
   late String? depiction;
@@ -15,9 +12,6 @@ class UsersTable {
     this.collectionId,
     this.collectionName,
     this.username,
-    this.verified,
-    this.emailVisibility,
-    this.email,
     this.created,
     this.updated,
     this.depiction,
@@ -29,9 +23,6 @@ class UsersTable {
       'collectionId': collectionId,
       'collectionName': collectionName,
       'username': username,
-      'verified': verified,
-      'emailVisibility': emailVisibility,
-      'email': email,
       'created': created,
       'updated': updated,
       'depiction': depiction,
@@ -43,9 +34,6 @@ class UsersTable {
     collectionId = json['collectionId'];
     collectionName = json['collectionName'];
     username = json['username'];
-    verified = json['verified'];
-    emailVisibility = json['emailVisibility'];
-    email = json['email'];
     created = json['created'];
     updated = json['updated'];
     depiction = json['depiction'];

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/message/register.dart';
@@ -41,6 +43,7 @@ class UserInfoScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
         title: const CustomTextWidget(
           text: '基本情報',
@@ -58,10 +61,6 @@ class UserInfoScreen extends StatelessWidget {
                   title: 'ニックネーム',
                   body: userInfoProvider.nickName.value,
                 ),
-                UserInfoTextItemDisplayArea(
-                  title: 'Email',
-                  body: userInfoProvider.email.value,
-                ),
                 SchoolSearchedItemsWidget(),
                 UserInfoTextItemDisplayArea(
                   title: 'exp',
@@ -72,6 +71,7 @@ class UserInfoScreen extends StatelessWidget {
                   body: numberFormat.format(userInfoProvider.point.value),
                 ),
                 CustomTextAreaWidget(
+                  isRequired: true,
                   controller: _aboutMeController,
                   title: REGISTER_ABOUT_ME_TITLE,
                   errorText: userInfoProvider.validate['aboutMe'],
@@ -82,32 +82,35 @@ class UserInfoScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue[400],
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blue,
+          ),
+          child: const Icon(
+            Icons.save_as_outlined,
+            color: Colors.white,
+            size: 35,
+          ),
+        ),
         onPressed: () async {
           try {
             userInfoProvider.setAboutMe(_aboutMeController.text);
 
             userInfoProvider.doFormDataValidate(
               userInfoProvider.nickName.value,
-              userInfoProvider.email.value,
               _aboutMeController.text,
               userInfoProvider.selectedSchoolList,
             );
-
-            if (userInfoProvider.selectedSchoolList.isEmpty) {
-              throw Exception('学校情報がありません');
-            }
-
-            if (userInfoProvider.validate.isNotEmpty) {
-              throw Exception('入力内容に不備があります');
-            }
 
             userInfoProvider.setIsProcessing(true);
 
             // update
             await _userService.updateItem(
               userInfoProvider.nickName.value,
-              userInfoProvider.email.value,
               userInfoProvider.selectedSchoolList,
               _aboutMeController.text,
             );
@@ -121,12 +124,9 @@ class UserInfoScreen extends StatelessWidget {
                 title: '更新失敗', error: error);
           } finally {
             userInfoProvider.setIsProcessing(false);
+            Get.focusScope?.unfocus();
           }
         },
-        child: const Icon(
-          Icons.save_as_outlined,
-          color: Colors.white,
-        ),
       ),
     );
   }

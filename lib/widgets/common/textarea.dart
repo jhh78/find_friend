@@ -5,13 +5,40 @@ class CustomTextAreaWidget extends StatelessWidget {
   final String title;
   final String? errorText;
   final TextEditingController? controller;
+  final bool isRequired;
 
   const CustomTextAreaWidget({
     super.key,
     required this.title,
     this.errorText,
     this.controller,
+    this.isRequired = false,
   });
+
+  Widget _renderTextTitle(BuildContext context) {
+    if (isRequired) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomTextWidget(
+            text: title,
+            kind: 'inputFieldTitle',
+          ),
+          const CustomTextWidget(
+            text: ' *必須',
+            kind: 'error',
+          ),
+        ],
+      );
+    }
+
+    return CustomTextWidget(
+      text: title,
+      kind: 'inputFieldTitle',
+    );
+  }
 
   InputDecoration _getInputDecoration(BuildContext context) {
     if (errorText != null) {
@@ -62,10 +89,7 @@ class CustomTextAreaWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextWidget(
-            text: title,
-            kind: 'inputFieldTitle',
-          ),
+          _renderTextTitle(context),
           TextFormField(
             controller: controller,
             maxLines: null,

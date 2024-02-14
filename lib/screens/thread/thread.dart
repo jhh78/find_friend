@@ -18,6 +18,7 @@ class ThreadScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
         title: const CustomTextWidget(
           text: 'スレット一覧',
@@ -30,7 +31,7 @@ class ThreadScreen extends StatelessWidget {
                 log('add thread');
                 Get.to(
                   () => ThreadCreateForm(),
-                  transition: Transition.cupertino,
+                  transition: Transition.rightToLeft,
                 );
               },
               icon: const Icon(Icons.add_circle_outline_rounded),
@@ -57,6 +58,7 @@ class ThreadScreen extends StatelessWidget {
       onTap: () {
         Get.to(
           () => ThreadDetailScreen(),
+          duration: const Duration(milliseconds: 500),
           transition: Transition.circularReveal,
           arguments: thread,
         );

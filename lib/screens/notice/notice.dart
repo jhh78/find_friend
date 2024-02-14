@@ -15,6 +15,7 @@ class NoticeScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
         title: const CustomTextWidget(
           text: 'お知らせ',

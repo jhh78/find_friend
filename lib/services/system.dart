@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:find_friend/services/database.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -14,6 +16,7 @@ class SystemService {
 
       return maps[0]['data'];
     } catch (error) {
+      log('SystemService getItem error: $error');
       return null;
     }
   }
@@ -30,6 +33,7 @@ class SystemService {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } catch (error) {
+      log('SystemService createItem error: $error');
       rethrow;
     }
   }
