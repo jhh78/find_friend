@@ -8,7 +8,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final bool readOnly;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
-  final isRequired;
+  final bool isRequired;
 
   const CustomTextFieldWidget({
     super.key,
