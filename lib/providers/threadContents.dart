@@ -10,12 +10,16 @@ class ThreadContentsProvider extends GetxController {
   final ThreadContentsService threadContentsService = ThreadContentsService();
   RxList<ThreadContentsTable> threadContentsList = <ThreadContentsTable>[].obs;
 
+  RxInt currentPage = 1.obs;
+
   @override
   void onInit() {
     super.onInit();
     log('ThreadDetailProvider onInit');
     String threadId = Get.arguments.id;
-    threadContentsService.getContentsList(threadId).then((value) {
+    threadContentsService
+        .getContentsList(threadId, currentPage.value)
+        .then((value) {
       threadContentsList.addAll(value);
       log(value.toString());
 
@@ -34,8 +38,8 @@ class ThreadContentsProvider extends GetxController {
             'user_id': e.record!.data['user_id'],
             'nickname': e.record!.data['nickname'],
             'contents': e.record!.data['contents'],
-            'created': e.record!.data['created_at'],
-            'updated': e.record!.data['updated_at'],
+            'created': e.record!.created,
+            'updated': e.record!.updated,
           };
 
           threadContentsList(
@@ -52,6 +56,10 @@ class ThreadContentsProvider extends GetxController {
 
     // remove all '*' topic subscriptions
     final pb = PocketBase(API_URL);
-    pb.collection('thread_contents').unsubscribe('*');
+    pb.collection('thread_contents').unsubscribe();
+  }
+
+  void setCurrentPage(int page) {
+    currentPage(page);
   }
 }

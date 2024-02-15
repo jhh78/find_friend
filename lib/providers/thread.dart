@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/thread.dart';
+import 'package:find_friend/utils/constants.dart';
 import 'package:get/get.dart';
 
 class ThreadProvider extends GetxController {
   final userInfoProvider = Get.put(UserInfoProvider());
+
   final threadService = ThreadService();
 
   RxList<ThreadTable> threadList = <ThreadTable>[].obs;
@@ -15,17 +17,28 @@ class ThreadProvider extends GetxController {
   RxBool threadCreateError = false.obs;
   String formSchoolField = '';
 
+  RxInt currentPage = 1.obs;
+
   static ThreadProvider get to => Get.find();
 
   @override
   void onInit() {
     super.onInit();
     threadService
-        .getThreadList(userInfoProvider.selectedSchoolList)
-        .then((value) => initThreadListForValue(value));
+        .getThreadList(userInfoProvider.selectedSchoolList, 1, PAGE_PER_ITEM)
+        .then(
+      (value) {
+        initThreadListForValue(value);
+      },
+    );
+  }
+
+  void setCurrentPage(int value) {
+    currentPage.value = value;
   }
 
   void setThreadList(ThreadTable value) {
+    log('setThreadList called > $value');
     threadList.add(value);
   }
 

@@ -2,6 +2,7 @@
 
 const DATABASE_NAME = 'phone.db';
 const API_URL = 'http://153.121.65.233:10000';
+const PAGE_PER_ITEM = 10;
 
 const List<Map<String, String>> FACILITY_CLASSIFICATION = [
   {'label': '国立', 'value': '1'},

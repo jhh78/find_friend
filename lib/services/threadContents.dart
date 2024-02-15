@@ -29,12 +29,13 @@ class ThreadContentsService {
     }
   }
 
-  Future<List<ThreadContentsTable>> getContentsList(String threadId) async {
+  Future<List<ThreadContentsTable>> getContentsList(
+      String threadId, int currentPage) async {
     try {
       final pb = PocketBase(API_URL);
       final response = await pb.collection('thread_contents').getList(
-            page: 1,
-            perPage: 50,
+            page: currentPage,
+            perPage: PAGE_PER_ITEM,
             filter: 'thread_id = "$threadId"',
             sort: '-created',
           );
@@ -50,6 +51,7 @@ class ThreadContentsService {
           'nickname': item.data['nickname'],
           'contents': item.data['contents'],
         };
+
         threadList.add(ThreadContentsTable.fromJson(params));
       }
 

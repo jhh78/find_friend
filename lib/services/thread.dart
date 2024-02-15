@@ -7,8 +7,10 @@ import 'package:find_friend/utils/constants.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 class ThreadService {
-  Future<List<ThreadTable>> getThreadList(List<SchoolsTable> schools) async {
+  Future<List<ThreadTable>> getThreadList(
+      List<SchoolsTable> schools, int currentPage, int perPage) async {
     try {
+      log('getThreadList called > $currentPage', name: 'ThreadService');
       List<String> querys = [];
 
       for (var school in schools) {
@@ -17,9 +19,10 @@ class ThreadService {
 
       final pb = PocketBase(API_URL);
       final response = await pb.collection('thread').getList(
-            page: 1,
-            perPage: 50,
+            page: currentPage,
+            perPage: perPage,
             filter: querys.join(' || '),
+            sort: '-created',
           );
 
       List<ThreadTable> threadList = [];
@@ -61,6 +64,16 @@ class ThreadService {
       };
 
       await pb.collection('thread').create(body: body);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future deleteThread(String id) async {
+    try {
+      log('deleteThread called > $id');
+      final pb = PocketBase(API_URL);
+      await pb.collection('thread').delete(id);
     } catch (error) {
       rethrow;
     }

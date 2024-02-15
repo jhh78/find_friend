@@ -60,41 +60,29 @@ class SupportScreen extends StatelessWidget {
                   height: 20,
                 ),
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SupportButton(
-                          callBack: () {
-                            GoogleAdManager().loadInterstitialAd();
-                          },
-                          text: '広告を見る',
-                        ),
-                        SupportButton(
-                          callBack: () {},
-                          text: 'ご苦労さま\n 100円支援',
-                        ),
-                      ],
+                    SupportButton(
+                      callBack: () {
+                        GoogleAdManager().loadInterstitialAd();
+                      },
+                      text: '広告を見る',
                     ),
-                    const SizedBox(
-                      height: 20,
+                    SupportButton(
+                      callBack: () {},
+                      text: 'ご苦労さま100円支援',
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SupportButton(
-                          callBack: () {
-                            log('500円支援 click');
-                          },
-                          text: 'がんばれ！！\n 500円支援',
-                        ),
-                        SupportButton(
-                          callBack: () {
-                            log('1000円支援 click');
-                          },
-                          text: '気に入った\n 1万円支援',
-                        ),
-                      ],
+                    SupportButton(
+                      callBack: () {
+                        log('500円支援 click');
+                      },
+                      text: 'がんばれ！！500円支援',
+                    ),
+                    SupportButton(
+                      callBack: () {
+                        log('1000円支援 click');
+                      },
+                      text: '気に入った1万円支援',
                     )
                   ],
                 )

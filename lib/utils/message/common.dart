@@ -39,5 +39,11 @@ const String THREAD_LIST_BUTTON_TEXT = 'スレッド';
 // 공지사항 버튼텍스트
 const String NOTICE_BUTTON_TEXT = 'お知らせ';
 
+// 즐겨찾기 버튼 텍스트
+const String FAVORITE_BUTTON_TEXT = 'お気に入り';
+
+// 메세지 버튼 텍스트
+const String MESSAGE_BUTTON_TEXT = 'メッセージ';
+
 // 개발자 후원 버튼텍스트
 const String DEVELOPER_DONATION_BUTTON_TEXT = '支援';

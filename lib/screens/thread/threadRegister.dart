@@ -5,6 +5,8 @@ import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/thread.dart';
+import 'package:find_friend/utils/constants.dart';
+import 'package:find_friend/utils/message/common.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:find_friend/widgets/common/dropboxMenu.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
@@ -42,11 +44,10 @@ class ThreadCreateForm extends StatelessWidget {
 
     return PopScope(
       onPopInvoked: (didPop) async {
-        // 뒤로가기 버튼 클릭시 이벤트가 잡히므로 여기에다가 리스트 새로고침 이벤트를 넣어주면 될 것 같습니다.
-        List<ThreadTable> list = await _threadService
-            .getThreadList(userInfoProvider.selectedSchoolList);
+        List<ThreadTable> response = await _threadService.getThreadList(
+            userInfoProvider.selectedSchoolList, 1, PAGE_PER_ITEM);
 
-        threadProvider.initThreadListForValue(list);
+        threadProvider.initThreadListForValue(response);
       },
       child: Stack(
         children: [
@@ -90,10 +91,22 @@ class ThreadCreateForm extends StatelessWidget {
               ),
             ),
             floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blue,
+                ),
+                child: const Icon(
+                  Icons.save_as_outlined,
+                  color: Colors.white,
+                  size: 35,
+                ),
+              ),
               onPressed: () async {
                 try {
-                  log('create thread');
-
                   if (!threadProvider.isValidateSuccess(
                       _titleController.text,
                       _contentController.text,
@@ -121,7 +134,6 @@ class ThreadCreateForm extends StatelessWidget {
                   );
                 }
               },
-              child: const Icon(Icons.add),
             ),
           ),
         ],

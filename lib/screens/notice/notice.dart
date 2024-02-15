@@ -73,7 +73,7 @@ class NoticeScreen extends StatelessWidget {
       ),
       onTap: () {
         Get.to(() => const NoticeDetailScreen(),
-            transition: Transition.rightToLeft,
+            transition: Transition.size,
             arguments: noticeProvider.notices[index]);
       },
     );

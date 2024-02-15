@@ -12,7 +12,6 @@ class SupportButton extends StatelessWidget {
       onPressed: callBack,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
-        minimumSize: const Size(150, 100),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
           side: const BorderSide(

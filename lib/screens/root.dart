@@ -1,5 +1,7 @@
 import 'package:find_friend/providers/appData.dart';
 import 'package:find_friend/providers/thread.dart';
+import 'package:find_friend/screens/favorite/favorite.dart';
+import 'package:find_friend/screens/message/message.dart';
 import 'package:find_friend/screens/notice/notice.dart';
 import 'package:find_friend/screens/support/support.dart';
 import 'package:find_friend/screens/thread/thread.dart';
@@ -22,10 +24,15 @@ class RootScreen extends StatelessWidget {
       Get.delete<ThreadProvider>();
       return ThreadScreen();
     } else if (controller.navibarCurrentIndex.value == 2) {
-      return NoticeScreen();
+      return const FavoriteScreen();
     } else if (controller.navibarCurrentIndex.value == 3) {
+      return const MessageScreen();
+    } else if (controller.navibarCurrentIndex.value == 4) {
+      return NoticeScreen();
+    } else if (controller.navibarCurrentIndex.value == 5) {
       return const SupportScreen();
     }
+
     return const Placeholder();
   }
 
@@ -71,7 +78,8 @@ class RootScreen extends StatelessWidget {
             ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: controller.navibarCurrentIndex.value,
-              type: BottomNavigationBarType.fixed,
+              type: BottomNavigationBarType.shifting,
+              unselectedItemColor: Colors.white,
               selectedItemColor: Colors.amberAccent,
               onTap: (int index) {
                 controller.changeNaviBarCurrentIndex(index);
@@ -86,6 +94,14 @@ class RootScreen extends StatelessWidget {
                   icon: _renderBottomNavigaterIcons(
                       Icons.format_list_bulleted, true),
                   label: THREAD_LIST_BUTTON_TEXT,
+                ),
+                BottomNavigationBarItem(
+                  icon: _renderBottomNavigaterIcons(Icons.star, false),
+                  label: FAVORITE_BUTTON_TEXT,
+                ),
+                BottomNavigationBarItem(
+                  icon: _renderBottomNavigaterIcons(Icons.mail_outline, false),
+                  label: MESSAGE_BUTTON_TEXT,
                 ),
                 BottomNavigationBarItem(
                   icon: _renderBottomNavigaterIcons(Icons.info_outline, true),
