@@ -12,7 +12,7 @@ class IntroScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        var uuid = await SystemService().getItem('key');
+        var uuid = await SystemService().getAuthKey();
 
         if (uuid != null) {
           Get.offAll(

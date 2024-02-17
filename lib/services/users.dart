@@ -39,7 +39,7 @@ class UsersService {
   Future updateItem(
       String nickname, List<SchoolsTable> obj, String depiction) async {
     try {
-      final String? uuid = await SystemService().getItem('key');
+      final String? uuid = await SystemService().getAuthKey();
       var pb = PocketBase(API_URL);
 
       List<Map<String, dynamic>> jsonString = [];
@@ -67,7 +67,7 @@ class UsersService {
 
   Future<RecordModel?> getUserInfoData() async {
     try {
-      final String? uuid = await SystemService().getItem('key');
+      final String? uuid = await SystemService().getAuthKey();
 
       if (uuid == null) {
         return null;

@@ -52,7 +52,7 @@ class ThreadService {
     required String school,
   }) async {
     try {
-      final String? uuid = await SystemService().getItem('key');
+      final String? uuid = await SystemService().getAuthKey();
       log('createThread called > $title, > $content, > $school > $uuid');
       // example create body
       final pb = PocketBase(API_URL);
@@ -69,11 +69,11 @@ class ThreadService {
     }
   }
 
-  Future deleteThread(String id) async {
+  Future deleteThread(String threadId) async {
     try {
-      log('deleteThread called > $id');
+      log('deleteThread called > $threadId');
       final pb = PocketBase(API_URL);
-      await pb.collection('thread').delete(id);
+      await pb.collection('thread').delete(threadId);
     } catch (error) {
       rethrow;
     }

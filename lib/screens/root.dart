@@ -1,4 +1,5 @@
 import 'package:find_friend/providers/appData.dart';
+import 'package:find_friend/providers/message.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/screens/favorite/favorite.dart';
 import 'package:find_friend/screens/message/message.dart';
@@ -24,9 +25,10 @@ class RootScreen extends StatelessWidget {
       Get.delete<ThreadProvider>();
       return ThreadScreen();
     } else if (controller.navibarCurrentIndex.value == 2) {
-      return const FavoriteScreen();
+      return FavoriteScreen();
     } else if (controller.navibarCurrentIndex.value == 3) {
-      return const MessageScreen();
+      Get.delete<MessageProvider>();
+      return MessageScreen();
     } else if (controller.navibarCurrentIndex.value == 4) {
       return NoticeScreen();
     } else if (controller.navibarCurrentIndex.value == 5) {

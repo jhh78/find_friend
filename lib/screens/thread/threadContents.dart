@@ -13,7 +13,6 @@ import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/thread/contsnts/contentsList.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pocketbase/pocketbase.dart';
 
 class ThreadContentsScreen extends StatelessWidget {
   ThreadContentsScreen({super.key});
@@ -131,15 +130,9 @@ class ThreadContentsScreen extends StatelessWidget {
                                 transition: Transition.size,
                                 duration: const Duration(milliseconds: 500),
                               );
-                            } on ClientException catch (error) {
-                              Get.back();
-                              CustomSnackbar.showClientErrorSnackbar(
-                                title: 'Error',
-                                error: error,
-                              );
                             } catch (error) {
                               Get.back();
-                              CustomSnackbar.showDefaultErrorSnackbar(
+                              CustomSnackbar.showErrorSnackbar(
                                 title: 'Error',
                                 error: error,
                               );

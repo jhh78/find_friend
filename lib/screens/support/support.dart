@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:find_friend/utils/googleAd.dart';
+import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/support/supportButton.dart';
 import 'package:flutter/material.dart';
@@ -66,23 +67,47 @@ class SupportScreen extends StatelessWidget {
                       callBack: () {
                         GoogleAdManager().loadInterstitialAd();
                       },
-                      text: '広告を見る',
-                    ),
-                    SupportButton(
-                      callBack: () {},
-                      text: 'ご苦労さま100円支援',
+                      text: '広告を見る (+30ポイント)',
                     ),
                     SupportButton(
                       callBack: () {
-                        log('500円支援 click');
+                        CustomSnackbar.showSuccessSnackbar(
+                            title: '100円支援 click',
+                            message: 'show me the money');
                       },
-                      text: 'がんばれ！！500円支援',
+                      text: '100円支援 (+120ポイント)',
                     ),
                     SupportButton(
                       callBack: () {
-                        log('1000円支援 click');
+                        CustomSnackbar.showSuccessSnackbar(
+                            title: '500円支援 click',
+                            message: 'show me the money');
                       },
-                      text: '気に入った1万円支援',
+                      text: '500円支援 (+1300ポイント)',
+                    ),
+                    SupportButton(
+                      callBack: () {
+                        CustomSnackbar.showSuccessSnackbar(
+                            title: '1000円支援 click',
+                            message: 'show me the money');
+                      },
+                      text: '1000円支援 (+1500ポイント)',
+                    ),
+                    SupportButton(
+                      callBack: () {
+                        CustomSnackbar.showSuccessSnackbar(
+                            title: '5000円支援 click',
+                            message: 'show me the money');
+                      },
+                      text: '5000円支援 (+8500ポイント)',
+                    ),
+                    SupportButton(
+                      callBack: () {
+                        CustomSnackbar.showSuccessSnackbar(
+                            title: '10000円支援 click',
+                            message: 'show me the money');
+                      },
+                      text: '1万円支援 (+20000ポイント)',
                     )
                   ],
                 )

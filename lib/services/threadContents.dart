@@ -12,16 +12,18 @@ class ThreadContentsService {
     required String contents,
   }) async {
     try {
-      var uuid = await SystemService().getItem('key');
+      var authKey = await SystemService().getAuthKey();
 
       final pb = PocketBase(API_URL);
 
       final body = <String, dynamic>{
-        "thread_id": threadId,
-        "user_id": uuid,
+        "thread": threadId,
+        "user_id": authKey,
         "nickname": nickname,
         "contents": contents,
       };
+
+      log('createItem body > $body');
 
       await pb.collection('thread_contents').create(body: body);
     } catch (error) {
@@ -58,6 +60,23 @@ class ThreadContentsService {
       return threadList;
     } catch (error) {
       log('getThreadContents error > $error');
+      rethrow;
+    }
+  }
+
+  Future sendMessage(
+      String fromUser, String toUser, String message, String oriMessage) async {
+    try {
+      final pb = PocketBase(API_URL);
+      final body = <String, dynamic>{
+        "from_user": fromUser,
+        "to_user": toUser,
+        "message": message,
+        "ori_message": oriMessage
+      };
+
+      await pb.collection('message').create(body: body);
+    } catch (error) {
       rethrow;
     }
   }

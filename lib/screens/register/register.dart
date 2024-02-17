@@ -65,12 +65,9 @@ class RegisterScreen extends StatelessWidget {
           await _systemService.createItem('key', response.id);
 
           Get.to(() => RootScreen());
-        } on ClientException catch (error) {
-          log('ClientException : $error');
-          CustomSnackbar.showClientErrorSnackbar(title: '登録失敗', error: error);
         } catch (error) {
           log('error : $error, ${error.toString()}');
-          CustomSnackbar.showDefaultErrorSnackbar(title: '登録失敗', error: error);
+          CustomSnackbar.showErrorSnackbar(title: '登録失敗', error: error);
         } finally {
           provider.setIsProcessing(false);
         }

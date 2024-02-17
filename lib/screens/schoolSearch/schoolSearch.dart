@@ -183,10 +183,10 @@ class SchoolSearchScreen extends StatelessWidget {
               }
               Get.focusScope?.unfocus();
               _searchSchoolList();
-            } catch (e) {
-              CustomSnackbar.showDefaultErrorSnackbar(
+            } catch (error) {
+              CustomSnackbar.showErrorSnackbar(
                 title: 'エラー',
-                error: e,
+                error: error,
               );
             }
           },

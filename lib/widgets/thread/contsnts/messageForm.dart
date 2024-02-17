@@ -19,7 +19,7 @@ class ThreadContentsMessageFormWidget extends StatelessWidget {
 
   void _onSendMessage() async {
     try {
-      log(_textController.text);
+      log('message: ${_textController.text} threadId: ${Get.arguments.id} nickname: ${userInfoProvider.nickName}');
 
       if (_textController.text.isEmpty) {
         return;
@@ -52,7 +52,7 @@ class ThreadContentsMessageFormWidget extends StatelessWidget {
       CustomSnackbar.showSuccessSnackbar(
           title: 'Success', message: 'メッセージを送信しました。');
     } catch (error) {
-      CustomSnackbar.showDefaultErrorSnackbar(title: 'Error', error: error);
+      CustomSnackbar.showErrorSnackbar(title: 'Error', error: error);
       log('error: $error');
     }
   }

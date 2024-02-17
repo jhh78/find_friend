@@ -6,7 +6,6 @@ import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/thread.dart';
 import 'package:find_friend/utils/constants.dart';
-import 'package:find_friend/utils/message/common.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:find_friend/widgets/common/dropboxMenu.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
@@ -122,13 +121,8 @@ class ThreadCreateForm extends StatelessWidget {
                   );
 
                   Get.back();
-                } on ClientException catch (error) {
-                  CustomSnackbar.showDefaultErrorSnackbar(
-                    title: '処理失敗',
-                    error: error,
-                  );
                 } catch (error) {
-                  CustomSnackbar.showDefaultErrorSnackbar(
+                  CustomSnackbar.showErrorSnackbar(
                     title: '処理失敗',
                     error: error,
                   );

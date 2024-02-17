@@ -12,7 +12,6 @@ import 'package:find_friend/widgets/userinfo/textItemDisplayArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pocketbase/pocketbase.dart';
 
 class UserInfoScreen extends StatelessWidget {
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
@@ -117,11 +116,8 @@ class UserInfoScreen extends StatelessWidget {
 
             CustomSnackbar.showSuccessSnackbar(
                 title: '更新完了', message: '情報が更新されました');
-          } on ClientException catch (error) {
-            CustomSnackbar.showClientErrorSnackbar(title: '更新失敗', error: error);
           } catch (error) {
-            CustomSnackbar.showDefaultErrorSnackbar(
-                title: '更新失敗', error: error);
+            CustomSnackbar.showErrorSnackbar(title: '更新失敗', error: error);
           } finally {
             userInfoProvider.setIsProcessing(false);
             Get.focusScope?.unfocus();

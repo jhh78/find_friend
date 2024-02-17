@@ -6,10 +6,10 @@ import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/threadContents.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
+import 'package:find_friend/widgets/common/textArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pocketbase/pocketbase.dart';
 
 class ThreadItemCardWidget extends StatelessWidget {
   final bool isOwner;
@@ -67,12 +67,8 @@ class ThreadItemCardWidget extends StatelessWidget {
                                   try {
                                     await _threadContentsService
                                         .deleteItem(item.id.toString());
-                                  } on ClientException catch (error) {
-                                    CustomSnackbar.showClientErrorSnackbar(
-                                        title: 'Error', error: error);
-                                    log('error: $error');
                                   } catch (error) {
-                                    CustomSnackbar.showDefaultErrorSnackbar(
+                                    CustomSnackbar.showErrorSnackbar(
                                         title: 'Error', error: error);
                                     log('error: $error');
                                   } finally {
@@ -104,7 +100,96 @@ class ThreadItemCardWidget extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
-              log('userId: >>>> ${item.userId}');
+              log('users : from ${userInfoProvider.userId} to ${item.userId}');
+              log('other : >>>> ${item.threadId} ${item.contents}');
+
+              final TextEditingController messageController =
+                  TextEditingController();
+
+              Get.dialog(
+                Material(
+                  color: Colors.transparent,
+                  child: Center(
+                    child: Container(
+                      margin: const EdgeInsets.all(16.0),
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const CustomTextWidget(
+                                  text: 'Send a message',
+                                  kind: 'label',
+                                ),
+                                IconButton(
+                                  onPressed: () async {
+                                    try {
+                                      log('send message');
+                                      log(messageController.text);
+
+                                      if (messageController.text.isEmpty) {
+                                        throw Exception('メッセージは必須です');
+                                      }
+
+                                      if (messageController.text.length > 200) {
+                                        throw Exception(
+                                            'メッセージは200文字以内で入力してください');
+                                      }
+
+                                      await _threadContentsService.sendMessage(
+                                        userInfoProvider.userId.value,
+                                        item.userId.toString(),
+                                        messageController.text,
+                                        item.contents.toString(),
+                                      );
+
+                                      Get.back();
+                                      CustomSnackbar.showSuccessSnackbar(
+                                          title: 'Success',
+                                          message: 'メッセージを送信しました');
+                                    } catch (error) {
+                                      log('error: $error');
+                                      CustomSnackbar.showErrorSnackbar(
+                                          title: 'Error', error: error);
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.playlist_add_circle_outlined,
+                                    color: Colors.blueAccent,
+                                    size: 30,
+                                  ),
+                                )
+                              ],
+                            ),
+                            CustomTextAreaWidget(
+                              isRequired: true,
+                              title: 'メッセージを送信',
+                              controller: messageController,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () => Get.back(),
+                                  child: const CustomTextWidget(
+                                    text: 'Cancel',
+                                    kind: 'label',
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
             },
             icon: const Icon(
               Icons.message_outlined,
@@ -116,6 +201,8 @@ class ThreadItemCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('item.created: ${item.threadId}');
+
     final String createAt = DateFormat('yyyy-MM-dd HH:mm')
         .format(DateTime.parse(item.created.toString()).toLocal());
     return Padding(

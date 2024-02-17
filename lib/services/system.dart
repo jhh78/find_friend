@@ -4,14 +4,13 @@ import 'package:find_friend/services/database.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SystemService {
-  Future<String?> getItem(String kind) async {
+  Future<String?> getAuthKey() async {
     try {
       var db = await DatabaseService.initDb();
       List<Map<String, dynamic>> maps = await db.query(
         'system',
-        where: 'kind = ?',
+        where: 'kind = "key"',
         limit: 1,
-        whereArgs: [kind],
       );
 
       return maps[0]['data'];
