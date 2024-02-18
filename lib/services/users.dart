@@ -35,30 +35,30 @@ class UsersService {
     }
   }
 
-  Future updateItem(UserInfoProvider userInfo, String depiction) async {
+  Future updateItem(UserInfoProvider provider, String depiction) async {
     try {
-      // final String? uuid = await SystemService().getAuthKey();
-      // var pb = PocketBase(API_URL);
+      final String uuid = await SystemService().getAuthKey();
+      var pb = PocketBase(API_URL);
 
-      // List<Map<String, dynamic>> jsonString = [];
+      List<Map<String, dynamic>> jsonString = [];
 
-      // for (var item in userInfo.selectedSchoolList) {
-      //   jsonString.add(item.toMap());
-      // }
+      for (var item in provider.userInfo.value.schools!) {
+        jsonString.add(item.toMap());
+      }
 
-      // final body = <String, dynamic>{
-      //   "nickname": userInfo.nickName.value,
-      //   "exp": userInfo.exp.value,
-      //   "point": userInfo.point.value,
-      //   "depiction": depiction,
-      //   "schools": jsonEncode(jsonString),
-      // };
+      final body = <String, dynamic>{
+        "nickname": provider.userInfo.value.nickname,
+        "exp": provider.userInfo.value.exp,
+        "point": provider.userInfo.value.point,
+        "depiction": depiction,
+        "schools": jsonEncode(jsonString),
+      };
 
-      // log('updateItem body: $body');
+      log('updateItem body: $body');
 
-      // final record =
-      //     await pb.collection('users').update(uuid.toString(), body: body);
-      // return record.id;
+      final record =
+          await pb.collection('users').update(uuid.toString(), body: body);
+      return record.id;
     } catch (error) {
       log('updateItem error: $error');
       rethrow;

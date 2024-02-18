@@ -35,20 +35,24 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
                     ),
                 ],
               ),
-              if (_registerProvider.selectedSchools.length < 5)
-                IconButton(
-                  icon: const Icon(Icons.add_circle_outline_rounded),
-                  color: Colors.blueAccent,
-                  style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(Colors.blue[200]),
-                  ),
-                  onPressed: () {
-                    Get.to(
-                      () => SchoolSearchScreen(),
-                      transition: Transition.rightToLeft,
-                    );
-                  },
-                ),
+              Obx(
+                () => _registerProvider.selectedSchools.length < 5
+                    ? IconButton(
+                        icon: const Icon(Icons.add_circle_outline_rounded),
+                        color: Colors.blueAccent,
+                        style: ButtonStyle(
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.blue[200]),
+                        ),
+                        onPressed: () {
+                          Get.to(
+                            () => SchoolSearchScreen(),
+                            transition: Transition.rightToLeft,
+                          );
+                        },
+                      )
+                    : Container(),
+              )
             ],
           ),
           Obx(

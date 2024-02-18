@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:find_friend/models/schools.dart';
+import 'package:find_friend/models/user.dart';
+import 'package:find_friend/providers/register.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/message/register.dart';
@@ -13,10 +18,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class UserInfoScreen extends StatelessWidget {
+  final RegisterProvider registerProvider = Get.put(RegisterProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
 
   final UsersService _userService = UsersService();
-  final TextEditingController _aboutMeController = TextEditingController();
+  final TextEditingController _depictionController = TextEditingController();
 
   UserInfoScreen({super.key});
 
@@ -41,13 +47,13 @@ class UserInfoScreen extends StatelessWidget {
               ),
               centerTitle: true,
             ),
-            // body: SingleChildScrollView(
-            //   child: Obx(
-            //     () => userInfoProvider.nickName.value.isEmpty
-            //         ? const CircularProgressIndicator()
-            //         : _renderContentsLayout(),
-            //   ),
-            // ),
+            body: SingleChildScrollView(
+              child: Obx(
+                () => !userInfoProvider.isReady.value
+                    ? const CircularProgressIndicator()
+                    : _renderContentsLayout(userInfoProvider.userInfo.value),
+              ),
+            ),
             floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.transparent,
               elevation: 0,
@@ -71,60 +77,62 @@ class UserInfoScreen extends StatelessWidget {
     );
   }
 
-  // Column _renderContentsLayout() {
-  //   _aboutMeController.text = userInfoProvider.aboutMe.value;
-  //   return Column(
-  //     children: [
-  //       UserInfoTextItemDisplayArea(
-  //         title: 'ニックネーム',
-  //         body: userInfoProvider.nickName.value,
-  //       ),
-  //       Padding(
-  //         padding: const EdgeInsets.only(left: 5),
-  //         child: SchoolSearchedItemsWidget(),
-  //       ),
-  //       UserInfoTextItemDisplayArea(
-  //         title: 'exp',
-  //         body: getNumberFotmatString(userInfoProvider.exp.value),
-  //       ),
-  //       UserInfoTextItemDisplayArea(
-  //         title: 'ポイント',
-  //         body: getNumberFotmatString(userInfoProvider.point.value),
-  //       ),
-  //       CustomTextAreaWidget(
-  //         isRequired: true,
-  //         controller: _aboutMeController,
-  //         title: REGISTER_ABOUT_ME_TITLE,
-  //         errorText: userInfoProvider.validate['aboutMe'],
-  //       )
-  //     ],
-  //   );
-  // }
+  Column _renderContentsLayout(UsersTable userInfo) {
+    log('userInfo: ${userInfo.toMap()}', name: 'UserInfoScreen');
+    registerProvider.selectedSchools.value = userInfo.schools ?? [];
+    _depictionController.text = userInfo.depiction ?? '';
+    return Column(
+      children: [
+        UserInfoTextItemDisplayArea(
+          title: 'ニックネーム',
+          body: userInfo.nickname ?? '',
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: SchoolSearchedItemsWidget(),
+        ),
+        UserInfoTextItemDisplayArea(
+          title: 'exp',
+          body: getNumberFotmatString(userInfo.exp ?? 0),
+        ),
+        UserInfoTextItemDisplayArea(
+          title: 'ポイント',
+          body: getNumberFotmatString(userInfo.point ?? 0),
+        ),
+        CustomTextAreaWidget(
+          isRequired: true,
+          controller: _depictionController,
+          title: REGISTER_ABOUT_ME_TITLE,
+        )
+      ],
+    );
+  }
 
   Future<void> _saveButtonOnClick() async {
     try {
-      // userInfoProvider.setAboutMe(_aboutMeController.text);
+      userInfoProvider.isProcessing(true);
 
-      // userInfoProvider.doFormDataValidate(
-      //   userInfoProvider.nickName.value,
-      //   _aboutMeController.text,
-      //   userInfoProvider.selectedSchoolList,
-      // );
+      if (registerProvider.selectedSchools.isEmpty) {
+        throw Exception(SCHOOL_SEARCH_ERROR);
+      }
 
-      // userInfoProvider.setIsProcessing(true);
+      if (_depictionController.text.isEmpty) {
+        throw Exception(REGISTER_ABOUT_ME_ERROR);
+      }
 
-      // // update
-      // await _userService.updateItem(
-      //   userInfoProvider,
-      //   _aboutMeController.text,
-      // );
+      // update
+      await _userService.updateItem(
+        userInfoProvider,
+        _depictionController.text,
+      );
 
-      // CustomSnackbar.showSuccessSnackbar(title: '更新完了', message: '情報が更新されました');
+      CustomSnackbar.showSuccessSnackbar(title: '更新完了', message: '情報が更新されました');
     } catch (error) {
+      log('error: $error', name: 'UserInfoScreen');
       CustomSnackbar.showErrorSnackbar(title: '更新失敗', error: error);
     } finally {
-      // userInfoProvider.setIsProcessing(false);
-      // Get.focusScope?.unfocus();
+      userInfoProvider.isProcessing(false);
+      Get.focusScope?.unfocus();
     }
   }
 }

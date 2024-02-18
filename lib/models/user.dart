@@ -35,6 +35,11 @@ class UsersTable {
   }
 
   UsersTable.fromJson(Map<String, dynamic> json) {
+    final List<SchoolsTable> schoolList = [];
+    for (Map<String, dynamic> item in json['schools']) {
+      schoolList.add(SchoolsTable.fromJson(item));
+    }
+
     id = json['id'];
     created = json['created'];
     updated = json['updated'];
@@ -42,6 +47,6 @@ class UsersTable {
     exp = json['exp'];
     point = json['point'];
     depiction = json['depiction'];
-    schools = json['schools'];
+    schools = schoolList;
   }
 }

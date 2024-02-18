@@ -1,6 +1,7 @@
 import 'package:find_friend/providers/appData.dart';
 import 'package:find_friend/providers/message.dart';
 import 'package:find_friend/providers/thread.dart';
+import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/screens/favorite/favorite.dart';
 import 'package:find_friend/screens/message/message.dart';
 import 'package:find_friend/screens/notice/notice.dart';
@@ -19,6 +20,7 @@ class RootScreen extends StatelessWidget {
 
   Widget _renderContentWidget() {
     if (controller.navibarCurrentIndex.value == 0) {
+      Get.delete<UserInfoProvider>();
       return UserInfoScreen();
     } else if (controller.navibarCurrentIndex.value == 1) {
       // 스레드의 경우 항상 최신의 데이터를 가져와야 되므로 리셋을 한다
