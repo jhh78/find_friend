@@ -1,8 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
-const DATABASE_NAME = 'phone.db';
+const DATABASE_NAME = 'ff.db';
 const API_URL = 'http://153.121.65.233:10000';
 const PAGE_PER_ITEM = 10;
+const REGISTER_DEAFULT_EXP = 0;
+const REGISTER_DEAFULT_POINT = 100;
 
 const List<Map<String, String>> FACILITY_CLASSIFICATION = [
   {'label': '国立', 'value': '1'},

@@ -24,13 +24,13 @@ class ThreadProvider extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    threadService
-        .getThreadList(userInfoProvider.selectedSchoolList, 1, PAGE_PER_ITEM)
-        .then(
-      (value) {
-        initThreadListForValue(value);
-      },
-    );
+    // threadService
+    //     .getThreadList(userInfoProvider.selectedSchoolList, 1, PAGE_PER_ITEM)
+    //     .then(
+    //   (value) {
+    //     initThreadListForValue(value);
+    //   },
+    // );
   }
 
   void setCurrentPage(int value) {

@@ -6,15 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class IntroScreen extends StatelessWidget {
-  const IntroScreen({super.key});
+  IntroScreen({super.key});
+  final SystemService _systemService = SystemService();
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        var uuid = await SystemService().getAuthKey();
+        var uuid = await _systemService.getAuthKey();
 
-        if (uuid != null) {
+        if (uuid.isNotEmpty) {
           Get.offAll(
             () => RootScreen(),
             transition: Transition.fadeIn,

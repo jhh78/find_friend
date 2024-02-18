@@ -1,15 +1,12 @@
 import 'dart:developer';
 
 import 'package:find_friend/models/message.dart';
-import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/message.dart';
-import 'package:find_friend/providers/thread.dart';
-import 'package:find_friend/providers/threadContents.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/message.dart';
-import 'package:find_friend/services/thread.dart';
-import 'package:find_friend/services/threadContents.dart';
+import 'package:find_friend/services/system.dart';
 import 'package:find_friend/utils/constants.dart';
+import 'package:find_friend/utils/utils.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/common/textArea.dart';
@@ -19,36 +16,36 @@ import 'package:intl/intl.dart';
 
 class MessageScreen extends StatelessWidget {
   MessageScreen({super.key});
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey();
   final MessageProvider messageProvider = Get.put(MessageProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
 
   final ScrollController _scrollController = ScrollController();
   final MessageService messageService = MessageService();
+  final SystemService systemService = SystemService();
 
   @override
   Widget build(BuildContext context) {
-    _scrollController.addListener(() async {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        log('scrollController called ${_scrollController.position.pixels} ${_scrollController.position.maxScrollExtent}');
+    // _scrollController.addListener(() async {
+    //   if (_scrollController.position.pixels ==
+    //       _scrollController.position.maxScrollExtent) {
+    //     log('scrollController called ${_scrollController.position.pixels} ${_scrollController.position.maxScrollExtent}');
 
-        final int nextPage = messageProvider.currentPage.value + 1;
+    //     final int nextPage = messageProvider.currentPage.value + 1;
 
-        List<MessageTable> response = await messageService.getMessageList(
-          userInfoProvider.userId.value,
-          nextPage,
-          PAGE_PER_ITEM,
-        );
+    //     List<MessageTable> response = await messageService.getMessageList(
+    //       userInfoProvider.userId.value,
+    //       nextPage,
+    //       PAGE_PER_ITEM,
+    //     );
 
-        if (response.isNotEmpty) {
-          messageProvider.currentPage.value = nextPage;
-          for (MessageTable item in response) {
-            messageProvider.messageList.add(item);
-          }
-        }
-      }
-    });
+    //     if (response.isNotEmpty) {
+    //       messageProvider.currentPage.value = nextPage;
+    //       for (MessageTable item in response) {
+    //         messageProvider.messageList.add(item);
+    //       }
+    //     }
+    //   }
+    // });
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -62,14 +59,20 @@ class MessageScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Obx(
-        () => ListView.builder(
-          controller: _scrollController,
-          itemCount: messageProvider.messageList.length,
-          itemBuilder: (context, index) {
-            return _renderMessageList(
-                context, messageProvider.messageList[index]);
-          },
-        ),
+        () => messageProvider.messageList.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.builder(
+                controller: _scrollController,
+                itemCount: messageProvider.messageList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _renderMessageList(
+                    context,
+                    messageProvider.messageList[index],
+                  );
+                },
+              ),
       ),
     );
   }
@@ -86,64 +89,68 @@ class MessageScreen extends StatelessWidget {
           Icons.remove_circle_outline,
         ),
         onPressed: () {
-          Get.dialog(
-            Center(
-              child: Container(
-                margin: const EdgeInsets.all(16.0),
-                color: Colors.white,
-                child: Card(
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      const ListTile(
-                        title: CustomTextWidget(
-                          text: 'Delete this message?',
-                          kind: 'label',
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const CustomTextWidget(
-                              text: 'Cancel',
-                              kind: 'label',
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              try {
-                                await messageService.deleteMessage(message.id);
-                                Get.back();
+          _deleteMessageButtonOnClick(message);
+        },
+      ),
+    );
+  }
 
-                                messageProvider.messageList.remove(message);
-                                CustomSnackbar.showSuccessSnackbar(
-                                    title: 'Success', message: 'メッセージを削除しました');
-                              } catch (error) {
-                                Get.back();
-                                CustomSnackbar.showErrorSnackbar(
-                                    title: 'Error', error: error);
-                                log('error: $error');
-                              }
-                            },
-                            child: const CustomTextWidget(
-                              text: 'Delete',
-                              kind: 'label',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+  void _deleteMessageButtonOnClick(MessageTable message) {
+    Get.dialog(
+      Center(
+        child: Container(
+          margin: const EdgeInsets.all(16.0),
+          color: Colors.white,
+          child: Card(
+            color: Colors.white,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const ListTile(
+                  title: CustomTextWidget(
+                    text: 'Delete this message?',
+                    kind: 'label',
                   ),
                 ),
-              ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: const CustomTextWidget(
+                        text: 'Cancel',
+                        kind: 'label',
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        try {
+                          await messageService.deleteMessage(message.id);
+                          Get.back();
+
+                          messageProvider.messageList.remove(message);
+                          CustomSnackbar.showSuccessSnackbar(
+                              title: 'Success', message: 'メッセージを削除しました');
+                        } catch (error) {
+                          Get.back();
+                          CustomSnackbar.showErrorSnackbar(
+                              title: 'Error', error: error);
+                          log('error: $error');
+                        }
+                      },
+                      child: const CustomTextWidget(
+                        text: 'Delete',
+                        kind: 'label',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -157,93 +164,7 @@ class MessageScreen extends StatelessWidget {
         padding: EdgeInsets.zero,
         constraints: const BoxConstraints(),
         onPressed: () {
-          final TextEditingController messageController =
-              TextEditingController();
-
-          Get.dialog(
-            Material(
-              color: Colors.transparent,
-              child: Center(
-                child: Container(
-                  margin: const EdgeInsets.all(16.0),
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const CustomTextWidget(
-                              text: 'Send a message',
-                              kind: 'label',
-                            ),
-                            IconButton(
-                              onPressed: () async {
-                                try {
-                                  if (messageController.text.isEmpty) {
-                                    throw Exception('メッセージは必須です');
-                                  }
-
-                                  if (messageController.text.length > 200) {
-                                    throw Exception('メッセージは200文字以内で入力してください');
-                                  }
-
-                                  await messageService.sendMessage(
-                                    userInfoProvider.userId.value,
-                                    message.fromUser.id.toString(),
-                                    messageController.text,
-                                    message.message,
-                                  );
-
-                                  await messageService
-                                      .deleteMessage(message.id);
-                                  messageProvider.messageList.remove(message);
-
-                                  Get.back();
-                                  CustomSnackbar.showSuccessSnackbar(
-                                      title: 'Success',
-                                      message: 'メッセージを送信しました');
-                                } catch (error) {
-                                  Get.back();
-                                  CustomSnackbar.showErrorSnackbar(
-                                      title: 'Error', error: error);
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.playlist_add_circle_outlined,
-                                color: Colors.blueAccent,
-                                size: 30,
-                              ),
-                            )
-                          ],
-                        ),
-                        CustomTextAreaWidget(
-                          isRequired: true,
-                          title: 'メッセージを送信',
-                          controller: messageController,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () => Get.back(),
-                              child: const CustomTextWidget(
-                                text: 'Cancel',
-                                kind: 'label',
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
+          _sendMessageButtonOnClick(message);
         },
         icon: const Icon(
           Icons.mail_outline,
@@ -252,10 +173,93 @@ class MessageScreen extends StatelessWidget {
     );
   }
 
-  Widget _renderMessageList(BuildContext context, MessageTable message) {
-    final String createAt = DateFormat('yyyy-MM-dd HH:mm')
-        .format(DateTime.parse(message.created.toString()).toLocal());
+  void _sendMessageButtonOnClick(MessageTable message) {
+    final TextEditingController messageController = TextEditingController();
+    Get.dialog(
+      Material(
+        color: Colors.transparent,
+        child: Center(
+          child: Container(
+            margin: const EdgeInsets.all(16.0),
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const CustomTextWidget(
+                        text: 'Send a message',
+                        kind: 'label',
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          try {
+                            if (messageController.text.isEmpty) {
+                              throw Exception('メッセージは必須です');
+                            }
 
+                            if (messageController.text.length > 200) {
+                              throw Exception('メッセージは200文字以内で入力してください');
+                            }
+
+                            // await messageService.sendMessage(
+                            //   userInfoProvider.userId.value,
+                            //   message.fromUser.id.toString(),
+                            //   messageController.text,
+                            //   message.message,
+                            // );
+
+                            await messageService.deleteMessage(message.id);
+                            messageProvider.messageList.remove(message);
+
+                            Get.back();
+                            CustomSnackbar.showSuccessSnackbar(
+                                title: 'Success', message: 'メッセージを送信しました');
+                          } catch (error) {
+                            Get.back();
+                            CustomSnackbar.showErrorSnackbar(
+                                title: 'Error', error: error);
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.playlist_add_circle_outlined,
+                          color: Colors.blueAccent,
+                          size: 30,
+                        ),
+                      )
+                    ],
+                  ),
+                  CustomTextAreaWidget(
+                    isRequired: true,
+                    title: 'メッセージを送信',
+                    controller: messageController,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Get.back(),
+                        child: const CustomTextWidget(
+                          text: 'Cancel',
+                          kind: 'label',
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _renderMessageList(BuildContext context, MessageTable message) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -289,7 +293,7 @@ class MessageScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomTextWidget(
-                    text: createAt,
+                    text: getDateFormatString(message.created),
                   ),
                   Row(
                     children: [

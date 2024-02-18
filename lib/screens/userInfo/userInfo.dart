@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/message/register.dart';
+import 'package:find_friend/utils/utils.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
@@ -15,7 +14,6 @@ import 'package:intl/intl.dart';
 
 class UserInfoScreen extends StatelessWidget {
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
-  final NumberFormat numberFormat = NumberFormat("###,###", "en_US");
 
   final UsersService _userService = UsersService();
   final TextEditingController _aboutMeController = TextEditingController();
@@ -31,99 +29,102 @@ class UserInfoScreen extends StatelessWidget {
           const CustomBackGroundImageWidget(
             type: 'bg',
           ),
-          newMethod(context),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              automaticallyImplyLeading: false,
+              toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+              title: const CustomTextWidget(
+                text: '基本情報',
+                kind: 'headTitle',
+              ),
+              centerTitle: true,
+            ),
+            // body: SingleChildScrollView(
+            //   child: Obx(
+            //     () => userInfoProvider.nickName.value.isEmpty
+            //         ? const CircularProgressIndicator()
+            //         : _renderContentsLayout(),
+            //   ),
+            // ),
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              onPressed: _saveButtonOnClick,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blue,
+                ),
+                child: const Icon(
+                  Icons.save_as_outlined,
+                  color: Colors.white,
+                  size: 35,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Scaffold newMethod(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-        title: const CustomTextWidget(
-          text: '基本情報',
-          kind: 'headTitle',
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Obx(
-          () {
-            _aboutMeController.text = userInfoProvider.aboutMe.value;
-            return Column(
-              children: [
-                UserInfoTextItemDisplayArea(
-                  title: 'ニックネーム',
-                  body: userInfoProvider.nickName.value,
-                ),
-                SchoolSearchedItemsWidget(),
-                UserInfoTextItemDisplayArea(
-                  title: 'exp',
-                  body: numberFormat.format(userInfoProvider.exp.value),
-                ),
-                UserInfoTextItemDisplayArea(
-                  title: 'ポイント',
-                  body: numberFormat.format(userInfoProvider.point.value),
-                ),
-                CustomTextAreaWidget(
-                  isRequired: true,
-                  controller: _aboutMeController,
-                  title: REGISTER_ABOUT_ME_TITLE,
-                  errorText: userInfoProvider.validate['aboutMe'],
-                )
-              ],
-            );
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blue,
-          ),
-          child: const Icon(
-            Icons.save_as_outlined,
-            color: Colors.white,
-            size: 35,
-          ),
-        ),
-        onPressed: () async {
-          try {
-            userInfoProvider.setAboutMe(_aboutMeController.text);
+  // Column _renderContentsLayout() {
+  //   _aboutMeController.text = userInfoProvider.aboutMe.value;
+  //   return Column(
+  //     children: [
+  //       UserInfoTextItemDisplayArea(
+  //         title: 'ニックネーム',
+  //         body: userInfoProvider.nickName.value,
+  //       ),
+  //       Padding(
+  //         padding: const EdgeInsets.only(left: 5),
+  //         child: SchoolSearchedItemsWidget(),
+  //       ),
+  //       UserInfoTextItemDisplayArea(
+  //         title: 'exp',
+  //         body: getNumberFotmatString(userInfoProvider.exp.value),
+  //       ),
+  //       UserInfoTextItemDisplayArea(
+  //         title: 'ポイント',
+  //         body: getNumberFotmatString(userInfoProvider.point.value),
+  //       ),
+  //       CustomTextAreaWidget(
+  //         isRequired: true,
+  //         controller: _aboutMeController,
+  //         title: REGISTER_ABOUT_ME_TITLE,
+  //         errorText: userInfoProvider.validate['aboutMe'],
+  //       )
+  //     ],
+  //   );
+  // }
 
-            userInfoProvider.doFormDataValidate(
-              userInfoProvider.nickName.value,
-              _aboutMeController.text,
-              userInfoProvider.selectedSchoolList,
-            );
+  Future<void> _saveButtonOnClick() async {
+    try {
+      // userInfoProvider.setAboutMe(_aboutMeController.text);
 
-            userInfoProvider.setIsProcessing(true);
+      // userInfoProvider.doFormDataValidate(
+      //   userInfoProvider.nickName.value,
+      //   _aboutMeController.text,
+      //   userInfoProvider.selectedSchoolList,
+      // );
 
-            // update
-            await _userService.updateItem(
-              userInfoProvider.nickName.value,
-              userInfoProvider.selectedSchoolList,
-              _aboutMeController.text,
-            );
+      // userInfoProvider.setIsProcessing(true);
 
-            CustomSnackbar.showSuccessSnackbar(
-                title: '更新完了', message: '情報が更新されました');
-          } catch (error) {
-            CustomSnackbar.showErrorSnackbar(title: '更新失敗', error: error);
-          } finally {
-            userInfoProvider.setIsProcessing(false);
-            Get.focusScope?.unfocus();
-          }
-        },
-      ),
-    );
+      // // update
+      // await _userService.updateItem(
+      //   userInfoProvider,
+      //   _aboutMeController.text,
+      // );
+
+      // CustomSnackbar.showSuccessSnackbar(title: '更新完了', message: '情報が更新されました');
+    } catch (error) {
+      CustomSnackbar.showErrorSnackbar(title: '更新失敗', error: error);
+    } finally {
+      // userInfoProvider.setIsProcessing(false);
+      // Get.focusScope?.unfocus();
+    }
   }
 }

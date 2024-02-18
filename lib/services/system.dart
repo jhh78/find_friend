@@ -4,7 +4,7 @@ import 'package:find_friend/services/database.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SystemService {
-  Future<String?> getAuthKey() async {
+  Future<String> getAuthKey() async {
     try {
       var db = await DatabaseService.initDb();
       List<Map<String, dynamic>> maps = await db.query(
@@ -13,10 +13,10 @@ class SystemService {
         limit: 1,
       );
 
-      return maps[0]['data'];
+      return maps.isEmpty ? '' : maps[0]['data'];
     } catch (error) {
       log('SystemService getItem error: $error');
-      return null;
+      rethrow;
     }
   }
 

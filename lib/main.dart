@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.dark,
       ),
-      home: const SafeArea(
+      home: SafeArea(
         child: IntroScreen(),
       ),
     );

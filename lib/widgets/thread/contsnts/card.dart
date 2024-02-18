@@ -4,6 +4,7 @@ import 'package:find_friend/models/threadContents.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/threadContents.dart';
+import 'package:find_friend/utils/utils.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/common/textArea.dart';
@@ -100,9 +101,6 @@ class ThreadItemCardWidget extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
-              log('users : from ${userInfoProvider.userId} to ${item.userId}');
-              log('other : >>>> ${item.threadId} ${item.contents}');
-
               final TextEditingController messageController =
                   TextEditingController();
 
@@ -129,29 +127,29 @@ class ThreadItemCardWidget extends StatelessWidget {
                                 IconButton(
                                   onPressed: () async {
                                     try {
-                                      log('send message');
-                                      log(messageController.text);
+                                      // log('send message');
+                                      // log(messageController.text);
 
-                                      if (messageController.text.isEmpty) {
-                                        throw Exception('メッセージは必須です');
-                                      }
+                                      // if (messageController.text.isEmpty) {
+                                      //   throw Exception('メッセージは必須です');
+                                      // }
 
-                                      if (messageController.text.length > 200) {
-                                        throw Exception(
-                                            'メッセージは200文字以内で入力してください');
-                                      }
+                                      // if (messageController.text.length > 200) {
+                                      //   throw Exception(
+                                      //       'メッセージは200文字以内で入力してください');
+                                      // }
 
-                                      await _threadContentsService.sendMessage(
-                                        userInfoProvider.userId.value,
-                                        item.userId.toString(),
-                                        messageController.text,
-                                        item.contents.toString(),
-                                      );
+                                      // await _threadContentsService.sendMessage(
+                                      //   userInfoProvider.userId.value,
+                                      //   item.userId.toString(),
+                                      //   messageController.text,
+                                      //   item.contents.toString(),
+                                      // );
 
-                                      Get.back();
-                                      CustomSnackbar.showSuccessSnackbar(
-                                          title: 'Success',
-                                          message: 'メッセージを送信しました');
+                                      // Get.back();
+                                      // CustomSnackbar.showSuccessSnackbar(
+                                      //     title: 'Success',
+                                      //     message: 'メッセージを送信しました');
                                     } catch (error) {
                                       log('error: $error');
                                       CustomSnackbar.showErrorSnackbar(
@@ -203,8 +201,6 @@ class ThreadItemCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     log('item.created: ${item.threadId}');
 
-    final String createAt = DateFormat('yyyy-MM-dd HH:mm')
-        .format(DateTime.parse(item.created.toString()).toLocal());
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -228,7 +224,7 @@ class ThreadItemCardWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTextWidget(
-                text: createAt,
+                text: getDateFormatString(item.created.toString()),
               ),
               _renderIconGroup(),
             ],

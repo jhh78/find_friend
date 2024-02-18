@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:find_friend/providers/userInfo.dart';
+import 'package:find_friend/providers/register.dart';
 import 'package:find_friend/screens/root.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
@@ -18,17 +18,16 @@ import 'package:pocketbase/pocketbase.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
-
-  final UserInfoProvider provider = Get.put(UserInfoProvider());
+  final RegisterProvider _registerProvider = Get.put(RegisterProvider());
 
   final TextEditingController _nickNameController = TextEditingController();
-  final TextEditingController _aboutMeController = TextEditingController();
+  final TextEditingController _depictionController = TextEditingController();
 
   final UsersService _userService = UsersService();
   final SystemService _systemService = SystemService();
 
   Widget _renderRegisterButton(BuildContext context) {
-    if (provider.isProcessing.value) {
+    if (_registerProvider.isProcessing.value) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -42,41 +41,47 @@ class RegisterScreen extends StatelessWidget {
           ),
         ),
       ),
-      onPressed: () async {
-        try {
-          provider.doFormDataValidate(
-            _nickNameController.text,
-            _aboutMeController.text,
-            provider.selectedSchoolList,
-          );
-
-          provider.setIsProcessing(true);
-
-          RecordModel response = await _userService.createItem(
-            _nickNameController.text,
-            provider.selectedSchoolList,
-            _aboutMeController.text,
-          );
-
-          log('response: $response');
-
-          // 등록된 값으로 초기화
-          provider.initValue(response);
-          await _systemService.createItem('key', response.id);
-
-          Get.to(() => RootScreen());
-        } catch (error) {
-          log('error : $error, ${error.toString()}');
-          CustomSnackbar.showErrorSnackbar(title: '登録失敗', error: error);
-        } finally {
-          provider.setIsProcessing(false);
-        }
-      },
+      onPressed: _doRegister,
       child: const CustomTextWidget(
         text: REGISTER_BUTTON_TEXT,
         kind: 'inputFieldTitle',
       ),
     );
+  }
+
+  void _doRegister() async {
+    try {
+      _registerProvider.isProcessing.value = true;
+
+      if (_nickNameController.text.isEmpty) {
+        throw Exception(REGISTER_NICKNAME_ERROR);
+      }
+
+      if (_depictionController.text.isEmpty) {
+        throw Exception(REGISTER_ABOUT_ME_ERROR);
+      }
+      if (_registerProvider.selectedSchools.isEmpty) {
+        throw Exception(SCHOOL_SEARCH_ERROR);
+      }
+
+      RecordModel response = await _userService.createItem(
+        _nickNameController.text,
+        _registerProvider.selectedSchools,
+        _depictionController.text,
+      );
+
+      log('response: $response');
+
+      // 등록된 값으로 초기화
+      await _systemService.createItem('key', response.id);
+
+      Get.to(() => RootScreen());
+    } catch (error) {
+      log('error : $error, ${error.toString()}');
+      CustomSnackbar.showErrorSnackbar(title: '登録失敗', error: error);
+    } finally {
+      _registerProvider.isProcessing.value = false;
+    }
   }
 
   @override
@@ -99,31 +104,26 @@ class RegisterScreen extends StatelessWidget {
               ),
             ),
             body: SingleChildScrollView(
-              child: Obx(
-                () => Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CustomTextFieldWidget(
-                      isRequired: true,
-                      controller: _nickNameController,
-                      title: REGISTER_NICKNAME_TITLE,
-                      hintText: REGISTER_NICKNAME_HINT,
-                      errorText: provider.validate['nickName'],
-                    ),
-                    CustomTextAreaWidget(
-                      isRequired: true,
-                      controller: _aboutMeController,
-                      title: REGISTER_ABOUT_ME_TITLE,
-                      errorText: provider.validate['aboutMe'],
-                    ),
-                    SchoolSearchedItemsWidget(
-                      isRequired: true,
-                    ),
-                    _renderRegisterButton(context),
-                  ],
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CustomTextFieldWidget(
+                  isRequired: true,
+                  controller: _nickNameController,
+                  title: REGISTER_NICKNAME_TITLE,
+                  hintText: REGISTER_NICKNAME_HINT,
                 ),
-              ),
-            ),
+                CustomTextAreaWidget(
+                  isRequired: true,
+                  controller: _depictionController,
+                  title: REGISTER_ABOUT_ME_TITLE,
+                ),
+                SchoolSearchedItemsWidget(
+                  isRequired: true,
+                ),
+                _renderRegisterButton(context),
+              ],
+            )),
           ),
         ],
       ),

@@ -1,13 +1,12 @@
-import 'package:find_friend/models/schools.dart';
-import 'package:find_friend/providers/userInfo.dart';
+import 'package:find_friend/providers/register.dart';
 import 'package:find_friend/screens/schoolSearch/schoolSearch.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SchoolSearchedItemsWidget extends StatelessWidget {
-  final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
   final bool isRequired;
+  final RegisterProvider _registerProvider = Get.put(RegisterProvider());
 
   SchoolSearchedItemsWidget({
     super.key,
@@ -17,7 +16,7 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 15.0),
+      padding: const EdgeInsets.only(left: 10.0),
       child: Column(
         children: [
           Row(
@@ -36,10 +35,10 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
                     ),
                 ],
               ),
-              if (userInfoProvider.selectedSchoolList.length <= 5)
+              if (_registerProvider.selectedSchools.length < 5)
                 IconButton(
                   icon: const Icon(Icons.add_circle_outline_rounded),
-                  color: Colors.black54,
+                  color: Colors.blueAccent,
                   style: ButtonStyle(
                     overlayColor: MaterialStateProperty.all(Colors.blue[200]),
                   ),
@@ -53,27 +52,28 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
             ],
           ),
           Obx(
-            () => Column(
-              children: userInfoProvider.selectedSchoolList
-                  .map((SchoolsTable school) {
-                return ListTile(
-                  title: CustomTextWidget(
-                    text: school.name.toString(),
-                    kind: 'titleMedium',
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(
-                      Icons.delete_forever_outlined,
-                      color: Colors.redAccent,
-                      size: 30,
+            () {
+              return Column(
+                children: _registerProvider.selectedSchools.map((school) {
+                  return ListTile(
+                    title: CustomTextWidget(
+                      text: school.name.toString(),
+                      kind: 'titleMedium',
                     ),
-                    onPressed: () {
-                      userInfoProvider.selectedSchoolList.remove(school);
-                    },
-                  ),
-                );
-              }).toList(),
-            ),
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.delete_forever_outlined,
+                        color: Colors.redAccent,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        _registerProvider.selectedSchools.remove(school);
+                      },
+                    ),
+                  );
+                }).toList(),
+              );
+            },
           ),
         ],
       ),

@@ -1,31 +1,25 @@
 class ThreadContentsTable {
-  late String? id;
-  late String? collectionId;
-  late String? collectionName;
-  late String? created;
-  late String? updated;
-  late String? threadId;
-  late String? userId;
-  late String? nickname;
-  late String? contents;
+  late String id;
+  late String created;
+  late String updated;
+  late String threadId;
+  late String userId;
+  late String nickname;
+  late String contents;
 
   ThreadContentsTable({
-    this.id,
-    this.collectionId,
-    this.collectionName,
-    this.created,
-    this.updated,
-    this.threadId,
-    this.userId,
-    this.nickname,
-    this.contents,
+    required this.id,
+    required this.created,
+    required this.updated,
+    required this.threadId,
+    required this.userId,
+    required this.nickname,
+    required this.contents,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'collection_id': collectionId,
-      'collection_name': collectionName,
       'created': created,
       'updated': updated,
       'thread_id': threadId,
@@ -37,8 +31,6 @@ class ThreadContentsTable {
 
   ThreadContentsTable.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    collectionId = json['collection_id'];
-    collectionName = json['collection_name'];
     created = json['created'];
     updated = json['updated'];
     threadId = json['thread_id'];

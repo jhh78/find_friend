@@ -22,24 +22,24 @@ class ThreadScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _scrollController.addListener(() async {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        log('scrollController called ${_scrollController.position.pixels} ${_scrollController.position.maxScrollExtent}');
+    // _scrollController.addListener(() async {
+    //   if (_scrollController.position.pixels ==
+    //       _scrollController.position.maxScrollExtent) {
+    //     log('scrollController called ${_scrollController.position.pixels} ${_scrollController.position.maxScrollExtent}');
 
-        final int nextPage = threadProvider.currentPage.value + 1;
+    //     final int nextPage = threadProvider.currentPage.value + 1;
 
-        List<ThreadTable> response = await threadService.getThreadList(
-            userInfoProvider.selectedSchoolList, nextPage, PAGE_PER_ITEM);
+    //     List<ThreadTable> response = await threadService.getThreadList(
+    //         userInfoProvider.selectedSchoolList, nextPage, PAGE_PER_ITEM);
 
-        if (response.isNotEmpty) {
-          threadProvider.setCurrentPage(nextPage);
-          for (ThreadTable item in response) {
-            threadProvider.setThreadList(item);
-          }
-        }
-      }
-    });
+    //     if (response.isNotEmpty) {
+    //       threadProvider.setCurrentPage(nextPage);
+    //       for (ThreadTable item in response) {
+    //         threadProvider.setThreadList(item);
+    //       }
+    //     }
+    //   }
+    // });
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(

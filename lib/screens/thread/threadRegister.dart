@@ -14,7 +14,6 @@ import 'package:find_friend/widgets/common/textArea.dart';
 import 'package:find_friend/widgets/common/textField.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pocketbase/pocketbase.dart';
 
 class ThreadCreateForm extends StatelessWidget {
   ThreadCreateForm({super.key});
@@ -29,24 +28,22 @@ class ThreadCreateForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('${userInfoProvider.selectedSchoolList}');
+    // List<Map<String, dynamic>> schoolList = [];
 
-    List<Map<String, dynamic>> schoolList = [];
-
-    for (SchoolsTable school in userInfoProvider.selectedSchoolList) {
-      Map<String, dynamic> schoolMap = {
-        'value': school.uuid,
-        'label': school.name,
-      };
-      schoolList.add(schoolMap);
-    }
+    // for (SchoolsTable school in userInfoProvider.selectedSchoolList) {
+    //   Map<String, dynamic> schoolMap = {
+    //     'value': school.uuid,
+    //     'label': school.name,
+    //   };
+    //   schoolList.add(schoolMap);
+    // }
 
     return PopScope(
       onPopInvoked: (didPop) async {
-        List<ThreadTable> response = await _threadService.getThreadList(
-            userInfoProvider.selectedSchoolList, 1, PAGE_PER_ITEM);
+        // List<ThreadTable> response = await _threadService.getThreadList(
+        //     userInfoProvider.selectedSchoolList, 1, PAGE_PER_ITEM);
 
-        threadProvider.initThreadListForValue(response);
+        // threadProvider.initThreadListForValue(response);
       },
       child: Stack(
         children: [
@@ -74,13 +71,13 @@ class ThreadCreateForm extends StatelessWidget {
                     hintText: 'スレット名を入力してください',
                     title: 'スレット名',
                   ),
-                  CustomDropBoxMenu(
-                    isRequired: true,
-                    isExpanded: true,
-                    label: '学校選択',
-                    items: schoolList,
-                    onSelected: threadProvider.setFormSchoolField,
-                  ),
+                  // CustomDropBoxMenu(
+                  //   isRequired: true,
+                  //   isExpanded: true,
+                  //   label: '学校選択',
+                  //   items: schoolList,
+                  //   onSelected: threadProvider.setFormSchoolField,
+                  // ),
                   CustomTextAreaWidget(
                     isRequired: true,
                     controller: _contentController,
