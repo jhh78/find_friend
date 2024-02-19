@@ -3,6 +3,7 @@ import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/thread.dart';
+import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/constants.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:find_friend/widgets/common/dropboxMenu.dart';
@@ -15,7 +16,6 @@ import 'package:get/get.dart';
 
 class ThreadCreateForm extends StatelessWidget {
   ThreadCreateForm({super.key});
-
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
@@ -23,6 +23,7 @@ class ThreadCreateForm extends StatelessWidget {
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
 
   final ThreadService _threadService = ThreadService();
+  final UsersService _usersService = UsersService();
   String _selectedSchool = '';
 
   void _doValidate() {
@@ -126,6 +127,15 @@ class ThreadCreateForm extends StatelessWidget {
                     title: _titleController.text,
                     content: _contentController.text,
                     school: _selectedSchool,
+                  );
+
+                  // 유저의 포인터 차감
+                  userInfoProvider.userInfo.value.point =
+                      userInfoProvider.userInfo.value.point! -
+                          THREAD_MAKE_NEED_POINT;
+                  await _usersService.updateUserPoint(
+                    userInfoProvider,
+                    userInfoProvider.userInfo.value.point!,
                   );
 
                   Get.back();

@@ -35,7 +35,8 @@ class UsersService {
     }
   }
 
-  Future updateItem(UserInfoProvider provider, String depiction) async {
+  Future updateIserDefaultInfo(
+      UserInfoProvider provider, String depiction) async {
     try {
       final String uuid = await SystemService().getAuthKey();
       var pb = PocketBase(API_URL);
@@ -47,14 +48,37 @@ class UsersService {
       }
 
       final body = <String, dynamic>{
-        "nickname": provider.userInfo.value.nickname,
-        "exp": provider.userInfo.value.exp,
-        "point": provider.userInfo.value.point,
         "depiction": depiction,
         "schools": jsonEncode(jsonString),
       };
 
-      log('updateItem body: $body');
+      log('updateIserDefaultInfo body: $body', name: 'UsersService');
+
+      final record =
+          await pb.collection('users').update(uuid.toString(), body: body);
+      return record.id;
+    } catch (error) {
+      log('updateItem error: $error');
+      rethrow;
+    }
+  }
+
+  Future updateUserPoint(UserInfoProvider provider, int point) async {
+    try {
+      final String uuid = await SystemService().getAuthKey();
+      var pb = PocketBase(API_URL);
+
+      List<Map<String, dynamic>> jsonString = [];
+
+      for (var item in provider.userInfo.value.schools!) {
+        jsonString.add(item.toMap());
+      }
+
+      final body = <String, dynamic>{
+        "point": point,
+      };
+
+      log('updateUserPoint body: $body', name: 'UsersService');
 
       final record =
           await pb.collection('users').update(uuid.toString(), body: body);

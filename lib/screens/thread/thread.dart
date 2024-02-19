@@ -8,6 +8,7 @@ import 'package:find_friend/screens/thread/threadContents.dart';
 import 'package:find_friend/screens/thread/threadRegister.dart';
 import 'package:find_friend/services/thread.dart';
 import 'package:find_friend/utils/constants.dart';
+import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,6 +56,15 @@ class ThreadScreen extends StatelessWidget {
           IconButton(
             onPressed: () {
               log('add thread');
+
+              if (userInfoProvider.userInfo.value.point! <
+                  THREAD_MAKE_NEED_POINT) {
+                CustomSnackbar.showErrorSnackbar(
+                  title: '活動ポイントが足りません',
+                  error: Exception('支援ページでポイントを獲得してください'),
+                );
+                return;
+              }
               Get.to(
                 () => ThreadCreateForm(),
                 transition: Transition.rightToLeft,

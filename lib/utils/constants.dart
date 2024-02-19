@@ -5,6 +5,13 @@ const API_URL = 'http://153.121.65.233:10000';
 const PAGE_PER_ITEM = 10;
 const REGISTER_DEAFULT_EXP = 0;
 const REGISTER_DEAFULT_POINT = 100;
+const THREAD_MAKE_NEED_POINT = 100;
+const GOOGLE_AD_ADD_POINT = 100;
+const PAYMENT_100_POINT = 120;
+const PAYMENT_500_POINT = 700;
+const PAYMENT_1000_POINT = 1500;
+const PAYMENT_5000_POINT = 8500;
+const PAYMENT_10000_POINT = 20000;
 
 const List<Map<String, String>> FACILITY_CLASSIFICATION = [
   {'label': '国立', 'value': '1'},

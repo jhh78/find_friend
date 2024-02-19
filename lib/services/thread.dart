@@ -52,9 +52,8 @@ class ThreadService {
     required String school,
   }) async {
     try {
-      final String? uuid = await SystemService().getAuthKey();
+      final String uuid = await SystemService().getAuthKey();
       log('createThread called > $title, > $content, > $school > $uuid');
-      // example create body
       final pb = PocketBase(API_URL);
       final body = <String, dynamic>{
         "school_code": school,

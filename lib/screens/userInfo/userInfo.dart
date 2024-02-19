@@ -119,7 +119,7 @@ class UserInfoScreen extends StatelessWidget {
       }
 
       // update
-      await _userService.updateItem(
+      await _userService.updateIserDefaultInfo(
         userInfoProvider,
         _depictionController.text,
       );
