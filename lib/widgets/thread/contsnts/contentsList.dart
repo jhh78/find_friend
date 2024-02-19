@@ -25,25 +25,25 @@ class ThreadContentsListWidget extends StatelessWidget {
             ThreadContentsTable item =
                 threadContentsProvider.threadContentsList[index];
 
-            // return Container(
-            //   margin: const EdgeInsets.all(8.0),
-            //   decoration: BoxDecoration(
-            //     color: Colors.white,
-            //     borderRadius: BorderRadius.circular(8.0),
-            //     boxShadow: const [
-            //       BoxShadow(
-            //         color: Colors.black12,
-            //         blurRadius: 5.0,
-            //         spreadRadius: 2.0,
-            //         offset: Offset(2.0, 2.0),
-            //       ),
-            //     ],
-            //   ),
-            //   child: ThreadItemCardWidget(
-            //     isOwner: item.userId == userInfoProvider.userId.value,
-            //     item: item,
-            //   ),
-            // );
+            return Container(
+              margin: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 5.0,
+                    spreadRadius: 2.0,
+                    offset: Offset(2.0, 2.0),
+                  ),
+                ],
+              ),
+              child: ThreadItemCardWidget(
+                isOwner: item.userId == userInfoProvider.userInfo.value.id,
+                item: item,
+              ),
+            );
           },
         );
 

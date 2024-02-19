@@ -87,9 +87,9 @@ class ThreadContentsScreen extends StatelessWidget {
   }
 
   Widget _renderRemoveThreadButton(String threadId) {
-    // if (Get.arguments.userId != userInfoProvider.userId.value) {
-    //   return Container();
-    // }
+    if (Get.arguments.userId != userInfoProvider.userInfo.value.id) {
+      return Container();
+    }
     return IconButton(
       color: Colors.red,
       onPressed: () {

@@ -25,30 +25,30 @@ class ThreadContentsMessageFormWidget extends StatelessWidget {
 
       log('message length: ${_textController.text.length}');
 
-      // if (_textController.text.length > 200) {
-      //   throw Exception(
-      //       'メッセージの長さ：${_textController.text.length}\nメッセージは200文字以内で入力してください。');
-      // }
+      if (_textController.text.length > 200) {
+        throw Exception(
+            'メッセージの長さ：${_textController.text.length}\nメッセージは200文字以内で入力してください。');
+      }
 
-      // await _threadContentsService.createItem(
-      //   threadId: Get.arguments.id,
-      //   nickname: userInfoProvider.nickName.toString(),
-      //   contents: _textController.text,
-      // );
+      await _threadContentsService.createItem(
+        threadId: Get.arguments.id,
+        nickname: userInfoProvider.userInfo.value.nickname!,
+        contents: _textController.text,
+      );
 
-      // Get.focusScope?.unfocus();
-      // _textController.clear();
+      Get.focusScope?.unfocus();
+      _textController.clear();
 
-      // if (scrollController.hasClients) {
-      //   scrollController.animateTo(
-      //     scrollController.position.minScrollExtent,
-      //     duration: const Duration(seconds: 1),
-      //     curve: Curves.fastLinearToSlowEaseIn,
-      //   );
-      // }
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.minScrollExtent,
+          duration: const Duration(seconds: 1),
+          curve: Curves.fastLinearToSlowEaseIn,
+        );
+      }
 
-      // CustomSnackbar.showSuccessSnackbar(
-      //     title: 'Success', message: 'メッセージを送信しました。');
+      CustomSnackbar.showSuccessSnackbar(
+          title: 'Success', message: 'メッセージを送信しました。');
     } catch (error) {
       CustomSnackbar.showErrorSnackbar(title: 'Error', error: error);
       log('error: $error');

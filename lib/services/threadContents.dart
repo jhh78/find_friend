@@ -17,7 +17,7 @@ class ThreadContentsService {
       final pb = PocketBase(API_URL);
 
       final body = <String, dynamic>{
-        "thread": threadId,
+        "thread_id": threadId,
         "user_id": authKey,
         "nickname": nickname,
         "contents": contents,
