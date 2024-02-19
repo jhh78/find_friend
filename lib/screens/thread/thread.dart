@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
@@ -22,24 +23,23 @@ class ThreadScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // _scrollController.addListener(() async {
-    //   if (_scrollController.position.pixels ==
-    //       _scrollController.position.maxScrollExtent) {
-    //     log('scrollController called ${_scrollController.position.pixels} ${_scrollController.position.maxScrollExtent}');
+    List<SchoolsTable> userSelectedSchool =
+        userInfoProvider.userInfo.value.schools ?? [];
+    _scrollController.addListener(() async {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        final int nextPage = threadProvider.currentPage.value + 1;
 
-    //     final int nextPage = threadProvider.currentPage.value + 1;
+        List<ThreadTable> response = await threadService.getThreadList(
+            userSelectedSchool, nextPage, PAGE_PER_ITEM);
 
-    //     List<ThreadTable> response = await threadService.getThreadList(
-    //         userInfoProvider.selectedSchoolList, nextPage, PAGE_PER_ITEM);
+        if (response.isNotEmpty) {
+          threadProvider.currentPage(nextPage);
+          threadProvider.threadList.addAll(response);
+        }
+      }
+    });
 
-    //     if (response.isNotEmpty) {
-    //       threadProvider.setCurrentPage(nextPage);
-    //       for (ThreadTable item in response) {
-    //         threadProvider.setThreadList(item);
-    //       }
-    //     }
-    //   }
-    // });
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -53,30 +53,35 @@ class ThreadScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {
-                log('add thread');
-                Get.to(
-                  () => ThreadCreateForm(),
-                  transition: Transition.rightToLeft,
-                );
-              },
-              icon: const Icon(Icons.add_circle_outline_rounded),
-              color: Colors.blue,
-              style: ButtonStyle(
-                overlayColor: MaterialStateProperty.all(Colors.blue[200]),
-                iconSize: MaterialStateProperty.all(40),
-              ))
+            onPressed: () {
+              log('add thread');
+              Get.to(
+                () => ThreadCreateForm(),
+                transition: Transition.rightToLeft,
+              );
+            },
+            icon: const Icon(Icons.add_circle_outline_rounded),
+            color: Colors.blue,
+            style: ButtonStyle(
+              overlayColor: MaterialStateProperty.all(Colors.blue[200]),
+              iconSize: MaterialStateProperty.all(40),
+            ),
+          )
         ],
       ),
-      body: Obx(
-        () => ListView.builder(
-          controller: _scrollController,
-          itemCount: threadProvider.threadList.length,
-          itemBuilder: (context, index) {
-            return _renderThreadList(threadProvider.threadList[index]);
-          },
-        ),
-      ),
+      body: Obx(() => threadProvider.threadList.isEmpty
+          ? const Center(
+              child: Center(
+                child: CustomTextWidget(text: 'スレットがありません', kind: 'listTitle'),
+              ),
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              itemCount: threadProvider.threadList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _renderThreadList(threadProvider.threadList[index]);
+              },
+            )),
     );
   }
 

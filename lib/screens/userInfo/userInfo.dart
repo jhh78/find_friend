@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/models/user.dart';
 import 'package:find_friend/providers/register.dart';
 import 'package:find_friend/providers/userInfo.dart';
@@ -15,7 +14,6 @@ import 'package:find_friend/widgets/schools/schoolSearchedItems.dart';
 import 'package:find_friend/widgets/userinfo/textItemDisplayArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class UserInfoScreen extends StatelessWidget {
   final RegisterProvider registerProvider = Get.put(RegisterProvider());

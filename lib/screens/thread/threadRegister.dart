@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/thread.dart';
@@ -25,25 +23,41 @@ class ThreadCreateForm extends StatelessWidget {
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
 
   final ThreadService _threadService = ThreadService();
+  String _selectedSchool = '';
+
+  void _doValidate() {
+    if (_selectedSchool.isEmpty) {
+      throw Exception('学校を選択してください');
+    }
+
+    if (_titleController.text.isEmpty) {
+      throw Exception('タイトルを入力してください');
+    }
+
+    if (_contentController.text.isEmpty) {
+      throw Exception('スレット説明を入力してください');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // List<Map<String, dynamic>> schoolList = [];
+    List<Map<String, dynamic>> schoolList = [];
 
-    // for (SchoolsTable school in userInfoProvider.selectedSchoolList) {
-    //   Map<String, dynamic> schoolMap = {
-    //     'value': school.uuid,
-    //     'label': school.name,
-    //   };
-    //   schoolList.add(schoolMap);
-    // }
+    for (SchoolsTable school in userInfoProvider.userInfo.value.schools ?? []) {
+      Map<String, dynamic> schoolMap = {
+        'value': school.uuid,
+        'label': school.name,
+      };
+      schoolList.add(schoolMap);
+    }
 
     return PopScope(
       onPopInvoked: (didPop) async {
-        // List<ThreadTable> response = await _threadService.getThreadList(
-        //     userInfoProvider.selectedSchoolList, 1, PAGE_PER_ITEM);
-
-        // threadProvider.initThreadListForValue(response);
+        List<ThreadTable> response = await _threadService.getThreadList(
+            userInfoProvider.userInfo.value.schools ?? [], 1, PAGE_PER_ITEM);
+        threadProvider.threadList.clear();
+        threadProvider.threadList.addAll(response);
+        threadProvider.currentPage(1);
       },
       child: Stack(
         children: [
@@ -71,13 +85,15 @@ class ThreadCreateForm extends StatelessWidget {
                     hintText: 'スレット名を入力してください',
                     title: 'スレット名',
                   ),
-                  // CustomDropBoxMenu(
-                  //   isRequired: true,
-                  //   isExpanded: true,
-                  //   label: '学校選択',
-                  //   items: schoolList,
-                  //   onSelected: threadProvider.setFormSchoolField,
-                  // ),
+                  CustomDropBoxMenu(
+                    isRequired: true,
+                    isExpanded: true,
+                    label: '学校選択',
+                    items: schoolList,
+                    onSelected: (value) {
+                      _selectedSchool = value;
+                    },
+                  ),
                   CustomTextAreaWidget(
                     isRequired: true,
                     controller: _contentController,
@@ -103,18 +119,13 @@ class ThreadCreateForm extends StatelessWidget {
               ),
               onPressed: () async {
                 try {
-                  if (!threadProvider.isValidateSuccess(
-                      _titleController.text,
-                      _contentController.text,
-                      threadProvider.formSchoolField)) {
-                    throw Exception('バリデーションエラー\n 必須項目を入力してください');
-                  }
+                  _doValidate();
 
                   // 스레드 생성 로직
                   await _threadService.createThread(
                     title: _titleController.text,
                     content: _contentController.text,
-                    school: threadProvider.formSchoolField,
+                    school: _selectedSchool,
                   );
 
                   Get.back();
