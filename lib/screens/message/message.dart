@@ -12,7 +12,6 @@ import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/common/textArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class MessageScreen extends StatelessWidget {
   MessageScreen({super.key});
@@ -25,27 +24,23 @@ class MessageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // _scrollController.addListener(() async {
-    //   if (_scrollController.position.pixels ==
-    //       _scrollController.position.maxScrollExtent) {
-    //     log('scrollController called ${_scrollController.position.pixels} ${_scrollController.position.maxScrollExtent}');
+    _scrollController.addListener(() async {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        final int nextPage = messageProvider.currentPage.value + 1;
 
-    //     final int nextPage = messageProvider.currentPage.value + 1;
+        List<MessageTable> response = await messageService.getMessageList(
+          userInfoProvider.userInfo.value.id!,
+          nextPage,
+          PAGE_PER_ITEM,
+        );
 
-    //     List<MessageTable> response = await messageService.getMessageList(
-    //       userInfoProvider.userId.value,
-    //       nextPage,
-    //       PAGE_PER_ITEM,
-    //     );
-
-    //     if (response.isNotEmpty) {
-    //       messageProvider.currentPage.value = nextPage;
-    //       for (MessageTable item in response) {
-    //         messageProvider.messageList.add(item);
-    //       }
-    //     }
-    //   }
-    // });
+        if (response.isNotEmpty) {
+          messageProvider.currentPage.value = nextPage;
+          messageProvider.messageList.addAll(response);
+        }
+      }
+    });
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -61,7 +56,12 @@ class MessageScreen extends StatelessWidget {
       body: Obx(
         () => messageProvider.messageList.isEmpty
             ? const Center(
-                child: CircularProgressIndicator(),
+                child: Center(
+                  child: CustomTextWidget(
+                    text: 'メッセージがありません',
+                    kind: 'label',
+                  ),
+                ),
               )
             : ListView.builder(
                 controller: _scrollController,
@@ -206,12 +206,12 @@ class MessageScreen extends StatelessWidget {
                               throw Exception('メッセージは200文字以内で入力してください');
                             }
 
-                            // await messageService.sendMessage(
-                            //   userInfoProvider.userId.value,
-                            //   message.fromUser.id.toString(),
-                            //   messageController.text,
-                            //   message.message,
-                            // );
+                            await messageService.sendMessage(
+                              userInfoProvider.userInfo.value.id!,
+                              message.fromUser.id.toString(),
+                              messageController.text,
+                              message.message,
+                            );
 
                             await messageService.deleteMessage(message.id);
                             messageProvider.messageList.remove(message);
