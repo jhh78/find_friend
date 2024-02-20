@@ -9,13 +9,13 @@ import 'package:pocketbase/pocketbase.dart';
 
 class UsersService {
   Future<RecordModel> createItem(
-      String nickname, List<SchoolsTable> obj, String depiction) async {
+      String nickname, List<SchoolsTable> schools, String depiction) async {
     try {
       var pb = PocketBase(API_URL);
 
       List<Map<String, dynamic>> jsonString = [];
 
-      for (var item in obj) {
+      for (SchoolsTable item in schools) {
         jsonString.add(item.toMap());
       }
 
@@ -24,7 +24,7 @@ class UsersService {
         "exp": REGISTER_DEAFULT_EXP,
         "point": REGISTER_DEAFULT_POINT,
         "depiction": depiction,
-        "schools": jsonEncode(jsonString),
+        "schools": jsonString,
       };
 
       final record = await pb.collection('users').create(body: body);
@@ -36,20 +36,20 @@ class UsersService {
   }
 
   Future updateIserDefaultInfo(
-      UserInfoProvider provider, String depiction) async {
+      List<SchoolsTable> schools, String depiction) async {
     try {
       final String uuid = await SystemService().getAuthKey();
       var pb = PocketBase(API_URL);
 
       List<Map<String, dynamic>> jsonString = [];
 
-      for (var item in provider.userInfo.value.schools!) {
+      for (SchoolsTable item in schools) {
         jsonString.add(item.toMap());
       }
 
       final body = <String, dynamic>{
         "depiction": depiction,
-        "schools": jsonEncode(jsonString),
+        "schools": jsonString,
       };
 
       log('updateIserDefaultInfo body: $body', name: 'UsersService');
@@ -70,7 +70,7 @@ class UsersService {
 
       List<Map<String, dynamic>> jsonString = [];
 
-      for (var item in provider.userInfo.value.schools!) {
+      for (var item in provider.userInfo.schools!) {
         jsonString.add(item.toMap());
       }
 

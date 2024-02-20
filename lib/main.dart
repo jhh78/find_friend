@@ -25,11 +25,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: !kReleaseMode,
       theme: ThemeData(
         useMaterial3: true,
-        brightness: Brightness.dark,
       ),
-      home: SafeArea(
-        child: IntroScreen(),
-      ),
+      home: IntroScreen(),
     );
   }
 }

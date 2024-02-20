@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:find_friend/providers/register.dart';
+import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/screens/root.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
@@ -18,7 +18,7 @@ import 'package:pocketbase/pocketbase.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
-  final RegisterProvider _registerProvider = Get.put(RegisterProvider());
+  final UserInfoProvider _userInfoProvider = Get.put(UserInfoProvider());
 
   final TextEditingController _nickNameController = TextEditingController();
   final TextEditingController _depictionController = TextEditingController();
@@ -27,7 +27,7 @@ class RegisterScreen extends StatelessWidget {
   final SystemService _systemService = SystemService();
 
   Widget _renderRegisterButton(BuildContext context) {
-    if (_registerProvider.isProcessing.value) {
+    if (_userInfoProvider.isProcessing.value) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -51,7 +51,7 @@ class RegisterScreen extends StatelessWidget {
 
   void _doRegister() async {
     try {
-      _registerProvider.isProcessing.value = true;
+      _userInfoProvider.isProcessing.value = true;
 
       if (_nickNameController.text.isEmpty) {
         throw Exception(REGISTER_NICKNAME_ERROR);
@@ -60,13 +60,13 @@ class RegisterScreen extends StatelessWidget {
       if (_depictionController.text.isEmpty) {
         throw Exception(REGISTER_ABOUT_ME_ERROR);
       }
-      if (_registerProvider.selectedSchools.isEmpty) {
+      if (_userInfoProvider.schools.isEmpty) {
         throw Exception(SCHOOL_SEARCH_ERROR);
       }
 
       RecordModel response = await _userService.createItem(
         _nickNameController.text,
-        _registerProvider.selectedSchools,
+        _userInfoProvider.schools,
         _depictionController.text,
       );
 
@@ -74,13 +74,14 @@ class RegisterScreen extends StatelessWidget {
 
       // 등록된 값으로 초기화
       await _systemService.createItem('key', response.id);
+      await _userInfoProvider.initUserInfo();
 
       Get.to(() => RootScreen());
     } catch (error) {
       log('error : $error, ${error.toString()}');
       CustomSnackbar.showErrorSnackbar(title: '登録失敗', error: error);
     } finally {
-      _registerProvider.isProcessing.value = false;
+      _userInfoProvider.isProcessing.value = false;
     }
   }
 

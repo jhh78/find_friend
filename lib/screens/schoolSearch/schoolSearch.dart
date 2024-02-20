@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:find_friend/models/schools.dart';
-import 'package:find_friend/providers/register.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/schools.dart';
 import 'package:find_friend/utils/constants.dart';
@@ -11,19 +12,24 @@ import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// ignore: must_be_immutable
-class SchoolSearchScreen extends StatelessWidget {
-  SchoolSearchScreen({super.key});
+class SchoolSearchScreen extends StatefulWidget {
+  const SchoolSearchScreen({super.key});
 
-  final RegisterProvider _registerProvider = Get.put(RegisterProvider());
+  @override
+  SchoolSearchState createState() => SchoolSearchState();
+}
+
+class SchoolSearchState extends State<SchoolSearchScreen> {
   final SchoolsService _schoolService = SchoolsService();
-
   final TextEditingController _keywordController = TextEditingController();
+  final UserInfoProvider _userInfoProvider = Get.put(UserInfoProvider());
+
   String _prefecture = '';
   String _facility = '';
+  final List<SchoolsTable> _searchSchoolList = [];
 
   Widget _renderSearchResult(BuildContext context) {
-    if (_registerProvider.searchedSchools.isEmpty) {
+    if (_searchSchoolList.isEmpty) {
       return Container();
     }
 
@@ -32,9 +38,9 @@ class SchoolSearchScreen extends StatelessWidget {
       child: ListView.builder(
         // shrinkWrap: true,
         // physics: const NeverScrollableScrollPhysics(),
-        itemCount: _registerProvider.searchedSchools.length,
+        itemCount: _searchSchoolList.length,
         itemBuilder: (context, index) {
-          SchoolsTable school = _registerProvider.searchedSchools[index];
+          SchoolsTable school = _searchSchoolList[index];
 
           return Container(
             decoration: BoxDecoration(
@@ -45,7 +51,9 @@ class SchoolSearchScreen extends StatelessWidget {
               vertical: 5,
             ),
             child: ListTile(
-              leading: const Icon(Icons.school_outlined, color: Colors.black87),
+              leading: const Icon(
+                Icons.school_outlined,
+              ),
               title: CustomTextWidget(
                 text: school.name ?? '',
                 kind: 'inputFieldTitle',
@@ -55,8 +63,7 @@ class SchoolSearchScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               onTap: () {
-                _registerProvider.selectedSchools.add(school);
-                _registerProvider.searchedSchools.clear();
+                _userInfoProvider.schools.add(school);
                 Get.back();
               },
             ),
@@ -66,11 +73,11 @@ class SchoolSearchScreen extends StatelessWidget {
     );
   }
 
-  void _searchSchoolList() async {
+  void _getSearchSchoolList() async {
     List<SchoolsTable> result = await _schoolService.getSchoolList(
         _prefecture, _facility, _keywordController.text);
 
-    _registerProvider.searchedSchools.addAll(result);
+    _searchSchoolList.addAll(result);
   }
 
   @override
@@ -181,7 +188,7 @@ class SchoolSearchScreen extends StatelessWidget {
                 throw Exception(SCHOOL_SEARCH_KEYWORD_ERROR);
               }
               Get.focusScope?.unfocus();
-              _searchSchoolList();
+              _getSearchSchoolList();
             } catch (error) {
               CustomSnackbar.showErrorSnackbar(
                 title: 'エラー',
@@ -194,7 +201,7 @@ class SchoolSearchScreen extends StatelessWidget {
             kind: 'inputFieldTitle',
           ),
         ),
-        Obx(() => _renderSearchResult(context)),
+        _renderSearchResult(context),
       ],
     );
   }

@@ -37,7 +37,7 @@ class CustomSnackbar {
     } else {
       Get.snackbar(
         title,
-        error.message.toString(),
+        error.message,
         colorText: Colors.white,
         backgroundColor: Colors.red[500],
         snackPosition: SnackPosition.BOTTOM,

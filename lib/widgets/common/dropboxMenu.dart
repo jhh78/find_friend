@@ -59,16 +59,8 @@ class CustomDropBoxMenu extends StatelessWidget {
           menuHeight: MediaQuery.of(context).size.height / 3,
           trailingIcon: const Icon(
             Icons.arrow_drop_down,
-            color: Colors.black87,
           ),
-          textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: Colors.black87,
-              ),
-          menuStyle: const MenuStyle(
-            backgroundColor: MaterialStatePropertyAll<Color>(
-              Colors.black87,
-            ),
-          ),
+          textStyle: Theme.of(context).textTheme.titleMedium!.copyWith(),
           dropdownMenuEntries:
               items.map<DropdownMenuEntry<String>>((Map<String, dynamic> json) {
             return DropdownMenuEntry<String>(

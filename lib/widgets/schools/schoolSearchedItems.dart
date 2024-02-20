@@ -1,4 +1,4 @@
-import 'package:find_friend/providers/register.dart';
+import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/screens/schoolSearch/schoolSearch.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 class SchoolSearchedItemsWidget extends StatelessWidget {
   final bool isRequired;
-  final RegisterProvider _registerProvider = Get.put(RegisterProvider());
+  final UserInfoProvider _userInfoProvider = Get.put(UserInfoProvider());
 
   SchoolSearchedItemsWidget({
     super.key,
@@ -36,7 +36,7 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
                 ],
               ),
               Obx(
-                () => _registerProvider.selectedSchools.length < 5
+                () => _userInfoProvider.schools.length < 2
                     ? IconButton(
                         icon: const Icon(Icons.add_circle_outline_rounded),
                         color: Colors.blueAccent,
@@ -46,19 +46,19 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
                         ),
                         onPressed: () {
                           Get.to(
-                            () => SchoolSearchScreen(),
+                            () => const SchoolSearchScreen(),
                             transition: Transition.rightToLeft,
                           );
                         },
                       )
                     : Container(),
-              )
+              ),
             ],
           ),
           Obx(
-            () {
-              return Column(
-                children: _registerProvider.selectedSchools.map((school) {
+            () => Column(
+              children: _userInfoProvider.schools.map(
+                (school) {
                   return ListTile(
                     title: CustomTextWidget(
                       text: school.name.toString(),
@@ -71,14 +71,14 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
                         size: 30,
                       ),
                       onPressed: () {
-                        _registerProvider.selectedSchools.remove(school);
+                        _userInfoProvider.schools.remove(school);
                       },
                     ),
                   );
-                }).toList(),
-              );
-            },
-          ),
+                },
+              ).toList(),
+            ),
+          )
         ],
       ),
     );

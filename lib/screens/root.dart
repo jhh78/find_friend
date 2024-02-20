@@ -23,12 +23,13 @@ class RootScreen extends StatelessWidget {
       Get.delete<UserInfoProvider>();
       return UserInfoScreen();
     } else if (controller.navibarCurrentIndex.value == 1) {
-      // 스레드의 경우 항상 최신의 데이터를 가져와야 되므로 리셋을 한다
+      // 최신의 데이터를 가져와야 되므로 리셋을 한다
       Get.delete<ThreadProvider>();
       return ThreadScreen();
     } else if (controller.navibarCurrentIndex.value == 2) {
       return FavoriteScreen();
     } else if (controller.navibarCurrentIndex.value == 3) {
+      // 최신의 데이터를 가져와야 되므로 리셋을 한다
       Get.delete<MessageProvider>();
       return MessageScreen();
     } else if (controller.navibarCurrentIndex.value == 4) {
@@ -70,21 +71,25 @@ class RootScreen extends StatelessWidget {
     return PopScope(
       canPop: false,
       child: SafeArea(
-        child: Obx(
-          () => Scaffold(
-            body: Stack(
-              children: [
-                const CustomBackGroundImageWidget(
-                  type: 'bg',
-                ),
-                _renderContentWidget(),
-              ],
+          child: Obx(
+        () => Scaffold(
+          body: Stack(
+            children: [
+              const CustomBackGroundImageWidget(
+                type: 'bg',
+              ),
+              _renderContentWidget(),
+            ],
+          ),
+          bottomNavigationBar: Theme(
+            data: ThemeData(
+              canvasColor: Colors.black87,
             ),
-            bottomNavigationBar: BottomNavigationBar(
+            child: BottomNavigationBar(
+              backgroundColor: Colors.red,
               currentIndex: controller.navibarCurrentIndex.value,
               type: BottomNavigationBarType.shifting,
-              unselectedItemColor: Colors.white,
-              selectedItemColor: Colors.amberAccent,
+              unselectedItemColor: Colors.blueGrey,
               onTap: (int index) {
                 controller.changeNaviBarCurrentIndex(index);
               },
@@ -120,7 +125,7 @@ class RootScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      )),
     );
   }
 }

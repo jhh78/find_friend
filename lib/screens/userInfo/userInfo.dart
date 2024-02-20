@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:find_friend/models/user.dart';
-import 'package:find_friend/providers/register.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/message/register.dart';
@@ -16,8 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class UserInfoScreen extends StatelessWidget {
-  final RegisterProvider registerProvider = Get.put(RegisterProvider());
-  final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
+  final UserInfoProvider _userInfoProvider = Get.put(UserInfoProvider());
 
   final UsersService _userService = UsersService();
   final TextEditingController _depictionController = TextEditingController();
@@ -45,13 +42,20 @@ class UserInfoScreen extends StatelessWidget {
               ),
               centerTitle: true,
             ),
-            body: SingleChildScrollView(
-              child: Obx(
-                () => !userInfoProvider.isReady.value
-                    ? const CircularProgressIndicator()
-                    : _renderContentsLayout(userInfoProvider.userInfo.value),
-              ),
-            ),
+            body: Obx(() {
+              if (_userInfoProvider.id.isEmpty) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: _renderContentsLayout(),
+                ),
+              );
+            }),
             floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.transparent,
               elevation: 0,
@@ -75,15 +79,13 @@ class UserInfoScreen extends StatelessWidget {
     );
   }
 
-  Column _renderContentsLayout(UsersTable userInfo) {
-    log('userInfo: ${userInfo.toMap()}', name: 'UserInfoScreen');
-    registerProvider.selectedSchools.value = userInfo.schools ?? [];
-    _depictionController.text = userInfo.depiction ?? '';
+  Widget _renderContentsLayout() {
+    _depictionController.text = _userInfoProvider.depiction.value;
     return Column(
       children: [
         UserInfoTextItemDisplayArea(
           title: 'ニックネーム',
-          body: userInfo.nickname ?? '',
+          body: _userInfoProvider.nickname.value,
         ),
         Padding(
           padding: const EdgeInsets.only(left: 5),
@@ -91,11 +93,11 @@ class UserInfoScreen extends StatelessWidget {
         ),
         UserInfoTextItemDisplayArea(
           title: 'exp',
-          body: getNumberFotmatString(userInfo.exp ?? 0),
+          body: getNumberFotmatString(_userInfoProvider.exp.value),
         ),
         UserInfoTextItemDisplayArea(
           title: 'ポイント',
-          body: getNumberFotmatString(userInfo.point ?? 0),
+          body: getNumberFotmatString(_userInfoProvider.point.value),
         ),
         CustomTextAreaWidget(
           isRequired: true,
@@ -108,9 +110,9 @@ class UserInfoScreen extends StatelessWidget {
 
   Future<void> _saveButtonOnClick() async {
     try {
-      userInfoProvider.isProcessing(true);
+      _userInfoProvider.isProcessing(true);
 
-      if (registerProvider.selectedSchools.isEmpty) {
+      if (_userInfoProvider.schools.isEmpty) {
         throw Exception(SCHOOL_SEARCH_ERROR);
       }
 
@@ -120,7 +122,7 @@ class UserInfoScreen extends StatelessWidget {
 
       // update
       await _userService.updateIserDefaultInfo(
-        userInfoProvider,
+        _userInfoProvider.schools,
         _depictionController.text,
       );
 
@@ -129,7 +131,7 @@ class UserInfoScreen extends StatelessWidget {
       log('error: $error', name: 'UserInfoScreen');
       CustomSnackbar.showErrorSnackbar(title: '更新失敗', error: error);
     } finally {
-      userInfoProvider.isProcessing(false);
+      _userInfoProvider.isProcessing(false);
       Get.focusScope?.unfocus();
     }
   }
