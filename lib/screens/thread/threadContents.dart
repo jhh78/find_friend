@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:find_friend/models/threadContents.dart';
-import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/threadContents.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/screens/root.dart';
@@ -20,7 +19,6 @@ class ThreadContentsScreen extends StatelessWidget {
   final ThreadContentsService threadContentsService = ThreadContentsService();
   final ThreadService threadService = ThreadService();
 
-  final ThreadProvider threadProvider = Get.put(ThreadProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
   final ThreadContentsProvider threadContentsProvider =
       Get.put(ThreadContentsProvider());
@@ -87,7 +85,7 @@ class ThreadContentsScreen extends StatelessWidget {
   }
 
   Widget _renderRemoveThreadButton(String threadId) {
-    if (Get.arguments.userId != userInfoProvider.userInfo.value.id) {
+    if (Get.arguments.userId != userInfoProvider.id.value) {
       return Container();
     }
     return IconButton(

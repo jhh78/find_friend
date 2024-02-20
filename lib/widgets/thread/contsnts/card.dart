@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:find_friend/models/threadContents.dart';
-import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/threadContents.dart';
 import 'package:find_friend/utils/utils.dart';
@@ -10,13 +9,11 @@ import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/common/textArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class ThreadItemCardWidget extends StatelessWidget {
   final bool isOwner;
   final ThreadContentsTable item;
 
-  final ThreadProvider threadProvider = Get.put(ThreadProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
 
   final ThreadContentsService _threadContentsService = ThreadContentsService();

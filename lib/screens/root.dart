@@ -17,25 +17,26 @@ class RootScreen extends StatelessWidget {
   RootScreen({super.key});
 
   final AppDataProvider controller = Get.put(AppDataProvider());
+  final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
+  final ThreadProvider threadProvider = Get.put(ThreadProvider());
 
-  Widget _renderContentWidget() {
+  Future<Widget> _renderContentWidget() async {
     if (controller.navibarCurrentIndex.value == 0) {
-      Get.delete<UserInfoProvider>();
+      await userInfoProvider.initUserInfo();
       return UserInfoScreen();
     } else if (controller.navibarCurrentIndex.value == 1) {
-      // 최신의 데이터를 가져와야 되므로 리셋을 한다
-      Get.delete<ThreadProvider>();
+      await userInfoProvider.initUserInfo();
+      await threadProvider.initThreadList();
       return ThreadScreen();
     } else if (controller.navibarCurrentIndex.value == 2) {
       return FavoriteScreen();
     } else if (controller.navibarCurrentIndex.value == 3) {
-      // 최신의 데이터를 가져와야 되므로 리셋을 한다
-      Get.delete<MessageProvider>();
       return MessageScreen();
     } else if (controller.navibarCurrentIndex.value == 4) {
       return NoticeScreen();
     } else if (controller.navibarCurrentIndex.value == 5) {
-      return const SupportScreen();
+      await userInfoProvider.initUserInfo();
+      return SupportScreen();
     }
 
     return const Placeholder();
@@ -78,7 +79,18 @@ class RootScreen extends StatelessWidget {
               const CustomBackGroundImageWidget(
                 type: 'bg',
               ),
-              _renderContentWidget(),
+              FutureBuilder(
+                future: _renderContentWidget(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return snapshot.data!;
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              )
             ],
           ),
           bottomNavigationBar: Theme(

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/thread.dart';
@@ -11,23 +9,36 @@ class ThreadProvider extends GetxController {
   final threadService = ThreadService();
 
   RxList<ThreadTable> threadList = <ThreadTable>[].obs;
-
   RxInt currentPage = 1.obs;
+  RxString selectedSchool = ''.obs;
 
   static ThreadProvider get to => Get.find();
 
-  @override
-  void onInit() {
-    super.onInit();
-    threadService
-        .getThreadList(
-            userInfoProvider.userInfo.value.schools ?? [], 1, PAGE_PER_ITEM)
-        .then(
-      (value) {
-        log('threadList: $value', name: 'ThreadProvider');
-        threadList.clear();
-        threadList.addAll(value);
-      },
-    );
+  void initValues() {
+    currentPage.value = 1;
+    selectedSchool.value = '';
+    threadList.clear();
+  }
+
+  Future<void> initThreadList() async {
+    try {
+      initValues();
+      List<ThreadTable> list = await threadService.getThreadList(
+          userInfoProvider.schools, currentPage.value, PAGE_PER_ITEM);
+      threadList.addAll(list);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> getNextThreadList() async {
+    try {
+      currentPage.value = currentPage.value + 1;
+      List<ThreadTable> list = await threadService.getThreadList(
+          userInfoProvider.schools, currentPage.value, PAGE_PER_ITEM);
+      threadList.addAll(list);
+    } catch (error) {
+      rethrow;
+    }
   }
 }

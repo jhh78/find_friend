@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:find_friend/models/schools.dart';
-import 'package:find_friend/models/user.dart';
-import 'package:find_friend/services/logs.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:get/get.dart';
@@ -11,7 +9,6 @@ class UserInfoProvider extends GetxController {
   final UsersService _userService = UsersService();
   final SystemService _systemService = SystemService();
 
-  UsersTable userInfo = UsersTable();
   // userTableの中身
   RxString id = ''.obs;
   RxString created = ''.obs;
@@ -52,7 +49,8 @@ class UserInfoProvider extends GetxController {
         }
       });
     } catch (e) {
-      Logs.writeLogs('getUserInfo error: $e');
+      log('initUserInfo error: $e', name: 'UserInfoProvider');
+      rethrow;
     }
   }
 

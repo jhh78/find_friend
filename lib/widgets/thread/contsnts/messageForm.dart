@@ -32,7 +32,7 @@ class ThreadContentsMessageFormWidget extends StatelessWidget {
 
       await _threadContentsService.createItem(
         threadId: Get.arguments.id,
-        nickname: userInfoProvider.userInfo.value.nickname!,
+        nickname: userInfoProvider.nickname.value,
         contents: _textController.text,
       );
 

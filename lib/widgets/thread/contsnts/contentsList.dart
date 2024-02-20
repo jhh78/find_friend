@@ -40,7 +40,7 @@ class ThreadContentsListWidget extends StatelessWidget {
                 ],
               ),
               child: ThreadItemCardWidget(
-                isOwner: item.userId == userInfoProvider.userInfo.value.id,
+                isOwner: item.userId == userInfoProvider.id.value,
                 item: item,
               ),
             );

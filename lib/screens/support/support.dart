@@ -1,13 +1,90 @@
 import 'dart:developer';
 
+import 'package:find_friend/providers/userInfo.dart';
+import 'package:find_friend/services/system.dart';
+import 'package:find_friend/services/users.dart';
+import 'package:find_friend/utils/constants.dart';
 import 'package:find_friend/utils/googleAd.dart';
+import 'package:find_friend/utils/utils.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/support/supportButton.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class SupportScreen extends StatelessWidget {
-  const SupportScreen({super.key});
+  final UserInfoProvider userInfoProvider = UserInfoProvider();
+
+  final UsersService _usersService = UsersService();
+  final SystemService _systemService = SystemService();
+
+  SupportScreen({super.key});
+
+  void _loadRewardAd() {
+    RewardedAd.load(
+      adUnitId: GoogleAdManager.getRewardAdUnitId(),
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+              // Called when the ad showed the full screen content.
+              onAdShowedFullScreenContent: (ad) {
+            log('Ad showed fullscreen content.',
+                name: 'SupportScreenState.onAdShowedFullScreenContent');
+          },
+              // Called when an impression occurs on the ad.
+              onAdImpression: (ad) {
+            log('Ad impression.', name: 'SupportScreenState.onAdImpression');
+          },
+              // Called when the ad failed to show full screen content.
+              onAdFailedToShowFullScreenContent: (ad, err) {
+            // Dispose the ad here to free resources.
+            log('Ad failed to show fullscreen content: $err',
+                name: 'SupportScreenState.onAdFailedToShowFullScreenContent');
+            ad.dispose();
+          },
+              // Called when the ad dismissed full screen content.
+              onAdDismissedFullScreenContent: (ad) {
+            // Dispose the ad here to free resources.
+            log('Ad dismissed fullscreen content.',
+                name: 'SupportScreenState.onAdDismissedFullScreenContent');
+
+            _systemService.getAuthKey().then((uuid) {
+              _usersService.getUserInfoData(uuid).then((res) async {
+                await _usersService.updateUserPoint(
+                    res.data['point'] + GOOGLE_REWARD_AD_ADD_POINT);
+
+                CustomSnackbar.showSuccessSnackbar(
+                    title: 'Success',
+                    message: '$GOOGLE_REWARD_AD_ADD_POINTポイントを獲得しました。');
+              });
+            });
+
+            ad.dispose();
+          },
+              // Called when a click is recorded for an ad.
+              onAdClicked: (ad) {
+            log('Ad clicked.', name: 'SupportScreenState.onAdClicked');
+          });
+
+          ad.show(
+            onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
+              // Reward the user for watching an ad.
+              log('User rewarded: ${rewardItem.amount}',
+                  name: 'SupportScreenState.onUserEarnedReward');
+            },
+          );
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          log('RewardedAd failed to load: $error',
+              name: 'SupportScreenState.onAdFailedToLoad');
+          CustomSnackbar.showErrorSnackbar(
+              title: 'Error', error: Exception('広告ロードへ失敗しました。'));
+          writeLogs(name: '_loadRewardAd.onAdFailedToLoad', error: error);
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +141,8 @@ class SupportScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SupportButton(
-                      callBack: () {
-                        GoogleAdManager().loadInterstitialAd();
-                      },
-                      text: '広告を見る (+30ポイント)',
+                      callBack: _loadRewardAd,
+                      text: '広告を見る (+$GOOGLE_REWARD_AD_ADD_POINTポイント)',
                     ),
                     SupportButton(
                       callBack: () {
@@ -75,7 +150,7 @@ class SupportScreen extends StatelessWidget {
                             title: '100円支援 click',
                             message: 'show me the money');
                       },
-                      text: '100円支援 (+120ポイント)',
+                      text: '100円支援 (+$PAYMENT_100_POINTポイント)',
                     ),
                     SupportButton(
                       callBack: () {
@@ -83,7 +158,7 @@ class SupportScreen extends StatelessWidget {
                             title: '500円支援 click',
                             message: 'show me the money');
                       },
-                      text: '500円支援 (+1300ポイント)',
+                      text: '500円支援 (+$PAYMENT_500_POINTポイント)',
                     ),
                     SupportButton(
                       callBack: () {
@@ -91,7 +166,7 @@ class SupportScreen extends StatelessWidget {
                             title: '1000円支援 click',
                             message: 'show me the money');
                       },
-                      text: '1000円支援 (+1500ポイント)',
+                      text: '1000円支援 (+$PAYMENT_1000_POINTポイント)',
                     ),
                     SupportButton(
                       callBack: () {
@@ -99,7 +174,7 @@ class SupportScreen extends StatelessWidget {
                             title: '5000円支援 click',
                             message: 'show me the money');
                       },
-                      text: '5000円支援 (+8500ポイント)',
+                      text: '5000円支援 (+$PAYMENT_5000_POINTポイント)',
                     ),
                     SupportButton(
                       callBack: () {
@@ -107,7 +182,7 @@ class SupportScreen extends StatelessWidget {
                             title: '10000円支援 click',
                             message: 'show me the money');
                       },
-                      text: '1万円支援 (+20000ポイント)',
+                      text: '1万円支援 (+$PAYMENT_10000_POINTポイント)',
                     )
                   ],
                 )

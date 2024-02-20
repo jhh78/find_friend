@@ -63,16 +63,10 @@ class UsersService {
     }
   }
 
-  Future updateUserPoint(UserInfoProvider provider, int point) async {
+  Future updateUserPoint(int point) async {
     try {
       final String uuid = await SystemService().getAuthKey();
       var pb = PocketBase(API_URL);
-
-      List<Map<String, dynamic>> jsonString = [];
-
-      for (var item in provider.userInfo.schools!) {
-        jsonString.add(item.toMap());
-      }
 
       final body = <String, dynamic>{
         "point": point,

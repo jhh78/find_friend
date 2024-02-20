@@ -15,8 +15,8 @@ import 'package:get/get.dart';
 
 class ThreadScreen extends StatelessWidget {
   ThreadScreen({super.key});
-  final ThreadProvider threadProvider = Get.put(ThreadProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
+  final ThreadProvider threadProvider = Get.put(ThreadProvider());
 
   final ScrollController _scrollController = ScrollController();
 
@@ -24,8 +24,7 @@ class ThreadScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<SchoolsTable> userSelectedSchool =
-        userInfoProvider.userInfo.value.schools ?? [];
+    List<SchoolsTable> userSelectedSchool = userInfoProvider.schools;
     _scrollController.addListener(() async {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -35,7 +34,7 @@ class ThreadScreen extends StatelessWidget {
             userSelectedSchool, nextPage, PAGE_PER_ITEM);
 
         if (response.isNotEmpty) {
-          threadProvider.currentPage(nextPage);
+          threadProvider.currentPage.value = nextPage;
           threadProvider.threadList.addAll(response);
         }
       }
@@ -57,8 +56,7 @@ class ThreadScreen extends StatelessWidget {
             onPressed: () {
               log('add thread');
 
-              if (userInfoProvider.userInfo.value.point! <
-                  THREAD_MAKE_NEED_POINT) {
+              if (userInfoProvider.point < THREAD_MAKE_NEED_POINT) {
                 CustomSnackbar.showErrorSnackbar(
                   title: '活動ポイントが足りません',
                   error: Exception('支援ページでポイントを獲得してください'),

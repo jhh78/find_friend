@@ -1,7 +1,7 @@
 import 'package:find_friend/models/schools.dart';
-import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
+import 'package:find_friend/screens/thread/thread.dart';
 import 'package:find_friend/services/thread.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/constants.dart';
@@ -19,47 +19,17 @@ class ThreadCreateForm extends StatelessWidget {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
-  final ThreadProvider threadProvider = Get.put(ThreadProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
+  final ThreadProvider threadProvider = Get.put(ThreadProvider());
 
   final ThreadService _threadService = ThreadService();
   final UsersService _usersService = UsersService();
   String _selectedSchool = '';
 
-  void _doValidate() {
-    if (_selectedSchool.isEmpty) {
-      throw Exception('学校を選択してください');
-    }
-
-    if (_titleController.text.isEmpty) {
-      throw Exception('タイトルを入力してください');
-    }
-
-    if (_contentController.text.isEmpty) {
-      throw Exception('スレット説明を入力してください');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> schoolList = [];
-
-    for (SchoolsTable school in userInfoProvider.userInfo.value.schools ?? []) {
-      Map<String, dynamic> schoolMap = {
-        'value': school.uuid,
-        'label': school.name,
-      };
-      schoolList.add(schoolMap);
-    }
-
     return PopScope(
-      onPopInvoked: (didPop) async {
-        List<ThreadTable> response = await _threadService.getThreadList(
-            userInfoProvider.userInfo.value.schools ?? [], 1, PAGE_PER_ITEM);
-        threadProvider.threadList.clear();
-        threadProvider.threadList.addAll(response);
-        threadProvider.currentPage(1);
-      },
+      onPopInvoked: (didPop) => threadProvider.initThreadList(),
       child: Stack(
         children: [
           const CustomBackGroundImageWidget(type: 'bg'),
@@ -90,7 +60,12 @@ class ThreadCreateForm extends StatelessWidget {
                     isRequired: true,
                     isExpanded: true,
                     label: '学校選択',
-                    items: schoolList,
+                    items: userInfoProvider.schools
+                        .map((school) => {
+                              'value': school.uuid,
+                              'label': school.name,
+                            })
+                        .toList(),
                     onSelected: (value) {
                       _selectedSchool = value;
                     },
@@ -120,7 +95,17 @@ class ThreadCreateForm extends StatelessWidget {
               ),
               onPressed: () async {
                 try {
-                  _doValidate();
+                  if (_selectedSchool.isEmpty) {
+                    throw Exception('学校を選択してください');
+                  }
+
+                  if (_titleController.text.isEmpty) {
+                    throw Exception('タイトルを入力してください');
+                  }
+
+                  if (_contentController.text.isEmpty) {
+                    throw Exception('スレット説明を入力してください');
+                  }
 
                   // 스레드 생성 로직
                   await _threadService.createThread(
@@ -130,14 +115,13 @@ class ThreadCreateForm extends StatelessWidget {
                   );
 
                   // 유저의 포인터 차감
-                  userInfoProvider.userInfo.value.point =
-                      userInfoProvider.userInfo.value.point! -
-                          THREAD_MAKE_NEED_POINT;
+                  userInfoProvider.point.value =
+                      userInfoProvider.point.value - THREAD_MAKE_NEED_POINT;
                   await _usersService.updateUserPoint(
-                    userInfoProvider,
-                    userInfoProvider.userInfo.value.point!,
+                    userInfoProvider.point.value,
                   );
 
+                  threadProvider.initThreadList();
                   Get.back();
                 } catch (error) {
                   CustomSnackbar.showErrorSnackbar(

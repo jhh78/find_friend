@@ -30,7 +30,7 @@ class MessageScreen extends StatelessWidget {
         final int nextPage = messageProvider.currentPage.value + 1;
 
         List<MessageTable> response = await messageService.getMessageList(
-          userInfoProvider.userInfo.value.id!,
+          userInfoProvider.id.value,
           nextPage,
           PAGE_PER_ITEM,
         );
@@ -207,7 +207,7 @@ class MessageScreen extends StatelessWidget {
                             }
 
                             await messageService.sendMessage(
-                              userInfoProvider.userInfo.value.id!,
+                              userInfoProvider.id.value,
                               message.fromUser.id.toString(),
                               messageController.text,
                               message.message,

@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:find_friend/models/thread.dart';
-import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/thread.dart';
 import 'package:find_friend/utils/constants.dart';
