@@ -37,7 +37,7 @@ class RootScreen extends StatelessWidget {
       return NoticeScreen();
     } else if (controller.navibarCurrentIndex.value == 5) {
       await userInfoProvider.initUserInfo();
-      return SupportScreen();
+      return const SupportScreen();
     }
 
     return const Placeholder();

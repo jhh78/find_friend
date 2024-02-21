@@ -56,7 +56,7 @@ class ThreadItemCardWidget extends StatelessWidget {
                                   Get.back();
                                 },
                                 child: const CustomTextWidget(
-                                  text: 'Cancel',
+                                  text: 'close',
                                   kind: 'label',
                                 ),
                               ),
@@ -124,29 +124,30 @@ class ThreadItemCardWidget extends StatelessWidget {
                                 IconButton(
                                   onPressed: () async {
                                     try {
-                                      // log('send message');
-                                      // log(messageController.text);
+                                      log('send message');
+                                      log(messageController.text);
 
-                                      // if (messageController.text.isEmpty) {
-                                      //   throw Exception('メッセージは必須です');
-                                      // }
+                                      if (messageController.text.isEmpty) {
+                                        throw Exception('メッセージは必須です');
+                                      }
 
-                                      // if (messageController.text.length > 200) {
-                                      //   throw Exception(
-                                      //       'メッセージは200文字以内で入力してください');
-                                      // }
+                                      if (messageController.text.length > 200) {
+                                        throw Exception(
+                                            'メッセージは200文字以内で入力してください');
+                                      }
 
-                                      // await _threadContentsService.sendMessage(
-                                      //   userInfoProvider.userId.value,
-                                      //   item.userId.toString(),
-                                      //   messageController.text,
-                                      //   item.contents.toString(),
-                                      // );
+                                      await _threadContentsService.sendMessage(
+                                        userInfoProvider.id.value,
+                                        item.userId.toString(),
+                                        messageController.text,
+                                        item.contents.toString(),
+                                      );
 
-                                      // Get.back();
-                                      // CustomSnackbar.showSuccessSnackbar(
-                                      //     title: 'Success',
-                                      //     message: 'メッセージを送信しました');
+                                      Get.back();
+                                      CustomSnackbar.showSuccessSnackbar(
+                                        title: 'Success',
+                                        message: 'メッセージを送信しました',
+                                      );
                                     } catch (error) {
                                       log('error: $error');
                                       CustomSnackbar.showErrorSnackbar(
@@ -154,7 +155,7 @@ class ThreadItemCardWidget extends StatelessWidget {
                                     }
                                   },
                                   icon: const Icon(
-                                    Icons.playlist_add_circle_outlined,
+                                    Icons.mail_outline_rounded,
                                     color: Colors.blueAccent,
                                     size: 30,
                                   ),
@@ -172,7 +173,7 @@ class ThreadItemCardWidget extends StatelessWidget {
                                 TextButton(
                                   onPressed: () => Get.back(),
                                   child: const CustomTextWidget(
-                                    text: 'Cancel',
+                                    text: 'close',
                                     kind: 'label',
                                   ),
                                 ),
@@ -187,7 +188,7 @@ class ThreadItemCardWidget extends StatelessWidget {
               );
             },
             icon: const Icon(
-              Icons.message_outlined,
+              Icons.mail_outlined,
             ),
           ),
         );
@@ -196,7 +197,7 @@ class ThreadItemCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log('item.created: ${item.threadId}');
+    log('item.threadId: ${item.threadId}');
 
     return Padding(
       padding: const EdgeInsets.all(8.0),

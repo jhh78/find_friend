@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:find_friend/models/threadContents.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/threadContents.dart';
 import 'package:find_friend/providers/userInfo.dart';
@@ -32,20 +31,10 @@ class ThreadContentsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     log('ThreadDetailScreen build ${Get.arguments.id}');
 
-    _scrollController.addListener(() async {
+    _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        log('scrollController called ${_scrollController.position.pixels} ${_scrollController.position.maxScrollExtent}');
-        final int nextPage = threadContentsProvider.currentPage.value + 1;
-
-        List<ThreadContentsTable> response = await threadContentsService
-            .getContentsList(Get.arguments.id, nextPage);
-
-        if (response.isNotEmpty) {
-          log('scrollController response next page $nextPage ${response.length}');
-          threadContentsProvider.currentPage.value = nextPage;
-          threadContentsProvider.threadContentsList.addAll(response);
-        }
+        threadContentsProvider.getNextThreadContentsList();
       }
     });
 

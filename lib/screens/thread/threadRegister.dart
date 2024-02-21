@@ -22,7 +22,6 @@ class ThreadCreateForm extends StatelessWidget {
 
   final ThreadService _threadService = ThreadService();
   final UsersService _usersService = UsersService();
-  String _selectedSchool = '';
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +64,7 @@ class ThreadCreateForm extends StatelessWidget {
                             })
                         .toList(),
                     onSelected: (value) {
-                      _selectedSchool = value;
+                      threadProvider.selectedSchool.value = value;
                     },
                   ),
                   CustomTextAreaWidget(
@@ -93,7 +92,7 @@ class ThreadCreateForm extends StatelessWidget {
               ),
               onPressed: () async {
                 try {
-                  if (_selectedSchool.isEmpty) {
+                  if (threadProvider.selectedSchool.value.isEmpty) {
                     throw Exception('学校を選択してください');
                   }
 
@@ -109,7 +108,7 @@ class ThreadCreateForm extends StatelessWidget {
                   await _threadService.createThread(
                     title: _titleController.text,
                     content: _contentController.text,
-                    school: _selectedSchool,
+                    school: threadProvider.selectedSchool.value,
                   );
 
                   // 유저의 포인터 차감

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/constants.dart';
@@ -12,15 +11,23 @@ import 'package:find_friend/widgets/support/supportButton.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class SupportScreen extends StatelessWidget {
-  final UserInfoProvider userInfoProvider = UserInfoProvider();
+class SupportScreen extends StatefulWidget {
+  const SupportScreen({super.key});
 
+  @override
+  SupportScreenState createState() => SupportScreenState();
+}
+
+class SupportScreenState extends State<SupportScreen> {
   final UsersService _usersService = UsersService();
   final SystemService _systemService = SystemService();
 
-  SupportScreen({super.key});
+  bool isProcessing = false;
 
   void _loadRewardAd() {
+    setState(() {
+      isProcessing = true;
+    });
     RewardedAd.load(
       adUnitId: GoogleAdManager.getRewardAdUnitId(),
       request: const AdRequest(),
@@ -58,6 +65,10 @@ class SupportScreen extends StatelessWidget {
                     title: 'Success',
                     message: '$GOOGLE_REWARD_AD_ADD_POINTポイントを獲得しました。');
               });
+            });
+
+            setState(() {
+              isProcessing = false;
             });
 
             ad.dispose();
@@ -137,60 +148,66 @@ class SupportScreen extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SupportButton(
-                      callBack: _loadRewardAd,
-                      text: '広告を見る (+$GOOGLE_REWARD_AD_ADD_POINTポイント)',
-                    ),
-                    SupportButton(
-                      callBack: () {
-                        CustomSnackbar.showSuccessSnackbar(
-                            title: '100円支援 click',
-                            message: 'show me the money');
-                      },
-                      text: '100円支援 (+$PAYMENT_100_POINTポイント)',
-                    ),
-                    SupportButton(
-                      callBack: () {
-                        CustomSnackbar.showSuccessSnackbar(
-                            title: '500円支援 click',
-                            message: 'show me the money');
-                      },
-                      text: '500円支援 (+$PAYMENT_500_POINTポイント)',
-                    ),
-                    SupportButton(
-                      callBack: () {
-                        CustomSnackbar.showSuccessSnackbar(
-                            title: '1000円支援 click',
-                            message: 'show me the money');
-                      },
-                      text: '1000円支援 (+$PAYMENT_1000_POINTポイント)',
-                    ),
-                    SupportButton(
-                      callBack: () {
-                        CustomSnackbar.showSuccessSnackbar(
-                            title: '5000円支援 click',
-                            message: 'show me the money');
-                      },
-                      text: '5000円支援 (+$PAYMENT_5000_POINTポイント)',
-                    ),
-                    SupportButton(
-                      callBack: () {
-                        CustomSnackbar.showSuccessSnackbar(
-                            title: '10000円支援 click',
-                            message: 'show me the money');
-                      },
-                      text: '1万円支援 (+$PAYMENT_10000_POINTポイント)',
-                    )
-                  ],
-                )
+                _renderButtonWidget()
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _renderButtonWidget() {
+    if (isProcessing) {
+      return const Padding(
+        padding: EdgeInsets.all(100),
+        child: LinearProgressIndicator(),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SupportButton(
+          callBack: _loadRewardAd,
+          text: '広告を見る (+$GOOGLE_REWARD_AD_ADD_POINTポイント)',
+        ),
+        SupportButton(
+          callBack: () {
+            CustomSnackbar.showSuccessSnackbar(
+                title: '100円支援 click', message: 'show me the money');
+          },
+          text: '100円支援 (+$PAYMENT_100_POINTポイント)',
+        ),
+        SupportButton(
+          callBack: () {
+            CustomSnackbar.showSuccessSnackbar(
+                title: '500円支援 click', message: 'show me the money');
+          },
+          text: '500円支援 (+$PAYMENT_500_POINTポイント)',
+        ),
+        SupportButton(
+          callBack: () {
+            CustomSnackbar.showSuccessSnackbar(
+                title: '1000円支援 click', message: 'show me the money');
+          },
+          text: '1000円支援 (+$PAYMENT_1000_POINTポイント)',
+        ),
+        SupportButton(
+          callBack: () {
+            CustomSnackbar.showSuccessSnackbar(
+                title: '5000円支援 click', message: 'show me the money');
+          },
+          text: '5000円支援 (+$PAYMENT_5000_POINTポイント)',
+        ),
+        SupportButton(
+          callBack: () {
+            CustomSnackbar.showSuccessSnackbar(
+                title: '10000円支援 click', message: 'show me the money');
+          },
+          text: '1万円支援 (+$PAYMENT_10000_POINTポイント)',
+        )
+      ],
     );
   }
 }

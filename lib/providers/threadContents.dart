@@ -15,14 +15,14 @@ class ThreadContentsProvider extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    log('ThreadDetailProvider onInit', name: 'thread_contents');
+    log('ThreadContentsProvider onInit', name: 'thread_contents');
     initThreadContentsList();
   }
 
   @override
   void onClose() {
     super.onClose();
-    log('ThreadDetailProvider onClose', name: 'thread_contents');
+    log('ThreadContentsProvider onClose', name: 'thread_contents');
     removeSubscribedThreadContents();
   }
 
@@ -36,7 +36,7 @@ class ThreadContentsProvider extends GetxController {
   void initThreadContentsList() async {
     try {
       initValues();
-      List<ThreadContentsTable> lists = await _searchThreadContentsList();
+      List<ThreadContentsTable> lists = await _searchThreadContentsList(1);
       threadContentsList.addAll(lists);
       addSubscribedThreadContents();
     } catch (error) {
@@ -46,19 +46,25 @@ class ThreadContentsProvider extends GetxController {
 
   void getNextThreadContentsList() async {
     try {
-      currentPage.value++;
-      List<ThreadContentsTable> lists = await _searchThreadContentsList();
-      threadContentsList.addAll(lists);
+      final int nextPage = currentPage.value + 1;
+
+      List<ThreadContentsTable> lists =
+          await _searchThreadContentsList(nextPage);
+      if (lists.isNotEmpty) {
+        currentPage.value = nextPage;
+        threadContentsList.addAll(lists);
+      }
     } catch (error) {
       rethrow;
     }
   }
 
-  Future<List<ThreadContentsTable>> _searchThreadContentsList() async {
+  Future<List<ThreadContentsTable>> _searchThreadContentsList(
+      int nextPage) async {
     try {
       String threadId = getThreadId();
-      List<ThreadContentsTable> lists = await threadContentsService
-          .getContentsList(threadId, currentPage.value);
+      List<ThreadContentsTable> lists =
+          await threadContentsService.getContentsList(threadId, nextPage);
       return lists;
     } catch (error) {
       rethrow;

@@ -34,6 +34,8 @@ class ThreadContentsService {
   Future<List<ThreadContentsTable>> getContentsList(
       String threadId, int currentPage) async {
     try {
+      log('getContentsList threadId > $threadId currentPage > $currentPage',
+          name: 'getContentsList');
       final pb = PocketBase(API_URL);
       final response = await pb.collection('thread_contents').getList(
             page: currentPage,

@@ -19,19 +19,35 @@ class MessageProvider extends GetxController {
   void onInit() {
     super.onInit();
     log('MessageProvider onInit called', name: 'MessageProvider');
-    systemService.getAuthKey().then((value) async {
-      log('MessageProvider onInit called $value', name: 'MessageProvider');
-
-      List<MessageTable> list =
-          await messageService.getMessageList(value, 1, PAGE_PER_ITEM);
-
-      messageList.addAll(list);
-    });
+    initMassageList();
   }
 
   @override
   void onClose() {
     super.onClose();
     log('MessageProvider onClose called');
+  }
+
+  Future<void> initMassageList() async {
+    log('initMassageList called', name: 'MessageProvider');
+    messageList.clear();
+    currentPage.value = 1;
+    List<MessageTable> list = await _searchMessageList();
+    messageList.addAll(list);
+  }
+
+  Future<void> getNextPageMessages() async {
+    log('getNextPageMessages called', name: 'MessageProvider');
+    currentPage.value++;
+    List<MessageTable> list = await _searchMessageList();
+    messageList.addAll(list);
+  }
+
+  Future<List<MessageTable>> _searchMessageList() async {
+    log('_searchMessageList called', name: 'MessageProvider');
+    String uuid = await systemService.getAuthKey();
+    List<MessageTable> list = await messageService.getMessageList(
+        uuid, currentPage.value, PAGE_PER_ITEM);
+    return list;
   }
 }

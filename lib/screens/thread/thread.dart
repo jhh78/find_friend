@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
@@ -24,19 +23,10 @@ class ThreadScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<SchoolsTable> userSelectedSchool = userInfoProvider.schools;
-    _scrollController.addListener(() async {
+    _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        final int nextPage = threadProvider.currentPage.value + 1;
-
-        List<ThreadTable> response = await threadService.getThreadList(
-            userSelectedSchool, nextPage, PAGE_PER_ITEM);
-
-        if (response.isNotEmpty) {
-          threadProvider.currentPage.value = nextPage;
-          threadProvider.threadList.addAll(response);
-        }
+        threadProvider.getNextThreadList();
       }
     });
 
@@ -93,8 +83,8 @@ class ThreadScreen extends StatelessWidget {
     );
   }
 
-  GestureDetector _renderThreadList(ThreadTable thread) {
-    return GestureDetector(
+  InkWell _renderThreadList(ThreadTable thread) {
+    return InkWell(
       onTap: () {
         Get.to(
           () => ThreadContentsScreen(),
