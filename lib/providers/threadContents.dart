@@ -15,51 +15,84 @@ class ThreadContentsProvider extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    log('ThreadDetailProvider onInit');
-    String threadId = Get.arguments.id;
-    threadContentsService
-        .getContentsList(threadId, currentPage.value)
-        .then((value) {
-      threadContentsList.addAll(value);
-      log(value.toString());
-
-      // Subscribe to changes in any thread_contents record
-      final pb = PocketBase(API_URL);
-      pb.collection('thread_contents').subscribe('*', (e) {
-        log('observeItem >>>> ${e.action} ${e.record} ${e.record!.collectionId}');
-
-        if (e.action == 'delete') {
-          threadContentsList
-              .removeWhere((element) => element.id == e.record!.id);
-        } else if (e.action == 'create') {
-          Map<String, dynamic> params = {
-            'id': e.record!.id,
-            'thread_id': e.record!.data['thread_id'],
-            'user_id': e.record!.data['user_id'],
-            'nickname': e.record!.data['nickname'],
-            'contents': e.record!.data['contents'],
-            'created': e.record!.created,
-            'updated': e.record!.updated,
-          };
-
-          threadContentsList(
-              [ThreadContentsTable.fromJson(params), ...threadContentsList]);
-        }
-      }, filter: 'thread_id="$threadId"');
-    });
+    log('ThreadDetailProvider onInit', name: 'thread_contents');
+    initThreadContentsList();
   }
 
   @override
   void onClose() {
     super.onClose();
-    log('ThreadDetailProvider onClose');
-
-    // remove all '*' topic subscriptions
-    final pb = PocketBase(API_URL);
-    pb.collection('thread_contents').unsubscribe();
+    log('ThreadDetailProvider onClose', name: 'thread_contents');
+    removeSubscribedThreadContents();
   }
 
-  void setCurrentPage(int page) {
-    currentPage(page);
+  String getThreadId() => Get.arguments.id;
+
+  void initValues() {
+    currentPage.value = 1;
+    threadContentsList.clear();
+  }
+
+  void initThreadContentsList() async {
+    try {
+      initValues();
+      List<ThreadContentsTable> lists = await _searchThreadContentsList();
+      threadContentsList.addAll(lists);
+      addSubscribedThreadContents();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  void getNextThreadContentsList() async {
+    try {
+      currentPage.value++;
+      List<ThreadContentsTable> lists = await _searchThreadContentsList();
+      threadContentsList.addAll(lists);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<List<ThreadContentsTable>> _searchThreadContentsList() async {
+    try {
+      String threadId = getThreadId();
+      List<ThreadContentsTable> lists = await threadContentsService
+          .getContentsList(threadId, currentPage.value);
+      return lists;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  void addSubscribedThreadContents() {
+    String threadId = getThreadId();
+    final pb = PocketBase(API_URL);
+    pb.collection('thread_contents').subscribe('*', (e) {
+      log('observeItem >>>> ${e.action} ${e.record} ${e.record!.collectionId}',
+          name: 'thread_contents');
+
+      if (e.action == 'delete') {
+        threadContentsList.removeWhere((element) => element.id == e.record!.id);
+      } else if (e.action == 'create') {
+        Map<String, dynamic> params = {
+          'id': e.record!.id,
+          'thread_id': e.record!.data['thread_id'],
+          'user_id': e.record!.data['user_id'],
+          'nickname': e.record!.data['nickname'],
+          'contents': e.record!.data['contents'],
+          'created': e.record!.created,
+          'updated': e.record!.updated,
+        };
+
+        threadContentsList(
+            [ThreadContentsTable.fromJson(params), ...threadContentsList]);
+      }
+    }, filter: 'thread_id="$threadId"');
+  }
+
+  void removeSubscribedThreadContents() {
+    final pb = PocketBase(API_URL);
+    pb.collection('thread_contents').unsubscribe();
   }
 }

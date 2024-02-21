@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:find_friend/models/schools.dart';
-import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/utils/constants.dart';
 import 'package:pocketbase/pocketbase.dart';

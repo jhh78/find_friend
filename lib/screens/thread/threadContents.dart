@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:find_friend/models/threadContents.dart';
+import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/threadContents.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/screens/root.dart';
@@ -20,6 +21,7 @@ class ThreadContentsScreen extends StatelessWidget {
   final ThreadService threadService = ThreadService();
 
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
+  final ThreadProvider threadProvider = Get.put(ThreadProvider());
   final ThreadContentsProvider threadContentsProvider =
       Get.put(ThreadContentsProvider());
 
@@ -47,40 +49,43 @@ class ThreadContentsScreen extends StatelessWidget {
       }
     });
 
-    return Stack(
-      children: [
-        const CustomBackGroundImageWidget(type: 'bg'),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            iconTheme: const IconThemeData(color: Colors.black),
+    return PopScope(
+      onPopInvoked: (didPop) => threadProvider.initThreadList(),
+      child: Stack(
+        children: [
+          const CustomBackGroundImageWidget(type: 'bg'),
+          Scaffold(
             backgroundColor: Colors.transparent,
-            title: CustomTextWidget(
-              text: Get.arguments.title,
-              kind: 'label',
+            appBar: AppBar(
+              iconTheme: const IconThemeData(color: Colors.black),
+              backgroundColor: Colors.transparent,
+              title: CustomTextWidget(
+                text: Get.arguments.title,
+                kind: 'label',
+              ),
+              actions: [
+                _renderRemoveThreadButton(Get.arguments.id),
+                IconButton(
+                  onPressed: () {
+                    log('add favorite');
+                  },
+                  icon: const Icon(Icons.favorite_border),
+                ),
+                IconButton(
+                  color: Colors.redAccent,
+                  onPressed: () {
+                    log('remove favorite');
+                  },
+                  icon: const Icon(Icons.favorite_sharp),
+                ),
+              ],
             ),
-            actions: [
-              _renderRemoveThreadButton(Get.arguments.id),
-              IconButton(
-                onPressed: () {
-                  log('add favorite');
-                },
-                icon: const Icon(Icons.favorite_border),
-              ),
-              IconButton(
-                color: Colors.redAccent,
-                onPressed: () {
-                  log('remove favorite');
-                },
-                icon: const Icon(Icons.favorite_sharp),
-              ),
-            ],
-          ),
-          body: ThreadContentsListWidget(
-            scrollController: _scrollController,
-          ),
-        )
-      ],
+            body: ThreadContentsListWidget(
+              scrollController: _scrollController,
+            ),
+          )
+        ],
+      ),
     );
   }
 

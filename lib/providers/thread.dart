@@ -23,8 +23,7 @@ class ThreadProvider extends GetxController {
   Future<void> initThreadList() async {
     try {
       initValues();
-      List<ThreadTable> list = await threadService.getThreadList(
-          userInfoProvider.schools, currentPage.value, PAGE_PER_ITEM);
+      List<ThreadTable> list = await _searchThreadList();
       threadList.addAll(list);
     } catch (error) {
       rethrow;
@@ -34,9 +33,18 @@ class ThreadProvider extends GetxController {
   Future<void> getNextThreadList() async {
     try {
       currentPage.value = currentPage.value + 1;
+      List<ThreadTable> list = await _searchThreadList();
+      threadList.addAll(list);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<List<ThreadTable>> _searchThreadList() async {
+    try {
       List<ThreadTable> list = await threadService.getThreadList(
           userInfoProvider.schools, currentPage.value, PAGE_PER_ITEM);
-      threadList.addAll(list);
+      return list;
     } catch (error) {
       rethrow;
     }

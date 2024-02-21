@@ -19,6 +19,7 @@ class RootScreen extends StatelessWidget {
   final AppDataProvider controller = Get.put(AppDataProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
   final ThreadProvider threadProvider = Get.put(ThreadProvider());
+  final MessageProvider messageProvider = Get.put(MessageProvider());
 
   Future<Widget> _renderContentWidget() async {
     if (controller.navibarCurrentIndex.value == 0) {

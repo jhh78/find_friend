@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/schools.dart';

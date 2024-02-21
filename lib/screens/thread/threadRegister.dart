@@ -1,7 +1,5 @@
-import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
-import 'package:find_friend/screens/thread/thread.dart';
 import 'package:find_friend/services/thread.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/constants.dart';
