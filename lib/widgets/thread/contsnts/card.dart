@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:find_friend/models/threadContents.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/threadContents.dart';
+import 'package:find_friend/services/users.dart';
+import 'package:find_friend/utils/constants.dart';
 import 'package:find_friend/utils/utils.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
@@ -17,6 +19,7 @@ class ThreadItemCardWidget extends StatelessWidget {
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
 
   final ThreadContentsService _threadContentsService = ThreadContentsService();
+  final UsersService _usersService = UsersService();
 
   ThreadItemCardWidget({super.key, required this.isOwner, required this.item});
 
@@ -101,6 +104,15 @@ class ThreadItemCardWidget extends StatelessWidget {
               final TextEditingController messageController =
                   TextEditingController();
 
+              if (userInfoProvider.point <
+                  THREAD_CONTENTS_PRIVATE_MESSAGE_POINT) {
+                CustomSnackbar.showErrorSnackbar(
+                  title: '活動ポイントが足りません',
+                  error: Exception('支援ページでポイントを獲得してください'),
+                );
+                return;
+              }
+
               Get.dialog(
                 Material(
                   color: Colors.transparent,
@@ -124,9 +136,6 @@ class ThreadItemCardWidget extends StatelessWidget {
                                 IconButton(
                                   onPressed: () async {
                                     try {
-                                      log('send message');
-                                      log(messageController.text);
-
                                       if (messageController.text.isEmpty) {
                                         throw Exception('メッセージは必須です');
                                       }
@@ -141,6 +150,15 @@ class ThreadItemCardWidget extends StatelessWidget {
                                         item.userId.toString(),
                                         messageController.text,
                                         item.contents.toString(),
+                                      );
+
+                                      // 유저의 포인터 차감
+                                      userInfoProvider
+                                          .point.value = userInfoProvider
+                                              .point.value -
+                                          THREAD_CONTENTS_PRIVATE_MESSAGE_POINT;
+                                      await _usersService.updateUserPoint(
+                                        userInfoProvider.point.value,
                                       );
 
                                       Get.back();

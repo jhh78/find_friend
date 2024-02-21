@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/threadContents.dart';
+import 'package:find_friend/services/users.dart';
+import 'package:find_friend/utils/constants.dart';
 import 'package:find_friend/widgets/common/messageSendForm.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +16,16 @@ class ThreadContentsMessageFormWidget extends StatelessWidget {
   final TextEditingController _textController = TextEditingController();
 
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
+  final UsersService _usersService = UsersService();
 
   ThreadContentsMessageFormWidget({super.key, required this.scrollController});
 
   void _onSendMessage() async {
     try {
+      if (userInfoProvider.point.value < THREAD_CONTENTS_WRITE_POINT) {
+        throw Exception('活動ポイントが足りません\n支援ページでポイントを獲得してください');
+      }
+
       if (_textController.text.isEmpty) {
         return;
       }
@@ -34,6 +41,13 @@ class ThreadContentsMessageFormWidget extends StatelessWidget {
         threadId: Get.arguments.id,
         nickname: userInfoProvider.nickname.value,
         contents: _textController.text,
+      );
+
+      // 유저의 포인터 차감
+      userInfoProvider.point.value =
+          userInfoProvider.point.value - THREAD_CONTENTS_WRITE_POINT;
+      await _usersService.updateUserPoint(
+        userInfoProvider.point.value,
       );
 
       Get.focusScope?.unfocus();
