@@ -1,4 +1,5 @@
 import 'package:find_friend/providers/appData.dart';
+import 'package:find_friend/providers/favorite.dart';
 import 'package:find_friend/providers/message.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/userInfo.dart';
@@ -20,6 +21,7 @@ class RootScreen extends StatelessWidget {
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
   final ThreadProvider threadProvider = Get.put(ThreadProvider());
   final MessageProvider messageProvider = Get.put(MessageProvider());
+  final FavoriteProvider favoriteProvider = Get.put(FavoriteProvider());
 
   Future<Widget> _renderContentWidget() async {
     if (controller.navibarCurrentIndex.value == 0) {
@@ -28,8 +30,10 @@ class RootScreen extends StatelessWidget {
     } else if (controller.navibarCurrentIndex.value == 1) {
       await userInfoProvider.initUserInfo();
       await threadProvider.initThreadList();
+      await favoriteProvider.initFavoriteList();
       return ThreadScreen();
     } else if (controller.navibarCurrentIndex.value == 2) {
+      await favoriteProvider.initFavoriteList();
       return FavoriteScreen();
     } else if (controller.navibarCurrentIndex.value == 3) {
       return MessageScreen();

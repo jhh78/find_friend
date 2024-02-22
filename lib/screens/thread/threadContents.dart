@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:find_friend/providers/favorite.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/threadContents.dart';
 import 'package:find_friend/providers/userInfo.dart';
@@ -19,6 +20,7 @@ class ThreadContentsScreen extends StatelessWidget {
   final ThreadContentsService threadContentsService = ThreadContentsService();
   final ThreadService threadService = ThreadService();
 
+  final FavoriteProvider favoriteProvider = Get.put(FavoriteProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
   final ThreadProvider threadProvider = Get.put(ThreadProvider());
   final ThreadContentsProvider threadContentsProvider =
@@ -53,19 +55,9 @@ class ThreadContentsScreen extends StatelessWidget {
                 kind: 'label',
               ),
               actions: [
-                _renderRemoveThreadButton(Get.arguments.id),
-                IconButton(
-                  onPressed: () {
-                    log('add favorite');
-                  },
-                  icon: const Icon(Icons.favorite_border),
-                ),
-                IconButton(
-                  color: Colors.redAccent,
-                  onPressed: () {
-                    log('remove favorite');
-                  },
-                  icon: const Icon(Icons.favorite_sharp),
+                _renderRemoveThreadButton(),
+                Obx(
+                  () => _renderFavoriteButton(),
                 ),
               ],
             ),
@@ -78,8 +70,45 @@ class ThreadContentsScreen extends StatelessWidget {
     );
   }
 
-  Widget _renderRemoveThreadButton(String threadId) {
-    if (Get.arguments.userId != userInfoProvider.id.value) {
+  Widget _renderFavoriteButton() {
+    final String threadId = Get.arguments.id;
+    log('renderFavoriteButton ${favoriteProvider.isFavoriteThread(threadId)}');
+    if (favoriteProvider.isFavoriteThread(threadId)) {
+      return IconButton(
+        color: Colors.redAccent,
+        onPressed: () async {
+          try {
+            await favoriteProvider.removeFavoriteThread(threadId);
+          } catch (error) {
+            CustomSnackbar.showErrorSnackbar(
+              title: 'Error',
+              error: error,
+            );
+          }
+        },
+        icon: const Icon(Icons.favorite_sharp),
+      );
+    }
+
+    return IconButton(
+      onPressed: () async {
+        try {
+          await favoriteProvider.addFavoriteThread(threadId);
+        } catch (error) {
+          CustomSnackbar.showErrorSnackbar(
+            title: 'Error',
+            error: error,
+          );
+        }
+      },
+      icon: const Icon(Icons.favorite_border),
+    );
+  }
+
+  Widget _renderRemoveThreadButton() {
+    final String userId = Get.arguments.userId;
+    final String threadId = Get.arguments.id;
+    if (userId != userInfoProvider.id.value) {
       return Container();
     }
     return IconButton(

@@ -47,6 +47,14 @@ class CustomTextWidget extends StatelessWidget {
               color: Colors.red,
             ),
       );
+    } else if (kind == 'info') {
+      return Text(
+        text,
+        softWrap: true,
+        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              color: Colors.red,
+            ),
+      );
     } else if (kind == 'button') {
       return Text(
         text,

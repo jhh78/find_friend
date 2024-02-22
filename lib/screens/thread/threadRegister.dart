@@ -5,6 +5,7 @@ import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/constants.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:find_friend/widgets/common/dropboxMenu.dart';
+import 'package:find_friend/widgets/common/infoCard.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/common/textArea.dart';
@@ -46,31 +47,38 @@ class ThreadCreateForm extends StatelessWidget {
             ),
             body: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  CustomTextFieldWidget(
-                    isRequired: true,
-                    controller: _titleController,
-                    hintText: 'スレット名を入力してください',
-                    title: 'スレット名',
-                  ),
-                  CustomDropBoxMenu(
-                    isRequired: true,
-                    isExpanded: true,
-                    label: '学校選択',
-                    items: userInfoProvider.schools
-                        .map((school) => {
-                              'value': school.uuid,
-                              'label': school.name,
-                            })
-                        .toList(),
-                    onSelected: (value) {
-                      threadProvider.selectedSchool.value = value;
-                    },
-                  ),
-                  CustomTextAreaWidget(
-                    isRequired: true,
-                    controller: _contentController,
-                    title: 'スレット説明',
+                  const CustomInfoCardWidget(
+                      message: '※スレット作成は$THREAD_MAKE_NEED_POINTポイントが消費されます'),
+                  Column(
+                    children: [
+                      CustomTextFieldWidget(
+                        isRequired: true,
+                        controller: _titleController,
+                        hintText: 'スレット名を入力してください',
+                        title: 'スレット名',
+                      ),
+                      CustomDropBoxMenu(
+                        isRequired: true,
+                        isExpanded: true,
+                        label: '学校選択',
+                        items: userInfoProvider.schools
+                            .map((school) => {
+                                  'value': school.uuid,
+                                  'label': school.name,
+                                })
+                            .toList(),
+                        onSelected: (value) {
+                          threadProvider.selectedSchool.value = value;
+                        },
+                      ),
+                      CustomTextAreaWidget(
+                        isRequired: true,
+                        controller: _contentController,
+                        title: 'スレット説明',
+                      ),
+                    ],
                   ),
                 ],
               ),

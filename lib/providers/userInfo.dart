@@ -4,6 +4,7 @@ import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:get/get.dart';
+import 'package:pocketbase/pocketbase.dart';
 
 class UserInfoProvider extends GetxController {
   final UsersService _userService = UsersService();
@@ -31,23 +32,22 @@ class UserInfoProvider extends GetxController {
 
   Future<void> initUserInfo() async {
     try {
-      _systemService.getAuthKey().then((value) {
-        log('authKey: $value', name: 'UserInfoProvider');
-        if (value.isNotEmpty) {
-          _userService.getUserInfoData(value).then((value) {
-            updateUserInfo({
-              'id': value.id,
-              'created': value.created,
-              'updated': value.updated,
-              'nickname': value.data["nickname"],
-              'exp': value.data["exp"],
-              'point': value.data["point"],
-              'depiction': value.data["depiction"],
-              'schools': value.data["schools"],
-            });
-          });
-        }
-      });
+      String authKey = await _systemService.getAuthKey();
+
+      if (authKey.isNotEmpty) {
+        RecordModel record = await _userService.getUserInfoData(authKey);
+
+        updateUserInfo({
+          'id': record.id,
+          'created': record.created,
+          'updated': record.updated,
+          'nickname': record.data["nickname"],
+          'exp': record.data["exp"],
+          'point': record.data["point"],
+          'depiction': record.data["depiction"],
+          'schools': record.data["schools"],
+        });
+      }
     } catch (e) {
       log('initUserInfo error: $e', name: 'UserInfoProvider');
       rethrow;

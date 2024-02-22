@@ -1,29 +1,36 @@
-import 'package:find_friend/services/system.dart';
+import 'package:find_friend/models/favorite.dart';
+import 'package:find_friend/services/favorite.dart';
 import 'package:get/get.dart';
 
 class FavoriteProvider extends GetxController {
-  RxList<String> favoriteList = <String>[].obs;
+  final RxList<FavoriteTable> _favoriteItems = <FavoriteTable>[].obs;
+  final FavoriteService _favoriteService = FavoriteService();
 
-  static get to => Get.find();
+  List<FavoriteTable> get favoriteItems {
+    return _favoriteItems;
+  }
 
   @override
   void onInit() {
     super.onInit();
-    // get favorite list from local storage
-    SystemService().getAuthKey().then((value) {
-      if (value != null) {
-        favoriteList.addAll(value.split(','));
-      }
-    });
+    initFavoriteList();
   }
 
-  void addFavorite(String id) {
-    favoriteList.add(id);
-    // save favorite list to local storage
+  Future<void> initFavoriteList() async {
+    _favoriteItems.value = await _favoriteService.getFavoritesList();
   }
 
-  void removeFavorite(String id) {
-    favoriteList.remove(id);
-    // save favorite list to local storage
+  Future<void> addFavoriteThread(String threadId) async {
+    _favoriteService.addFavoriteThread(threadId);
+    _favoriteItems.value = await _favoriteService.getFavoritesList();
+  }
+
+  Future<void> removeFavoriteThread(String threadId) async {
+    _favoriteService.removeFavoriteThread(threadId);
+    _favoriteItems.value = await _favoriteService.getFavoritesList();
+  }
+
+  bool isFavoriteThread(String threadId) {
+    return _favoriteItems.any((favorite) => favorite.threadId == threadId);
   }
 }

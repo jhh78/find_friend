@@ -1,6 +1,8 @@
 import 'package:find_friend/models/threadContents.dart';
 import 'package:find_friend/providers/threadContents.dart';
 import 'package:find_friend/providers/userInfo.dart';
+import 'package:find_friend/utils/constants.dart';
+import 'package:find_friend/widgets/common/infoCard.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/thread/contsnts/card.dart';
 import 'package:find_friend/widgets/thread/contsnts/messageForm.dart';
@@ -58,8 +60,11 @@ class ThreadContentsListWidget extends StatelessWidget {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
+        const CustomInfoCardWidget(
+          message: '※メッセージ作成は$THREAD_CONTENTS_WRITE_POINTポイントが消費されます',
+        ),
         Expanded(
           child: Obx(
             () => threadContentsProvider.threadContentsList.isEmpty
