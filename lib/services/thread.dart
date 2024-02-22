@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:find_friend/models/favorite.dart';
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/services/system.dart';
@@ -21,6 +22,43 @@ class ThreadService {
       final response = await pb.collection('thread').getList(
             page: currentPage,
             perPage: perPage,
+            filter: querys.join(' || '),
+            sort: '-created',
+          );
+
+      List<ThreadTable> threadList = [];
+
+      for (var item in response.items) {
+        Map<String, dynamic> params = {
+          'id': item.id,
+          'created': item.created,
+          'school_code': item.data['school_code'],
+          'user_id': item.data['user_id'],
+          'title': item.data['title'],
+          'depiction': item.data['depiction'],
+        };
+
+        threadList.add(ThreadTable.fromJson(params));
+      }
+
+      return threadList;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<List<ThreadTable>> getFavoriteThreadList(
+      List<String> threadIds) async {
+    try {
+      log('getFavoriteThreadList called > ', name: 'ThreadService');
+      List<String> querys = [];
+
+      for (String threadId in threadIds) {
+        querys.add('id = "$threadId"');
+      }
+
+      final pb = PocketBase(API_URL);
+      final response = await pb.collection('thread').getList(
             filter: querys.join(' || '),
             sort: '-created',
           );

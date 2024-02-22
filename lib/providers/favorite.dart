@@ -1,14 +1,12 @@
 import 'package:find_friend/models/favorite.dart';
+import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/services/favorite.dart';
 import 'package:get/get.dart';
 
 class FavoriteProvider extends GetxController {
-  final RxList<FavoriteTable> _favoriteItems = <FavoriteTable>[].obs;
+  final RxList<FavoriteTable> favoriteItems = <FavoriteTable>[].obs;
+  final RxList<ThreadTable> favoriteThreadItems = <ThreadTable>[].obs;
   final FavoriteService _favoriteService = FavoriteService();
-
-  List<FavoriteTable> get favoriteItems {
-    return _favoriteItems;
-  }
 
   @override
   void onInit() {
@@ -17,20 +15,30 @@ class FavoriteProvider extends GetxController {
   }
 
   Future<void> initFavoriteList() async {
-    _favoriteItems.value = await _favoriteService.getFavoritesList();
+    List<FavoriteTable> lists = await _favoriteService.getFavoritesList();
+    favoriteItems.clear();
+    favoriteItems.addAll(lists);
+    await getFavoriteThreadList();
+  }
+
+  Future<void> getFavoriteThreadList() async {
+    List<ThreadTable> threadList =
+        await _favoriteService.getFavoriteThreadList(favoriteItems);
+    favoriteThreadItems.clear();
+    favoriteThreadItems.addAll(threadList);
   }
 
   Future<void> addFavoriteThread(String threadId) async {
     _favoriteService.addFavoriteThread(threadId);
-    _favoriteItems.value = await _favoriteService.getFavoritesList();
+    initFavoriteList();
   }
 
   Future<void> removeFavoriteThread(String threadId) async {
-    _favoriteService.removeFavoriteThread(threadId);
-    _favoriteItems.value = await _favoriteService.getFavoritesList();
+    await _favoriteService.removeFavoriteThread(threadId);
+    initFavoriteList();
   }
 
   bool isFavoriteThread(String threadId) {
-    return _favoriteItems.any((favorite) => favorite.threadId == threadId);
+    return favoriteItems.any((favorite) => favorite.threadId == threadId);
   }
 }
