@@ -93,7 +93,7 @@ class RootScreen extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: _renderBottomNavigaterIcons(
-                      Icons.format_list_bulleted, true),
+                      Icons.format_list_bulleted, false),
                   label: THREAD_LIST_BUTTON_TEXT,
                 ),
                 BottomNavigationBarItem(
@@ -105,7 +105,7 @@ class RootScreen extends StatelessWidget {
                   label: MESSAGE_BUTTON_TEXT,
                 ),
                 BottomNavigationBarItem(
-                  icon: _renderBottomNavigaterIcons(Icons.info_outline, true),
+                  icon: _renderBottomNavigaterIcons(Icons.info_outline, false),
                   label: NOTICE_BUTTON_TEXT,
                 ),
                 BottomNavigationBarItem(
