@@ -89,6 +89,9 @@ class SupportScreenState extends State<SupportScreen> {
         onAdFailedToLoad: (LoadAdError error) {
           log('RewardedAd failed to load: $error',
               name: 'SupportScreenState.onAdFailedToLoad');
+          setState(() {
+            isProcessing = false;
+          });
           CustomSnackbar.showErrorSnackbar(
               title: 'Error', error: Exception('広告ロードへ失敗しました。'));
           writeLogs(name: '_loadRewardAd.onAdFailedToLoad', error: error);

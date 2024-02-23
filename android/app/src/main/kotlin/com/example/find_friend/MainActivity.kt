@@ -1,4 +1,4 @@
-package com.coin.find_friend
+package com.find_friend
 
 import io.flutter.embedding.android.FlutterActivity
 
