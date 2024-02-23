@@ -1,8 +1,4 @@
 import 'package:find_friend/providers/appData.dart';
-import 'package:find_friend/providers/favorite.dart';
-import 'package:find_friend/providers/message.dart';
-import 'package:find_friend/providers/thread.dart';
-import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/screens/favorite/favorite.dart';
 import 'package:find_friend/screens/message/message.dart';
 import 'package:find_friend/screens/notice/notice.dart';
@@ -18,29 +14,19 @@ class RootScreen extends StatelessWidget {
   RootScreen({super.key});
 
   final AppDataProvider controller = Get.put(AppDataProvider());
-  final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
-  final ThreadProvider threadProvider = Get.put(ThreadProvider());
-  final MessageProvider messageProvider = Get.put(MessageProvider());
-  final FavoriteProvider favoriteProvider = Get.put(FavoriteProvider());
 
-  Future<Widget> _renderContentWidget() async {
+  Widget _renderContentWidget() {
     if (controller.navibarCurrentIndex.value == 0) {
-      await userInfoProvider.initUserInfo();
-      return UserInfoScreen();
+      return const UserInfoScreen();
     } else if (controller.navibarCurrentIndex.value == 1) {
-      await userInfoProvider.initUserInfo();
-      await threadProvider.initThreadList();
-      await favoriteProvider.initFavoriteList();
-      return ThreadScreen();
+      return const ThreadScreen();
     } else if (controller.navibarCurrentIndex.value == 2) {
-      await favoriteProvider.initFavoriteList();
-      return FavoriteScreen();
+      return const FavoriteScreen();
     } else if (controller.navibarCurrentIndex.value == 3) {
-      return MessageScreen();
+      return const MessageScreen();
     } else if (controller.navibarCurrentIndex.value == 4) {
-      return NoticeScreen();
+      return const NoticeScreen();
     } else if (controller.navibarCurrentIndex.value == 5) {
-      await userInfoProvider.initUserInfo();
       return const SupportScreen();
     }
 
@@ -84,18 +70,7 @@ class RootScreen extends StatelessWidget {
               const CustomBackGroundImageWidget(
                 type: 'bg',
               ),
-              FutureBuilder(
-                future: _renderContentWidget(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return snapshot.data!;
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              )
+              _renderContentWidget(),
             ],
           ),
           bottomNavigationBar: Theme(

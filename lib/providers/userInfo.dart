@@ -24,12 +24,6 @@ class UserInfoProvider extends GetxController {
 
   static UserInfoProvider get to => Get.find();
 
-  @override
-  void onInit() {
-    super.onInit();
-    initUserInfo();
-  }
-
   Future<void> initUserInfo() async {
     try {
       String authKey = await _systemService.getAuthKey();
@@ -55,19 +49,23 @@ class UserInfoProvider extends GetxController {
   }
 
   void updateUserInfo(Map<String, dynamic> userInfo) {
-    List<SchoolsTable> schoolsList = [];
+    try {
+      List<SchoolsTable> schoolsList = [];
 
-    for (Map<String, dynamic> school in userInfo['schools']) {
-      schoolsList.add(SchoolsTable.fromJson(school));
+      for (Map<String, dynamic> school in userInfo['schools']) {
+        schoolsList.add(SchoolsTable.fromJson(school));
+      }
+
+      id.value = userInfo['id'];
+      created.value = userInfo['created'];
+      updated.value = userInfo['updated'];
+      nickname.value = userInfo['nickname'];
+      exp.value = userInfo['exp'];
+      point.value = userInfo['point'];
+      depiction.value = userInfo['depiction'];
+      schools.value = schoolsList;
+    } catch (e) {
+      rethrow;
     }
-
-    id.value = userInfo['id'];
-    created.value = userInfo['created'];
-    updated.value = userInfo['updated'];
-    nickname.value = userInfo['nickname'];
-    exp.value = userInfo['exp'];
-    point.value = userInfo['point'];
-    depiction.value = userInfo['depiction'];
-    schools.value = schoolsList;
   }
 }

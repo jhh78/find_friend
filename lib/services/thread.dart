@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:find_friend/models/favorite.dart';
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/services/system.dart';

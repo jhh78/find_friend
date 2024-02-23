@@ -4,7 +4,6 @@ import 'package:find_friend/providers/favorite.dart';
 import 'package:find_friend/providers/thread.dart';
 import 'package:find_friend/providers/threadContents.dart';
 import 'package:find_friend/providers/userInfo.dart';
-import 'package:find_friend/screens/root.dart';
 import 'package:find_friend/services/thread.dart';
 import 'package:find_friend/services/threadContents.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
@@ -14,9 +13,14 @@ import 'package:find_friend/widgets/thread/contsnts/contentsList.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ThreadContentsScreen extends StatelessWidget {
-  ThreadContentsScreen({super.key});
+class ThreadContentsScreen extends StatefulWidget {
+  const ThreadContentsScreen({super.key});
 
+  @override
+  ThreadContentsScreenState createState() => ThreadContentsScreenState();
+}
+
+class ThreadContentsScreenState extends State<ThreadContentsScreen> {
   final ThreadContentsService threadContentsService = ThreadContentsService();
   final ThreadService threadService = ThreadService();
 
@@ -28,6 +32,22 @@ class ThreadContentsScreen extends StatelessWidget {
 
   final List<String> messages = [];
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    log('ThreadContentsScreen initState ${Get.arguments.id}',
+        name: 'ThreadContentsScreen');
+    super.initState();
+    threadContentsProvider.initThreadContentsList();
+    threadContentsProvider.addSubscribedThreadContents();
+  }
+
+  @override
+  void dispose() {
+    log('ThreadContentsScreen dispose', name: 'ThreadContentsScreen');
+    threadContentsProvider.removeSubscribedThreadContents();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,11 +166,8 @@ class ThreadContentsScreen extends StatelessWidget {
                           onPressed: () async {
                             try {
                               await threadService.deleteThread(threadId);
-                              Get.offAll(
-                                () => RootScreen(),
-                                transition: Transition.size,
-                                duration: const Duration(milliseconds: 500),
-                              );
+                              Get.back();
+                              Get.back();
                             } catch (error) {
                               Get.back();
                               CustomSnackbar.showErrorSnackbar(

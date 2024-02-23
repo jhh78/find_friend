@@ -1,13 +1,33 @@
+import 'dart:developer';
+
 import 'package:find_friend/providers/notice.dart';
 import 'package:find_friend/screens/notice/noticeDetail.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class NoticeScreen extends StatelessWidget {
-  NoticeScreen({super.key});
+class NoticeScreen extends StatefulWidget {
+  const NoticeScreen({super.key});
 
+  @override
+  NoticeScreenState createState() => NoticeScreenState();
+}
+
+class NoticeScreenState extends State<NoticeScreen> {
   final NoticeProvider noticeProvider = Get.put(NoticeProvider());
+
+  @override
+  void initState() {
+    log('initState', name: 'NoticeScreen');
+    super.initState();
+    noticeProvider.initNoticeList();
+  }
+
+  @override
+  void dispose() {
+    log('dispose', name: 'NoticeScreen');
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -12,20 +12,6 @@ class ThreadContentsProvider extends GetxController {
 
   RxInt currentPage = 1.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    log('ThreadContentsProvider onInit', name: 'thread_contents');
-    initThreadContentsList();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-    log('ThreadContentsProvider onClose', name: 'thread_contents');
-    removeSubscribedThreadContents();
-  }
-
   String getThreadId() => Get.arguments.id;
 
   void initValues() {
@@ -38,7 +24,6 @@ class ThreadContentsProvider extends GetxController {
       initValues();
       List<ThreadContentsTable> lists = await _searchThreadContentsList(1);
       threadContentsList.addAll(lists);
-      addSubscribedThreadContents();
     } catch (error) {
       rethrow;
     }
@@ -72,33 +57,41 @@ class ThreadContentsProvider extends GetxController {
   }
 
   void addSubscribedThreadContents() {
-    String threadId = getThreadId();
-    final pb = PocketBase(API_URL);
-    pb.collection('thread_contents').subscribe('*', (e) {
-      log('observeItem >>>> ${e.action} ${e.record} ${e.record!.collectionId}',
-          name: 'thread_contents');
+    try {
+      String threadId = getThreadId();
+      final pb = PocketBase(API_URL);
+      pb.collection('thread_contents').subscribe('*', (e) {
+        log('observeItem >>>> ${e.action} ${e.record} ${e.record!.collectionId}',
+            name: 'thread_contents');
 
-      if (e.action == 'delete') {
-        threadContentsList.removeWhere((element) => element.id == e.record!.id);
-      } else if (e.action == 'create') {
-        Map<String, dynamic> params = {
-          'id': e.record!.id,
-          'thread_id': e.record!.data['thread_id'],
-          'user_id': e.record!.data['user_id'],
-          'nickname': e.record!.data['nickname'],
-          'contents': e.record!.data['contents'],
-          'created': e.record!.created,
-          'updated': e.record!.updated,
-        };
+        if (e.action == 'delete') {
+          threadContentsList
+              .removeWhere((element) => element.id == e.record!.id);
+        } else if (e.action == 'create') {
+          Map<String, dynamic> params = {
+            'id': e.record!.id,
+            'thread_id': e.record!.data['thread_id'],
+            'user_id': e.record!.data['user_id'],
+            'nickname': e.record!.data['nickname'],
+            'contents': e.record!.data['contents'],
+            'created': e.record!.created,
+            'updated': e.record!.updated,
+          };
 
-        threadContentsList(
-            [ThreadContentsTable.fromJson(params), ...threadContentsList]);
-      }
-    }, filter: 'thread_id="$threadId"');
+          threadContentsList.insert(0, ThreadContentsTable.fromJson(params));
+        }
+      }, filter: 'thread_id="$threadId"');
+    } catch (e) {
+      rethrow;
+    }
   }
 
   void removeSubscribedThreadContents() {
-    final pb = PocketBase(API_URL);
-    pb.collection('thread_contents').unsubscribe();
+    try {
+      final pb = PocketBase(API_URL);
+      pb.collection('thread_contents').unsubscribe('*');
+    } catch (e) {
+      rethrow;
+    }
   }
 }

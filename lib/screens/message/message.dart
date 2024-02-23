@@ -13,14 +13,33 @@ import 'package:find_friend/widgets/common/textArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class MessageScreen extends StatelessWidget {
-  MessageScreen({super.key});
+class MessageScreen extends StatefulWidget {
+  const MessageScreen({super.key});
+
+  @override
+  MessageScreenState createState() => MessageScreenState();
+}
+
+class MessageScreenState extends State<MessageScreen> {
   final MessageProvider messageProvider = Get.put(MessageProvider());
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
 
   final ScrollController _scrollController = ScrollController();
   final MessageService messageService = MessageService();
   final SystemService systemService = SystemService();
+
+  @override
+  void initState() {
+    log('initState', name: 'MessageScreen');
+    super.initState();
+    messageProvider.initMassageList();
+  }
+
+  @override
+  void dispose() {
+    log('dispose', name: 'MessageScreen');
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

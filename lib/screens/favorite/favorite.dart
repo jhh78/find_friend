@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:find_friend/models/thread.dart';
 import 'package:find_friend/providers/favorite.dart';
 import 'package:find_friend/screens/thread/threadContents.dart';
@@ -5,11 +7,29 @@ import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class FavoriteScreen extends StatelessWidget {
-  FavoriteScreen({super.key});
-  final FavoriteProvider favoriteProvider = Get.put(FavoriteProvider());
+class FavoriteScreen extends StatefulWidget {
+  const FavoriteScreen({super.key});
 
+  @override
+  FavoriteScreenState createState() => FavoriteScreenState();
+}
+
+class FavoriteScreenState extends State<FavoriteScreen> {
+  final FavoriteProvider favoriteProvider = Get.put(FavoriteProvider());
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    log('initState', name: 'FavoriteScreen');
+    super.initState();
+    favoriteProvider.initFavoriteList();
+  }
+
+  @override
+  void dispose() {
+    log('dispose', name: 'FavoriteScreen');
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +66,7 @@ class FavoriteScreen extends StatelessWidget {
     return InkWell(
       onTap: () {
         Get.to(
-          () => ThreadContentsScreen(),
+          () => const ThreadContentsScreen(),
           duration: const Duration(milliseconds: 500),
           transition: Transition.size,
           arguments: thread,

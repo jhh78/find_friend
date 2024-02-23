@@ -12,14 +12,32 @@ import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ThreadScreen extends StatelessWidget {
-  ThreadScreen({super.key});
+class ThreadScreen extends StatefulWidget {
+  const ThreadScreen({super.key});
+  @override
+  ThreadScreenState createState() => ThreadScreenState();
+}
+
+class ThreadScreenState extends State<ThreadScreen> {
   final UserInfoProvider userInfoProvider = Get.put(UserInfoProvider());
   final ThreadProvider threadProvider = Get.put(ThreadProvider());
 
   final ScrollController _scrollController = ScrollController();
 
   final ThreadService threadService = ThreadService();
+
+  @override
+  void initState() {
+    log('initState', name: 'ThreadScreen');
+    super.initState();
+    threadProvider.initThreadList();
+  }
+
+  @override
+  void dispose() {
+    log('dispose', name: 'ThreadScreen');
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +105,7 @@ class ThreadScreen extends StatelessWidget {
     return InkWell(
       onTap: () {
         Get.to(
-          () => ThreadContentsScreen(),
+          () => const ThreadContentsScreen(),
           duration: const Duration(milliseconds: 500),
           transition: Transition.size,
           arguments: thread,

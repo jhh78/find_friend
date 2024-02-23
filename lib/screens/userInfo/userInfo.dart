@@ -13,13 +13,32 @@ import 'package:find_friend/widgets/userinfo/textItemDisplayArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class UserInfoScreen extends StatelessWidget {
+class UserInfoScreen extends StatefulWidget {
+  const UserInfoScreen({super.key});
+
+  @override
+  UserInfoScreenState createState() => UserInfoScreenState();
+}
+
+class UserInfoScreenState extends State<UserInfoScreen> {
   final UserInfoProvider _userInfoProvider = Get.put(UserInfoProvider());
 
   final UsersService _userService = UsersService();
   final TextEditingController _depictionController = TextEditingController();
 
-  UserInfoScreen({super.key});
+  @override
+  void initState() {
+    log('initState', name: 'UserInfoScreen');
+    super.initState();
+    _userInfoProvider.initUserInfo();
+  }
+
+  @override
+  void dispose() {
+    log('dispose', name: 'UserInfoScreen');
+    _depictionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

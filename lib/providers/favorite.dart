@@ -8,34 +8,44 @@ class FavoriteProvider extends GetxController {
   final RxList<ThreadTable> favoriteThreadItems = <ThreadTable>[].obs;
   final FavoriteService _favoriteService = FavoriteService();
 
-  @override
-  void onInit() {
-    super.onInit();
-    initFavoriteList();
-  }
-
   Future<void> initFavoriteList() async {
-    List<FavoriteTable> lists = await _favoriteService.getFavoritesList();
-    favoriteItems.clear();
-    favoriteItems.addAll(lists);
-    await getFavoriteThreadList();
+    try {
+      List<FavoriteTable> lists = await _favoriteService.getFavoritesList();
+      favoriteItems.clear();
+      favoriteItems.addAll(lists);
+      await getFavoriteThreadList();
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Future<void> getFavoriteThreadList() async {
-    List<ThreadTable> threadList =
-        await _favoriteService.getFavoriteThreadList(favoriteItems);
-    favoriteThreadItems.clear();
-    favoriteThreadItems.addAll(threadList);
+    try {
+      List<ThreadTable> threadList =
+          await _favoriteService.getFavoriteThreadList(favoriteItems);
+      favoriteThreadItems.clear();
+      favoriteThreadItems.addAll(threadList);
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Future<void> addFavoriteThread(String threadId) async {
-    _favoriteService.addFavoriteThread(threadId);
-    initFavoriteList();
+    try {
+      _favoriteService.addFavoriteThread(threadId);
+      initFavoriteList();
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Future<void> removeFavoriteThread(String threadId) async {
-    await _favoriteService.removeFavoriteThread(threadId);
-    initFavoriteList();
+    try {
+      await _favoriteService.removeFavoriteThread(threadId);
+      initFavoriteList();
+    } catch (error) {
+      rethrow;
+    }
   }
 
   bool isFavoriteThread(String threadId) {

@@ -15,39 +15,38 @@ class MessageProvider extends GetxController {
   RxInt currentPage = 1.obs;
   RxList<MessageTable> messageList = <MessageTable>[].obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    log('MessageProvider onInit called', name: 'MessageProvider');
-    initMassageList();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-    log('MessageProvider onClose called');
-  }
-
   Future<void> initMassageList() async {
-    log('initMassageList called', name: 'MessageProvider');
-    messageList.clear();
-    currentPage.value = 1;
-    List<MessageTable> list = await _searchMessageList();
-    messageList.addAll(list);
+    try {
+      log('initMassageList called', name: 'MessageProvider');
+      messageList.clear();
+      currentPage.value = 1;
+      List<MessageTable> list = await _searchMessageList();
+      messageList.addAll(list);
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Future<void> getNextPageMessages() async {
-    log('getNextPageMessages called', name: 'MessageProvider');
-    currentPage.value++;
-    List<MessageTable> list = await _searchMessageList();
-    messageList.addAll(list);
+    try {
+      log('getNextPageMessages called', name: 'MessageProvider');
+      currentPage.value++;
+      List<MessageTable> list = await _searchMessageList();
+      messageList.addAll(list);
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Future<List<MessageTable>> _searchMessageList() async {
-    log('_searchMessageList called', name: 'MessageProvider');
-    String uuid = await systemService.getAuthKey();
-    List<MessageTable> list = await messageService.getMessageList(
-        uuid, currentPage.value, PAGE_PER_ITEM);
-    return list;
+    try {
+      log('_searchMessageList called', name: 'MessageProvider');
+      String userId = userInfoProvider.id.value;
+      List<MessageTable> list = await messageService.getMessageList(
+          userId, currentPage.value, PAGE_PER_ITEM);
+      return list;
+    } catch (error) {
+      rethrow;
+    }
   }
 }
