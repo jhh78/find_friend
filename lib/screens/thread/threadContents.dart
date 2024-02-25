@@ -190,7 +190,7 @@ class ThreadContentsScreenState extends State<ThreadContentsScreen> {
           ),
         );
       },
-      icon: const Icon(Icons.remove_circle_outline),
+      icon: const Icon(Icons.delete_forever),
     );
   }
 }

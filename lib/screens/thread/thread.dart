@@ -76,7 +76,7 @@ class ThreadScreenState extends State<ThreadScreen> {
                 transition: Transition.rightToLeft,
               );
             },
-            icon: const Icon(Icons.add_circle_outline_rounded),
+            icon: const Icon(Icons.playlist_add_rounded),
             color: Colors.blue,
             style: ButtonStyle(
               overlayColor: MaterialStateProperty.all(Colors.blue[200]),

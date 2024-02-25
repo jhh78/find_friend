@@ -1,5 +1,6 @@
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/screens/schoolSearch/schoolSearch.dart';
+import 'package:find_friend/widgets/common/infoCard.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,7 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 10.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,7 +38,7 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
                 ],
               ),
               Obx(
-                () => _userInfoProvider.schools.length < 2
+                () => _userInfoProvider.schools.length < 3
                     ? IconButton(
                         icon: const Icon(Icons.add_circle_outline_rounded),
                         color: Colors.blueAccent,
@@ -78,7 +80,8 @@ class SchoolSearchedItemsWidget extends StatelessWidget {
                 },
               ).toList(),
             ),
-          )
+          ),
+          const CustomInfoCardWidget(message: '学校を3つまで登録できます。')
         ],
       ),
     );

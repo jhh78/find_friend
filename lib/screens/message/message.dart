@@ -245,7 +245,7 @@ class MessageScreenState extends State<MessageScreen> {
                           }
                         },
                         icon: const Icon(
-                          Icons.playlist_add_circle_outlined,
+                          Icons.mail_outline_rounded,
                           color: Colors.blueAccent,
                           size: 30,
                         ),

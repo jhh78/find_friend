@@ -82,6 +82,7 @@ class RootScreen extends StatelessWidget {
               currentIndex: controller.navibarCurrentIndex.value,
               type: BottomNavigationBarType.shifting,
               unselectedItemColor: Colors.blueGrey,
+              selectedItemColor: Colors.amber,
               onTap: (int index) {
                 controller.changeNaviBarCurrentIndex(index);
               },

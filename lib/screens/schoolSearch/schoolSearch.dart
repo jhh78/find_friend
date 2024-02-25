@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:find_friend/models/schools.dart';
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/schools.dart';
@@ -28,14 +30,20 @@ class SchoolSearchState extends State<SchoolSearchScreen> {
 
   Widget _renderSearchResult(BuildContext context) {
     if (_searchSchoolList.isEmpty) {
-      return Container();
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.3,
+        child: const Center(
+          child: CustomTextWidget(
+            text: SCHOOL_SEARCH_NO_RESULT_TEXT,
+            kind: 'headTitle',
+          ),
+        ),
+      );
     }
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: ListView.builder(
-        // shrinkWrap: true,
-        // physics: const NeverScrollableScrollPhysics(),
         itemCount: _searchSchoolList.length,
         itemBuilder: (context, index) {
           SchoolsTable school = _searchSchoolList[index];
@@ -72,10 +80,16 @@ class SchoolSearchState extends State<SchoolSearchScreen> {
   }
 
   void _getSearchSchoolList() async {
+    log('getSearchSchoolList called with $_prefecture, $_facility, ${_keywordController.text}');
     List<SchoolsTable> result = await _schoolService.getSchoolList(
         _prefecture, _facility, _keywordController.text);
 
-    _searchSchoolList.addAll(result);
+    log('result: $result');
+
+    setState(() {
+      _searchSchoolList.clear();
+      _searchSchoolList.addAll(result);
+    });
   }
 
   @override
@@ -103,14 +117,15 @@ class SchoolSearchState extends State<SchoolSearchScreen> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      CustomDropBoxMenu(
-                        label: SCHOOL_SEARCH_PREFECTURE_TEXT,
-                        items: REGIONAL_CLASSIFICATION,
-                        onSelected: (v) {
-                          _prefecture = v;
-                        },
+                      Expanded(
+                        child: CustomDropBoxMenu(
+                          label: SCHOOL_SEARCH_PREFECTURE_TEXT,
+                          items: REGIONAL_CLASSIFICATION,
+                          onSelected: (v) {
+                            _prefecture = v;
+                          },
+                        ),
                       ),
                       CustomDropBoxMenu(
                         label: SCHOOL_SEARCH_FACILITY_TYPE_TEXT,
@@ -174,14 +189,15 @@ class SchoolSearchState extends State<SchoolSearchScreen> {
           ),
           onPressed: () {
             try {
+              log('prefecture: $_prefecture');
               if (_prefecture.isEmpty) {
                 throw Exception(SCHOOL_SEARCH_PREFECTURE_ERROR);
               }
-
+              log('facility: $_facility');
               if (_facility.isEmpty) {
                 throw Exception(SCHOOL_SEARCH_FACILITY_TYPE_ERROR);
               }
-
+              log('keyword: ${_keywordController.text}');
               if (_keywordController.text.isEmpty) {
                 throw Exception(SCHOOL_SEARCH_KEYWORD_ERROR);
               }
