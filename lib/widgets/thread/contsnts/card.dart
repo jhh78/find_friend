@@ -66,11 +66,9 @@ class ThreadItemCardWidget extends StatelessWidget {
                               TextButton(
                                 onPressed: () async {
                                   try {
-                                    await _threadContentsService
-                                        .deleteItem(item.id.toString());
+                                    await _threadContentsService.deleteItem(item.id.toString());
                                   } catch (error) {
-                                    CustomSnackbar.showErrorSnackbar(
-                                        title: 'Error', error: error);
+                                    CustomSnackbar.showErrorSnackbar(title: 'Error', error: error);
                                     log('error: $error');
                                   } finally {
                                     Get.back();
@@ -101,11 +99,9 @@ class ThreadItemCardWidget extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
-              final TextEditingController messageController =
-                  TextEditingController();
+              final TextEditingController messageController = TextEditingController();
 
-              if (userInfoProvider.point <
-                  THREAD_CONTENTS_PRIVATE_MESSAGE_POINT) {
+              if (userInfoProvider.point < THREAD_CONTENTS_PRIVATE_MESSAGE_POINT) {
                 CustomSnackbar.showErrorSnackbar(
                   title: '活動ポイントが足りません',
                   error: Exception('支援ページでポイントを獲得してください'),
@@ -141,8 +137,7 @@ class ThreadItemCardWidget extends StatelessWidget {
                                       }
 
                                       if (messageController.text.length > 200) {
-                                        throw Exception(
-                                            'メッセージは200文字以内で入力してください');
+                                        throw Exception('メッセージは200文字以内で入力してください');
                                       }
 
                                       await _threadContentsService.sendMessage(
@@ -153,12 +148,11 @@ class ThreadItemCardWidget extends StatelessWidget {
                                       );
 
                                       // 유저의 포인터 차감
-                                      userInfoProvider
-                                          .point.value = userInfoProvider
-                                              .point.value -
-                                          THREAD_CONTENTS_PRIVATE_MESSAGE_POINT;
+                                      userInfoProvider.point.value = userInfoProvider.point.value - THREAD_CONTENTS_PRIVATE_MESSAGE_POINT;
+                                      userInfoProvider.exp.value = userInfoProvider.exp.value + ACTIVITY_EXP;
                                       await _usersService.updateUserPoint(
                                         userInfoProvider.point.value,
+                                        userInfoProvider.exp.value,
                                       );
 
                                       Get.back();
@@ -168,8 +162,7 @@ class ThreadItemCardWidget extends StatelessWidget {
                                       );
                                     } catch (error) {
                                       log('error: $error');
-                                      CustomSnackbar.showErrorSnackbar(
-                                          title: 'Error', error: error);
+                                      CustomSnackbar.showErrorSnackbar(title: 'Error', error: error);
                                     }
                                   },
                                   icon: const Icon(

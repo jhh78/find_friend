@@ -33,8 +33,7 @@ class ThreadContentsMessageFormWidget extends StatelessWidget {
       log('message length: ${_textController.text.length}');
 
       if (_textController.text.length > 200) {
-        throw Exception(
-            'メッセージの長さ：${_textController.text.length}\nメッセージは200文字以内で入力してください。');
+        throw Exception('メッセージの長さ：${_textController.text.length}\nメッセージは200文字以内で入力してください。');
       }
 
       await _threadContentsService.createItem(
@@ -43,12 +42,10 @@ class ThreadContentsMessageFormWidget extends StatelessWidget {
         contents: _textController.text,
       );
 
-      // 유저의 포인터 차감
-      userInfoProvider.point.value =
-          userInfoProvider.point.value - THREAD_CONTENTS_WRITE_POINT;
-      await _usersService.updateUserPoint(
-        userInfoProvider.point.value,
-      );
+      // 유저의 포인터 차감 + 활동 포인트 증가
+      userInfoProvider.point.value = userInfoProvider.point.value - THREAD_CONTENTS_WRITE_POINT;
+      userInfoProvider.exp.value = userInfoProvider.exp.value + ACTIVITY_EXP;
+      await _usersService.updateUserPoint(userInfoProvider.point.value, userInfoProvider.exp.value);
 
       Get.focusScope?.unfocus();
       _textController.clear();
@@ -61,8 +58,7 @@ class ThreadContentsMessageFormWidget extends StatelessWidget {
         );
       }
 
-      CustomSnackbar.showSuccessSnackbar(
-          title: 'Success', message: 'メッセージを送信しました。');
+      CustomSnackbar.showSuccessSnackbar(title: 'Success', message: 'メッセージを送信しました。');
     } catch (error) {
       CustomSnackbar.showErrorSnackbar(title: 'Error', error: error);
       log('error: $error');

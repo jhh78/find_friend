@@ -14,7 +14,7 @@ String getDateFormatString(String value) {
 
 void writeLogs({required String name, required dynamic error}) {
   final pb = PocketBase(API_URL);
-  final body = <String, dynamic>{"message": error.toString(), "name": name};
+  final body = <String, dynamic>{"body": error.toString(), "name": name};
 
-  pb.collection('errors').create(body: body);
+  pb.collection('admob').create(body: body);
 }

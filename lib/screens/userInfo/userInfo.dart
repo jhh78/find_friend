@@ -140,7 +140,7 @@ class UserInfoScreenState extends State<UserInfoScreen> {
       }
 
       // update
-      await _userService.updateIserDefaultInfo(
+      await _userService.updateUserDefaultInfo(
         _userInfoProvider.schools,
         _depictionController.text,
       );

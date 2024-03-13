@@ -49,8 +49,7 @@ class ThreadCreateForm extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const CustomInfoCardWidget(
-                      message: '※スレット作成は$THREAD_MAKE_NEED_POINTポイントが消費されます'),
+                  const CustomInfoCardWidget(message: '※スレット作成は$THREAD_MAKE_NEED_POINTポイントが消費されます'),
                   Column(
                     children: [
                       CustomTextFieldWidget(
@@ -120,11 +119,9 @@ class ThreadCreateForm extends StatelessWidget {
                   );
 
                   // 유저의 포인터 차감
-                  userInfoProvider.point.value =
-                      userInfoProvider.point.value - THREAD_MAKE_NEED_POINT;
-                  await _usersService.updateUserPoint(
-                    userInfoProvider.point.value,
-                  );
+                  userInfoProvider.point.value = userInfoProvider.point.value - THREAD_MAKE_NEED_POINT;
+                  userInfoProvider.exp.value = userInfoProvider.exp.value + ACTIVITY_EXP;
+                  await _usersService.updateUserPoint(userInfoProvider.point.value, userInfoProvider.exp.value);
 
                   threadProvider.initThreadList();
                   Get.back();

@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:find_friend/providers/userInfo.dart';
+import 'package:find_friend/services/payment.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/constants.dart';
@@ -9,6 +11,7 @@ import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
 import 'package:find_friend/widgets/support/supportButton.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class SupportScreen extends StatefulWidget {
@@ -21,8 +24,16 @@ class SupportScreen extends StatefulWidget {
 class SupportScreenState extends State<SupportScreen> {
   final UsersService _usersService = UsersService();
   final SystemService _systemService = SystemService();
+  final UserInfoProvider _userInfoProvider = Get.put(UserInfoProvider());
 
   bool isProcessing = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _userInfoProvider.initUserInfo();
+    super.initState();
+  }
 
   void _loadRewardAd() {
     setState(() {
@@ -36,8 +47,7 @@ class SupportScreenState extends State<SupportScreen> {
           ad.fullScreenContentCallback = FullScreenContentCallback(
               // Called when the ad showed the full screen content.
               onAdShowedFullScreenContent: (ad) {
-            log('Ad showed fullscreen content.',
-                name: 'SupportScreenState.onAdShowedFullScreenContent');
+            log('Ad showed fullscreen content.', name: 'SupportScreenState.onAdShowedFullScreenContent');
           },
               // Called when an impression occurs on the ad.
               onAdImpression: (ad) {
@@ -46,26 +56,19 @@ class SupportScreenState extends State<SupportScreen> {
               // Called when the ad failed to show full screen content.
               onAdFailedToShowFullScreenContent: (ad, err) {
             // Dispose the ad here to free resources.
-            log('Ad failed to show fullscreen content: $err',
-                name: 'SupportScreenState.onAdFailedToShowFullScreenContent');
+            log('Ad failed to show fullscreen content: $err', name: 'SupportScreenState.onAdFailedToShowFullScreenContent');
             ad.dispose();
           },
               // Called when the ad dismissed full screen content.
-              onAdDismissedFullScreenContent: (ad) {
+              onAdDismissedFullScreenContent: (ad) async {
             // Dispose the ad here to free resources.
-            log('Ad dismissed fullscreen content.',
-                name: 'SupportScreenState.onAdDismissedFullScreenContent');
+            log('Ad dismissed fullscreen content.', name: 'SupportScreenState.onAdDismissedFullScreenContent');
 
-            _systemService.getAuthKey().then((uuid) {
-              _usersService.getUserInfoData(uuid).then((res) async {
-                await _usersService.updateUserPoint(
-                    res.data['point'] + GOOGLE_REWARD_AD_ADD_POINT);
+            final int point = _userInfoProvider.point.value + GOOGLE_REWARD_AD_ADD_POINT;
+            final int exp = _userInfoProvider.exp.value + GOOGLE_REWARD_AD_ADD_EXP;
+            await _usersService.updateUserPoint(point, exp);
 
-                CustomSnackbar.showSuccessSnackbar(
-                    title: 'Success',
-                    message: '$GOOGLE_REWARD_AD_ADD_POINTポイントを獲得しました。');
-              });
-            });
+            CustomSnackbar.showSuccessSnackbar(title: 'Success', message: '$GOOGLE_REWARD_AD_ADD_POINTポイントを獲得しました。');
 
             setState(() {
               isProcessing = false;
@@ -81,19 +84,16 @@ class SupportScreenState extends State<SupportScreen> {
           ad.show(
             onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
               // Reward the user for watching an ad.
-              log('User rewarded: ${rewardItem.amount}',
-                  name: 'SupportScreenState.onUserEarnedReward');
+              log('User rewarded: ${rewardItem.amount}', name: 'SupportScreenState.onUserEarnedReward');
             },
           );
         },
         onAdFailedToLoad: (LoadAdError error) {
-          log('RewardedAd failed to load: $error',
-              name: 'SupportScreenState.onAdFailedToLoad');
+          log('RewardedAd failed to load: $error', name: 'SupportScreenState.onAdFailedToLoad');
           setState(() {
             isProcessing = false;
           });
-          CustomSnackbar.showErrorSnackbar(
-              title: 'Error', error: Exception('広告ロードへ失敗しました。'));
+          CustomSnackbar.showErrorSnackbar(title: 'Error', error: Exception('広告ロードへ失敗しました。'));
           writeLogs(name: '_loadRewardAd.onAdFailedToLoad', error: error);
         },
       ),
@@ -102,6 +102,7 @@ class SupportScreenState extends State<SupportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(InAppPurchaseService());
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -125,13 +126,11 @@ class SupportScreenState extends State<SupportScreen> {
                       kind: 'body',
                     ),
                     CustomTextWidget(
-                      text:
-                          '広告なしで快適にアプリを利用していただけるように、皆さんが楽しく利用できる環境を作りたいと考えています。',
+                      text: '広告なしで快適にアプリを利用していただけるように、皆さんが楽しく利用できる環境を作りたいと考えています。',
                       kind: 'body',
                     ),
                     CustomTextWidget(
-                      text:
-                          'ただし、アプリの運営、向上した機能の提供、より安定したサービスのためには、皆さんのサポートが不可欠です。',
+                      text: 'ただし、アプリの運営、向上した機能の提供、より安定したサービスのためには、皆さんのサポートが不可欠です。',
                       kind: 'body',
                     ),
                     CustomTextWidget(
@@ -176,40 +175,13 @@ class SupportScreenState extends State<SupportScreen> {
           text: '広告を見る (+$GOOGLE_REWARD_AD_ADD_POINTポイント)',
         ),
         SupportButton(
-          callBack: () {
-            CustomSnackbar.showSuccessSnackbar(
-                title: '100円支援 click', message: 'show me the money');
-          },
-          text: '100円支援 (+$PAYMENT_100_POINTポイント)',
+          callBack: () => InAppPurchaseService.to.purchaseProduct(PRODUCT_ID_100EN),
+          text: '100円支援 (+$PRODUCT_ID_100EN_POINTポイント)',
         ),
         SupportButton(
-          callBack: () {
-            CustomSnackbar.showSuccessSnackbar(
-                title: '500円支援 click', message: 'show me the money');
-          },
-          text: '500円支援 (+$PAYMENT_500_POINTポイント)',
+          callBack: () => InAppPurchaseService.to.purchaseProduct(PRODUCT_ID_500EN),
+          text: '500円支援 (+$PRODUCT_ID_500EN_POINTポイント)',
         ),
-        SupportButton(
-          callBack: () {
-            CustomSnackbar.showSuccessSnackbar(
-                title: '1000円支援 click', message: 'show me the money');
-          },
-          text: '1000円支援 (+$PAYMENT_1000_POINTポイント)',
-        ),
-        SupportButton(
-          callBack: () {
-            CustomSnackbar.showSuccessSnackbar(
-                title: '5000円支援 click', message: 'show me the money');
-          },
-          text: '5000円支援 (+$PAYMENT_5000_POINTポイント)',
-        ),
-        SupportButton(
-          callBack: () {
-            CustomSnackbar.showSuccessSnackbar(
-                title: '10000円支援 click', message: 'show me the money');
-          },
-          text: '1万円支援 (+$PAYMENT_10000_POINTポイント)',
-        )
       ],
     );
   }

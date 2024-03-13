@@ -6,8 +6,7 @@ import 'package:find_friend/utils/constants.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 class UsersService {
-  Future<RecordModel> createItem(
-      String nickname, List<SchoolsTable> schools, String depiction) async {
+  Future<RecordModel> createItem(String nickname, List<SchoolsTable> schools, String depiction) async {
     try {
       var pb = PocketBase(API_URL);
 
@@ -33,8 +32,7 @@ class UsersService {
     }
   }
 
-  Future updateIserDefaultInfo(
-      List<SchoolsTable> schools, String depiction) async {
+  Future updateUserDefaultInfo(List<SchoolsTable> schools, String depiction) async {
     try {
       final String uuid = await SystemService().getAuthKey();
       var pb = PocketBase(API_URL);
@@ -50,10 +48,9 @@ class UsersService {
         "schools": jsonString,
       };
 
-      log('updateIserDefaultInfo body: $body', name: 'UsersService');
+      log('updateUserDefaultInfo body: $body', name: 'UsersService');
 
-      final record =
-          await pb.collection('users').update(uuid.toString(), body: body);
+      final record = await pb.collection('users').update(uuid.toString(), body: body);
       return record.id;
     } catch (error) {
       log('updateItem error: $error');
@@ -61,19 +58,19 @@ class UsersService {
     }
   }
 
-  Future updateUserPoint(int point) async {
+  Future updateUserPoint(int point, int exp) async {
     try {
       final String uuid = await SystemService().getAuthKey();
       var pb = PocketBase(API_URL);
 
       final body = <String, dynamic>{
         "point": point,
+        "exp": exp,
       };
 
       log('updateUserPoint body: $body', name: 'UsersService');
 
-      final record =
-          await pb.collection('users').update(uuid.toString(), body: body);
+      final record = await pb.collection('users').update(uuid.toString(), body: body);
       return record.id;
     } catch (error) {
       log('updateItem error: $error');
