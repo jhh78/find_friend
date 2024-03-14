@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/payment.dart';
-import 'package:find_friend/services/system.dart';
 import 'package:find_friend/services/users.dart';
 import 'package:find_friend/utils/constants.dart';
 import 'package:find_friend/utils/googleAd.dart';
+import 'package:find_friend/utils/message/common.dart';
 import 'package:find_friend/utils/utils.dart';
 import 'package:find_friend/widgets/common/snackbar.dart';
 import 'package:find_friend/widgets/common/text.dart';
@@ -23,14 +23,12 @@ class SupportScreen extends StatefulWidget {
 
 class SupportScreenState extends State<SupportScreen> {
   final UsersService _usersService = UsersService();
-  final SystemService _systemService = SystemService();
   final UserInfoProvider _userInfoProvider = Get.put(UserInfoProvider());
 
   bool isProcessing = false;
 
   @override
   void initState() {
-    // TODO: implement initState
     _userInfoProvider.initUserInfo();
     super.initState();
   }
@@ -175,11 +173,23 @@ class SupportScreenState extends State<SupportScreen> {
           text: '広告を見る (+$GOOGLE_REWARD_AD_ADD_POINTポイント)',
         ),
         SupportButton(
-          callBack: () => InAppPurchaseService.to.purchaseProduct(PRODUCT_ID_100EN),
+          callBack: () async {
+            try {
+              await InAppPurchaseService.to.purchaseProduct(PRODUCT_ID_100EN);
+            } catch (e) {
+              CustomSnackbar.showErrorSnackbar(title: 'Error', error: Exception(PAYMENT_MODULE_LOAD_ERROR));
+            }
+          },
           text: '100円支援 (+$PRODUCT_ID_100EN_POINTポイント)',
         ),
         SupportButton(
-          callBack: () => InAppPurchaseService.to.purchaseProduct(PRODUCT_ID_500EN),
+          callBack: () async {
+            try {
+              await InAppPurchaseService.to.purchaseProduct(PRODUCT_ID_500EN);
+            } catch (e) {
+              CustomSnackbar.showErrorSnackbar(title: 'Error', error: Exception(PAYMENT_MODULE_LOAD_ERROR));
+            }
+          },
           text: '500円支援 (+$PRODUCT_ID_500EN_POINTポイント)',
         ),
       ],

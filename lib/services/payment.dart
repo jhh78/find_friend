@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:find_friend/providers/userInfo.dart';
 import 'package:find_friend/services/users.dart';
@@ -103,10 +104,11 @@ class InAppPurchaseService extends GetxService {
           '500en': PRODUCT_ID_500EN_EXP,
         };
 
-        final int point = userInfoProvider.point.value + pointMap[purchase.productID]!;
-        final int exp = userInfoProvider.exp.value + expMap[purchase.productID]!;
+        // TODO ::: 결제 완료시 포인트 갱신이 좀 느린 느낌?, 갱신은 문제없이 된다.
+        userInfoProvider.point.value = userInfoProvider.point.value + pointMap[purchase.productID]!;
+        userInfoProvider.exp.value = userInfoProvider.exp.value + expMap[purchase.productID]!;
 
-        await _usersService.updateUserPoint(point, exp);
+        await _usersService.updateUserPoint(userInfoProvider.point.value, userInfoProvider.exp.value);
       }
     } catch (error) {
       // 구매 미완료
@@ -121,10 +123,13 @@ class InAppPurchaseService extends GetxService {
   ///
   /// @return 구매 성공 여부
   @required
-  void purchaseProduct(String pid) async {
+  Future<void> purchaseProduct(String pid) async {
     try {
       final PurchaseParam purchaseParam = PurchaseParam(productDetails: products[pid]);
-      await iap.value.buyConsumable(purchaseParam: purchaseParam, autoConsume: false);
+
+      // android 이 경우 autoConsume를 true로 설정하지 않으면 소비성 결제가 되지 않는다
+      final bool kAutoConsume = Platform.isIOS || true;
+      await iap.value.buyConsumable(purchaseParam: purchaseParam, autoConsume: kAutoConsume);
       selectedProductID = pid;
     } catch (error) {
       writePaymentLog('purchaseProduct.error', error.toString());
@@ -142,9 +147,9 @@ class InAppPurchaseService extends GetxService {
         // 구매 가능한 상품 목록 조회
         await fetchUserProducts();
         // 과거 구매 사용자 목록 조회
-        // await fetchPastPurchases();
+        await fetchPastPurchases();
         // 상품을 이미 구매했는지 체크
-        // verifyPurchases();
+        verifyPurchases();
 
         // 구매 세부 정보에 대한 업데이트 스트림을 수신하는 구독
         subscription.value = iap.value.purchaseStream.listen((data) {

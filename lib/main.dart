@@ -1,6 +1,5 @@
 import 'package:find_friend/screens/register/register.dart';
 import 'package:find_friend/screens/root.dart';
-import 'package:find_friend/screens/support/support.dart';
 import 'package:find_friend/services/system.dart';
 import 'package:find_friend/widgets/common/backgroudImage.dart';
 import 'package:flutter/material.dart';

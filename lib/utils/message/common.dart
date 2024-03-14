@@ -47,3 +47,6 @@ const String MESSAGE_BUTTON_TEXT = 'メッセージ';
 
 // 개발자 후원 버튼텍스트
 const String DEVELOPER_DONATION_BUTTON_TEXT = '支援';
+
+// 결제 모듈 로드에 실패하다 에러메세지
+const String PAYMENT_MODULE_LOAD_ERROR = '支払いモジュールのロードに失敗しました。';
