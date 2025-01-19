@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 const DATABASE_NAME = 'ff.db';
-const API_URL = 'http://153.121.65.233:10000';
+const API_URL = '';
 const PAGE_PER_ITEM = 10;
 const REGISTER_DEAFULT_EXP = 0;
 const THREAD_CONTENTS_WRITE_POINT = 1;
